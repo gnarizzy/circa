@@ -15,7 +15,8 @@ class HomePageTests(TestCase):
         found = resolve('/')
         self.assertEqual(found.func, index)
 
-    def test_home_page_returns_correct_html(self):
+    def test_home_page_lists_items(self):
+        first_item = Item()
         request = HttpRequest()
         response = index(request)
         expected_html = render_to_string('index.html')
@@ -49,11 +50,11 @@ class ItemModelTest(TestCase):
         second_saved_item = saved_items[1]
 
         self.assertEqual(first_saved_item.description, 'Its an SAT, its a tutor, what more do you want?')
-        self.assertEqual(first_item.photoURL1, 'http://someurl.com')
-        self.assertEqual(first_item.photoURL2, 'http://someurl2.com')
-        self.assertEqual(first_item.photoURL3, 'http://someurl3.com')
-        self.assertEqual(first_item.auction, auction)
-        self.assertEqual(first_item.seller, seller)
-        self.assertEqual(first_item.buyer, buyer)
+        self.assertEqual(first_saved_item.photoURL1, 'http://someurl.com')
+        self.assertEqual(first_saved_item.photoURL2, 'http://someurl2.com')
+        self.assertEqual(first_saved_item.photoURL3, 'http://someurl3.com')
+        self.assertEqual(first_saved_item.auction, auction)
+        self.assertEqual(first_saved_item.seller, seller)
+        self.assertEqual(first_saved_item.buyer, buyer)
         self.assertEqual(second_saved_item.description, 'GYROSCOPES!')
 
