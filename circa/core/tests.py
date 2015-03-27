@@ -4,7 +4,7 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from core.models import Item
 from core.models import Auction
-from core.models import User
+from core.models import UserProfile
 
 from core.views import index
 
@@ -26,8 +26,8 @@ class ItemModelTest(TestCase):
     def test_saving_and_retrieving_items(self):
 
         auction = Auction()
-        buyer = User()
-        seller = User()
+        buyer = UserProfile()
+        seller = UserProfile()
         first_item = Item()
         first_item.description = 'Its an SAT, its a tutor, what more do you want?'
         first_item.photoURL1 = 'http://someurl.com'
@@ -54,5 +54,6 @@ class ItemModelTest(TestCase):
         self.assertEqual(first_item.photoURL3, 'http://someurl3.com')
         self.assertEqual(first_item.auction, auction)
         self.assertEqual(first_item.seller, seller)
-        self.assertequal(first_item.buyer, buyer)
+        self.assertEqual(first_item.buyer, buyer)
         self.assertEqual(second_saved_item.description, 'GYROSCOPES!')
+
