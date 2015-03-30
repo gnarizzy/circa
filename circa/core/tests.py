@@ -11,7 +11,7 @@ from core.views import index
 
 
 class HomePageTests(TestCase):
-
+# TODO add title instead of using description
     def test_root_url_resolves_to_index_view(self):
         found = resolve('/')
         self.assertEqual(found.func, index)
@@ -35,13 +35,15 @@ class HomePageTests(TestCase):
         seller_2 = User(username = 'Second Seller')
         seller_2.save()
 
-        Item.objects.create(description='A broken laser pointer',auction = auction1, buyer=buyer_1, seller=seller_1)
-        Item.objects.create(description='Ten Gallon Hat',auction = auction2, buyer=buyer_2, seller=seller_2)
+        item_1=Item(description='A broken laser pointer',auction = auction1, buyer=buyer_1, seller=seller_1)
+        item_2=Item(description='Ten Gallon Hat',auction = auction2, buyer=buyer_2, seller=seller_2)
+        item_1.save()
+        item_2.save()
         response = self.client.get('/')
 
         self.assertContains(response,'A broken laser pointer')
         self.assertContains(response,'Ten Gallon Hat')
-        
+
 
 class ItemModelTest(TestCase):
 # TODO Refactor this
