@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from core.models import Item
 from core.models import Auction
 from core.models import UserProfile
+from django.contrib.auth.models import User
 
 from core.views import index
 
@@ -26,21 +27,35 @@ class ItemModelTest(TestCase):
 
     def test_saving_and_retrieving_items(self):
 
-        auction = Auction()
-        buyer = UserProfile()
-        seller = UserProfile()
-        first_item = Item()
-        first_item.description = 'Its an SAT, its a tutor, what more do you want?'
-        first_item.photoURL1 = 'http://someurl.com'
-        first_item.photoURL2 = 'http://someurl2.com'
-        first_item.photoURL3 = 'http://someurl3.com'
-        first_item.auction = auction
-        first_item.seller = seller
-        first_item.buyer = buyer
+        auction1 = Auction()
+        auction2 = Auction()
+
+        auction1.save()
+        auction2.save()
+
+        buyer_1 = User(username = 'First Buyer')
+        buyer_1.save()
+
+        buyer_2 = User(username = 'Second Buyer')
+        buyer_2.save()
+
+
+        seller_1 = User(username = 'First Seller')
+        seller_1.save()
+
+        seller_2 = User(username = 'Second Seller')
+        seller_2.save()
+
+        desc = 'Its an SAT, its a tutor, what more do you want?'
+        photo_1 = 'http://someurl.com'
+        photo_2 = 'http://someurl2.com'
+        photo_3 = 'http://someurl3.com'
+        first_item = Item(description = desc, photo1 = photo_1, photo2 = photo_2, photo3 = photo_3, auction = auction1,
+                          seller = seller_1, buyer = buyer_1)
+
         first_item.save()
 
-        second_item = Item()
-        second_item.description = 'GYROSCOPES!'
+        second_item = Item(description='GYROSCOPES!', auction=auction2, seller = seller_2, buyer = buyer_2)
         second_item.save()
 
         saved_items = Item.objects.all()
@@ -50,11 +65,11 @@ class ItemModelTest(TestCase):
         second_saved_item = saved_items[1]
 
         self.assertEqual(first_saved_item.description, 'Its an SAT, its a tutor, what more do you want?')
-        self.assertEqual(first_saved_item.photoURL1, 'http://someurl.com')
-        self.assertEqual(first_saved_item.photoURL2, 'http://someurl2.com')
-        self.assertEqual(first_saved_item.photoURL3, 'http://someurl3.com')
-        self.assertEqual(first_saved_item.auction, auction)
-        self.assertEqual(first_saved_item.seller, seller)
-        self.assertEqual(first_saved_item.buyer, buyer)
+        self.assertEqual(first_saved_item.photo1, 'http://someurl.com')
+        self.assertEqual(first_saved_item.photo2, 'http://someurl2.com')
+        self.assertEqual(first_saved_item.photo3, 'http://someurl3.com')
+        self.assertEqual(first_saved_item.auction, auction1)
+        self.assertEqual(first_saved_item.seller, seller_1)
+        self.assertEqual(first_saved_item.buyer, buyer_1)
         self.assertEqual(second_saved_item.description, 'GYROSCOPES!')
 

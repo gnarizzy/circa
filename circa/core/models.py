@@ -1,11 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
-class Item(models.Model):
-    description = models.TextField(default='')
 
 class Auction(models.Model):
-    pass
+    current_bid = models.DecimalField(max_digits = 6, decimal_places = 2, default=1.00)
+
+class Item(models.Model):
+    description = models.TextField(default='')
+    photo1 = models.URLField()
+    photo2 = models.URLField()
+    photo3 = models.URLField()
+    auction = models.OneToOneField(Auction)
+    seller = models.OneToOneField(User, related_name ='seller_profile', default = None)
+    buyer = models.OneToOneField(User, related_name = 'buyer_profile', default = None)
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
