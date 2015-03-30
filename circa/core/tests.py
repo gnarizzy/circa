@@ -17,12 +17,31 @@ class HomePageTests(TestCase):
         self.assertEqual(found.func, index)
 
     def test_home_page_lists_items(self):
+        auction1 = Auction()
+        auction2 = Auction()
 
-        first_item = Item()
-        request = HttpRequest()
-        response = index(request)
-        expected_html = render_to_string('index.html')
-        self.assertEqual(response.content.decode(),expected_html)
+        auction1.save()
+        auction2.save()
+
+        buyer_1 = User(username = 'First Buyer')
+        buyer_1.save()
+
+        buyer_2 = User(username = 'Second Buyer')
+        buyer_2.save()
+
+        seller_1 = User(username = 'First Seller')
+        seller_1.save()
+
+        seller_2 = User(username = 'Second Seller')
+        seller_2.save()
+
+        Item.objects.create(description='A broken laser pointer',auction = auction1, buyer=buyer_1, seller=seller_1)
+        Item.objects.create(description='Ten Gallon Hat',auction = auction2, buyer=buyer_2, seller=seller_2)
+        response = self.client.get('/')
+
+        self.assertContains(response,'A broken laser pointer')
+        self.assertContains(response,'Ten Gallon Hat')
+        
 
 class ItemModelTest(TestCase):
 # TODO Refactor this
