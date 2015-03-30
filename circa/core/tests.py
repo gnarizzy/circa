@@ -17,6 +17,7 @@ class HomePageTests(TestCase):
         self.assertEqual(found.func, index)
 
     def test_home_page_lists_items(self):
+
         first_item = Item()
         request = HttpRequest()
         response = index(request)
@@ -24,7 +25,7 @@ class HomePageTests(TestCase):
         self.assertEqual(response.content.decode(),expected_html)
 
 class ItemModelTest(TestCase):
-
+# TODO Refactor this
     def test_saving_and_retrieving_items(self):
 
         auction1 = Auction()
@@ -73,3 +74,5 @@ class ItemModelTest(TestCase):
         self.assertEqual(first_saved_item.buyer, buyer_1)
         self.assertEqual(second_saved_item.description, 'GYROSCOPES!')
 
+# TODO Add tests for saving and retrieving other models
+# TODO Test one-to-one relations
