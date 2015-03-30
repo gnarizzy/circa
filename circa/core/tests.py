@@ -35,13 +35,15 @@ class HomePageTests(TestCase):
         seller_2 = User(username = 'Second Seller')
         seller_2.save()
 
-        item_1=Item(description='A broken laser pointer',auction = auction1, buyer=buyer_1, seller=seller_1)
-        item_2=Item(description='Ten Gallon Hat',auction = auction2, buyer=buyer_2, seller=seller_2)
+        item_1=Item(title='Broken laser pointer',description='This thing is broken and useless',auction = auction1,
+                    buyer=buyer_1, seller=seller_1)
+        item_2=Item(title='Ten Gallon Hat',description='If people shoot at you, they will miss',auction = auction2,
+                    buyer=buyer_2, seller=seller_2)
         item_1.save()
         item_2.save()
         response = self.client.get('/')
 
-        self.assertContains(response,'A broken laser pointer')
+        self.assertContains(response,'Broken laser pointer')
         self.assertContains(response,'Ten Gallon Hat')
 
 

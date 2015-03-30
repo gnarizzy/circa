@@ -6,6 +6,7 @@ class Auction(models.Model):
     current_bid = models.DecimalField(max_digits = 6, decimal_places = 2, default=1.00)
 
 class Item(models.Model):
+    title = models.TextField(default='')
     description = models.TextField(default='')
     photo1 = models.URLField()
     photo2 = models.URLField()
