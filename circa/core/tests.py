@@ -55,6 +55,7 @@ class HomePageTests(TestCase):
 
 
 class ItemModelTest(TestCase):
+# TODO change photo urls to actual files and test accordingly
 # TODO Refactor this
     def test_saving_and_retrieving_items(self):
 
@@ -106,6 +107,7 @@ class ItemModelTest(TestCase):
 
 # TODO Add tests for saving and retrieving other models
 # TODO Test one-to-one relations
+# TODO Test form stuff
 
 class PostItemTest(TestCase):
 
