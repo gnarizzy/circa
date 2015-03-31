@@ -4,17 +4,24 @@ from django.http import HttpRequest
 from django.template.loader import render_to_string
 from core.models import Item
 from core.models import Auction
+from core.forms import ItemForm
 from core.models import UserProfile
 from django.contrib.auth.models import User
 
-from core.views import index
+from core.views import index, sell
+
+#Still a lot of work left before these tests constitute a robust suite, but it's a solid start
 
 
 class HomePageTests(TestCase):
-# TODO add title instead of using description
+# TODO Check for correct text in case no items are for sale
     def test_root_url_resolves_to_index_view(self):
         found = resolve('/')
         self.assertEqual(found.func, index)
+
+    def test_home_page_renders_index_template(self):
+        response = self.client.get('/')
+        self.assertTemplateUsed(response, 'index.html')
 
     def test_home_page_lists_items(self):
         auction1 = Auction()
@@ -99,3 +106,18 @@ class ItemModelTest(TestCase):
 
 # TODO Add tests for saving and retrieving other models
 # TODO Test one-to-one relations
+
+class PostItemTest(TestCase):
+
+    def test_sell_url_resolves_to_sell_view(self):
+
+        found = resolve('/sell/')
+        self.assertEqual(found.func, sell)
+
+    def test_sell_page_renders_sell_template(self):
+        response = self.client.get('/sell/')
+        self.assertTemplateUsed(response, 'sell.html')
+
+    def test_sell_page_uses_item_form(self):
+        response = self.client.get('/sell/')
+        self.assertIsInstance(response.context['form'], ItemForm)
