@@ -8,7 +8,7 @@ from core.forms import ItemForm
 from core.models import UserProfile
 from django.contrib.auth.models import User
 
-from core.views import index, sell
+from core.views import index, sell, auction
 
 #Still a lot of work left before these tests constitute a robust suite, but it's a solid start
 
@@ -124,4 +124,21 @@ class PostItemTest(TestCase):
         response = self.client.get('/sell/')
         self.assertIsInstance(response.context['form'], ItemForm)
 
-   # def test_form_submission_results_in_new_item_on_home_page(self):
+    #def_test_form_submission_results_in_new_item_on_home_page(self):
+
+    #def_test_redirect_after_successful_form_submission(self):
+
+    # TODO test form validation?
+
+class CreateAuctionTest(TestCase):
+
+    def test_auction_url_resolves_to_auction_view(self):
+
+        found = resolve('/auction/')
+        self.assertEqual(found.func, auction)
+
+    def test_auction_page_renders_auction_template(self):
+        response = self.client.get('/auction/')
+        self.assertTemplateUsed(response, 'auction.html')
+
+    #def_redirect_after_successful_form_submission
