@@ -123,3 +123,5 @@ class PostItemTest(TestCase):
     def test_sell_page_uses_item_form(self):
         response = self.client.get('/sell/')
         self.assertIsInstance(response.context['form'], ItemForm)
+
+   # def test_form_submission_results_in_new_item_on_home_page(self):
