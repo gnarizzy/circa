@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from core.models import Item
+from core.models import Item, Auction
 from core.forms import ItemForm
+from django.contrib.auth.models import User
 
 #home page
 def index(request):
@@ -16,12 +17,11 @@ def sell(request):
         form = ItemForm(request.POST)
 
         if form.is_valid():
-            form.save(commit=True)
+            item = form.save(commit=True)
 
             #redirect to auction page so they can fill auction data
 
             #if form has errors?
-
     else:
         form = ItemForm()
     context = {}
