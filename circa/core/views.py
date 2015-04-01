@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from core.models import Item, Auction
-from core.forms import ItemForm
+from core.forms import ItemForm, AuctionForm
 from django.contrib.auth.models import User
 
 #home page
@@ -20,17 +20,24 @@ def sell(request):
             item = form.save(commit=True)
             return HttpResponseRedirect('/auction/'+str(item.id))
 
-            #redirect to auction page so they can fill auction data
-
             #if form has errors?
     else:
         form = ItemForm()
-    context = {}
     return render(request,'sell.html',{'form':form})
 
+#creating an auction for previously posted item
 def auction(request, itemid):
     item = get_object_or_404(Item, pk=itemid)
-    return HttpResponse(item.title)
 
+    if request.method == 'POST':
+        form = AuctionForm(request.POST)
+
+    else:
+        form = AuctionForm()
+
+    context = {'item':item,'form':form}
+    return render(request, 'auction.html', context)
+
+#remove from production
 def todo(request):
     return render(request,'todo.html')
