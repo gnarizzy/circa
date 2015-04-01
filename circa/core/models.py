@@ -11,9 +11,9 @@ class Item(models.Model):
     photo1 = models.URLField()
     photo2 = models.URLField()
     photo3 = models.URLField()
-    auction = models.OneToOneField(Auction)
-    seller = models.OneToOneField(User, related_name ='seller_profile', default = None)
-    buyer = models.OneToOneField(User, related_name = 'buyer_profile', default = None)
+    auction = models.OneToOneField(Auction, null = True)
+    seller = models.OneToOneField(User, related_name ='seller_profile', null = True)
+    buyer = models.OneToOneField(User, related_name = 'buyer_profile', null = True)
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
