@@ -141,4 +141,9 @@ class CreateAuctionTest(TestCase):
         response = self.client.get('/auction/')
         self.assertTemplateUsed(response, 'auction.html')
 
-    #def_redirect_after_successful_form_submission
+    #def test_redirect_after_successful_form_submission
+
+    #def test_error_thrown_if_negative_initial_bid_entered
+
+    #def test_error_thrown_if_negative_buy_now_price_entered
+
