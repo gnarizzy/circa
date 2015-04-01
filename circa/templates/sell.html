@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Sell your stuff on Circa</title>
+</head>
+<body>
+    <h1>List an item for sale</h1>
+    <form id ="item_form" method="post" action="/sell/">
+    {% csrf_token %}
+            {{ form.as_p }}
+    <input type="submit" name="submit" value="Submit item for sale" />
+    </form>
+    <h2>Once you list your item, you'll be able to create an auction for it and schedule a pickup.</h2>
+</body>
+</html>
