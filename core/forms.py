@@ -24,8 +24,8 @@ class AuctionForm(forms.ModelForm):
         starting_bid = self.cleaned_data['starting_bid']
         buy_now_price = self.cleaned_data['buy_now_price']
 
-        if starting_bid * Decimal(1.10)> buy_now_price:
-            raise forms.ValidationError("Buy now price must be more than 10% higher than starting bid.")
+        if starting_bid * Decimal(1.0999) > buy_now_price:
+            raise forms.ValidationError("Buy now price must be at least 10% higher than starting bid.")
 
         return buy_now_price
 
