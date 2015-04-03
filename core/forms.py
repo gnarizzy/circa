@@ -31,4 +31,4 @@ class AuctionForm(forms.ModelForm):
 
     class Meta:
         model = Auction
-        fields = ('starting_bid', 'buy_now_price', 'duration')
+        fields = ('starting_bid', 'buy_now_price',) #add duration once choices issue is fixed

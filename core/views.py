@@ -18,7 +18,7 @@ def sell(request):
 
         if form.is_valid():
             item = form.save(commit=True)
-            return HttpResponseRedirect('/auction/'+str(item.id))
+            return HttpResponseRedirect('/createauction/'+str(item.id))
 
             #if form has errors?
     else:
@@ -26,20 +26,34 @@ def sell(request):
     return render(request,'sell.html',{'form':form})
 
 #creating an auction for previously posted item
-def auction(request, itemid):
+def create_auction(request, itemid):
     item = get_object_or_404(Item, pk=itemid)
 
     if request.method == 'POST':
         form = AuctionForm(request.POST)
 
         if form.is_valid():
-            print("placeholder")
+            auction = form.save(commit=False)
+            auction.current_bid = auction.starting_bid
+            auction.save()
+            item.auction = auction
+            item.save()
+            HttpResponseRedirect('/auction/'+str(auction.id))
 
     else:
         form = AuctionForm()
 
     context = {'item':item,'form':form}
-    return render(request, 'auction.html', context)
+    return render(request, 'create_auction.html', context)
+
+#Displays the requested auction along with info about auction item, or 404 page
+
+def auction_detail(request, auctionid):
+    auction = get_object_or_404(Auction, pk=auctionid)
+    item = auction.item
+    context = {'auction':auction, 'item':item}
+    return render(request, 'auction_detail', context)
+
 
 #remove from production
 def todo(request):

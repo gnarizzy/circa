@@ -36,7 +36,7 @@ def auction(request, itemid):
         form = AuctionForm()
 
     context = {'item':item,'form':form}
-    return render(request, 'auction.html', context)
+    return render(request, 'create_auction.html', context)
 
 #remove from production
 def todo(request):

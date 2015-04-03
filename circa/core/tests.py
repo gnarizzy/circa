@@ -139,7 +139,7 @@ class CreateAuctionTest(TestCase):
 
     def test_auction_page_renders_auction_template(self):
         response = self.client.get('/auction/')
-        self.assertTemplateUsed(response, 'auction.html')
+        self.assertTemplateUsed(response, 'create_auction.html')
 
     #def test_redirect_after_successful_form_submission
 
