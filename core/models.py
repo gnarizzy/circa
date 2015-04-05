@@ -5,18 +5,21 @@ import datetime
 # Create your models here.
 
 class Auction(models.Model):
-    SHORT = datetime.timedelta(days=1)
-    MEDIUM = datetime.timedelta(days=3)
-    LONG = datetime.timedelta(days=5)
+    SHORT = 1
+    MEDIUM = 3
+    LONG = 5
     DURATION_CHOICES = ((SHORT, '1 day'),(MEDIUM, '3 days'), (LONG, '5 days'),)
 
     starting_bid = models.DecimalField(max_digits = 6, decimal_places = 2, default=1.00)
     current_bid = models.DecimalField(max_digits = 6, decimal_places = 2, null = True)
     buy_now_price = models.DecimalField(max_digits = 6, decimal_places = 2, default = 1.10)
     start_date = models.DateTimeField(auto_now_add = True)
-    duration = models.DurationField(default = MEDIUM) #choices
+    duration = models.IntegerField(choices = DURATION_CHOICES, default = MEDIUM) #choices
     end_date = models.DateTimeField(null = True)
     current_bidder = models.OneToOneField(User, null = True)
+
+    def __str__(self):
+        return str(self.end_date)
 
 class Item(models.Model):
     title = models.TextField(default='')
