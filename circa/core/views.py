@@ -44,7 +44,7 @@ def create_auction(request, itemid):
             auction.save()
             item.auction = auction
             item.save()
-            HttpResponseRedirect('/auction/'+str(auction.id))
+            return HttpResponseRedirect('/auction/'+str(auction.id))
 
     else:
         form = AuctionForm()
@@ -57,8 +57,12 @@ def create_auction(request, itemid):
 def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
     item = auction.item
-    context = {'auction':auction, 'item':item}
-    return render(request, 'auction_detail', context)
+    time_left = auction.end_date - datetime.datetime.now()
+    days = time_left.days
+    hours, remainder = divmod(time_left.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    context = {'auction':auction, 'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds}
+    return render(request, 'auction_detail.html', context)
 
 
 #remove from production
