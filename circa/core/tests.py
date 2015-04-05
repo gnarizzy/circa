@@ -8,7 +8,7 @@ from core.forms import ItemForm
 from core.models import UserProfile
 from django.contrib.auth.models import User
 
-from core.views import index, sell, auction
+from core.views import index, sell, create_auction
 
 #Still a lot of work left before these tests constitute a robust suite, but it's a solid start
 
@@ -108,6 +108,7 @@ class ItemModelTest(TestCase):
 # TODO Add tests for saving and retrieving other models
 # TODO Test one-to-one relations
 # TODO Test form stuff
+# TODO Investigate two urls.py
 
 class PostItemTest(TestCase):
 
@@ -146,4 +147,12 @@ class CreateAuctionTest(TestCase):
     #def test_error_thrown_if_negative_initial_bid_entered
 
     #def test_error_thrown_if_negative_buy_now_price_entered
+
+#class AuctionDetailTest(TestCase):
+
+    #def test_auction_detail_url_resolves_to_auction_detail_view(self):
+
+    #def test_auction_detail_page_has_information_for_correct_item(self):
+
+    #def test_auction_detail_page_displays_correct_remaining_auction_time(self):
 
