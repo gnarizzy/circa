@@ -4,6 +4,8 @@ from core.models import Item, Auction
 from core.forms import ItemForm, AuctionForm
 from django.contrib.auth.models import User
 
+import datetime
+
 #home page
 def index(request):
     item_list = Item.objects.all()
@@ -35,6 +37,10 @@ def create_auction(request, itemid):
         if form.is_valid():
             auction = form.save(commit=False)
             auction.current_bid = auction.starting_bid
+            now = datetime.datetime.now()
+            duration = datetime.timedelta(days=auction.duration)
+            end_date = now + duration
+            auction.end_date = end_date
             auction.save()
             item.auction = auction
             item.save()
