@@ -150,7 +150,7 @@ class CreateAuctionTest(TestCase):
 
 #class AuctionDetailTest(TestCase):
 
-    #def test_auction_detail_url_resolves_to_auction_detail_view(self):
+    #def test_auction_detail_url_resolves_to_auction_view(self):
 
     #def test_auction_detail_page_has_information_for_correct_item(self):
 
