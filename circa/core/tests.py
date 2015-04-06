@@ -167,4 +167,6 @@ class CreateAuctionTest(TestCase):
 
     #def test_valid_bid_updates_current_bid_on_page(self):
 
+    #def test_valid_bid_includes_success_message_on_page(self):
+
     #def test_bid_within_10_percent_of_buy_now_price_increases_buy_now_price(self):
