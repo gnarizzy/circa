@@ -32,9 +32,9 @@ class AuctionForm(forms.ModelForm):
         model = Auction
         fields = ('starting_bid', 'buy_now_price','duration')
 
-#Figureout how to validate here
+
 class BidForm (forms.Form):
-    bid = forms.DecimalField(label="Enter your bid")
+    bid = forms.DecimalField(label="Enter your bid", decimal_places = 2)
 
     def __init__(self, *args, **kwargs):
         self.auction = kwargs.pop('auction', None)
