@@ -35,24 +35,18 @@ class AuctionForm(forms.ModelForm):
 #Figureout how to validate here
 class BidForm (forms.Form):
     bid = forms.DecimalField(label="Enter your bid")
-    auctionid = forms.IntegerField(widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
+        self.auction = kwargs.pop('auction', None)
         super(BidForm, self).__init__(*args,**kwargs)
-        auctionid = kwargs.pop('auctionid', None)
-        self.fields['auctionid'] = auctionid
-
-
-
-
 
 #check to make sure bid isn't higher than buy it now?
 
 #make sure submitted bid is greater than current bid
     def clean_bid(self):
-        auctionid = self.cleaned_data['auctionid']
-        auction = Auction.objects.get(pk=auctionid)
-        current_bid = auction.current_bid
         bid = self.cleaned_data['bid']
-        if bid <= current_bid:
-            raise forms.ValidationError("Your bid must be greater than the current bid.")
+        if self.auction:
+            auction_bid = Auction.objects.get(pk=self.auction).current_bid
+            if bid <= auction_bid:
+                raise forms.ValidationError("Your bid must be greater than the current bid.")
+        return bid

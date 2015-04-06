@@ -59,7 +59,7 @@ def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
 
     if request.method == 'POST':
-        form = BidForm(request.POST, auctionid)
+        form = BidForm(request.POST, auction=auctionid)
         if form.is_valid():
             auction.current_bid = form.cleaned_data['bid']
             auction.save()
