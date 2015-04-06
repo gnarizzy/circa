@@ -66,13 +66,13 @@ def auction_detail(request, auctionid):
             return HttpResponseRedirect('/auction/'+str(auction.id))
     else:
         form = BidForm()
-        item = auction.item
-        time_left = auction.end_date - datetime.datetime.now()
-        days = time_left.days
-        hours, remainder = divmod(time_left.seconds, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds}
-        return render(request, 'auction_detail.html', context)
+    item = auction.item
+    time_left = auction.end_date - datetime.datetime.now()
+    days = time_left.days
+    hours, remainder = divmod(time_left.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds}
+    return render(request, 'auction_detail.html', context)
 
 
 #remove from production
