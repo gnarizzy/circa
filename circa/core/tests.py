@@ -125,6 +125,8 @@ class PostItemTest(TestCase):
         response = self.client.get('/sell/')
         self.assertIsInstance(response.context['form'], ItemForm)
 
+#may be helpful for writing form tests! http://www.effectivedjango.com/forms.html
+
     #def_test_form_submission_results_in_new_item_on_home_page(self):
 
     #def_test_redirect_after_successful_form_submission(self):
@@ -133,10 +135,11 @@ class PostItemTest(TestCase):
 
 class CreateAuctionTest(TestCase):
 
-    def test_auction_url_resolves_to_auction_view(self):
+    def test_auction_url_resolves_to_create_auction_view(self):
 
+#should be changed to createauction url
         found = resolve('/auction/')
-        self.assertEqual(found.func, auction)
+        self.assertEqual(found.func,create_auction)
 
     def test_auction_page_renders_auction_template(self):
         response = self.client.get('/auction/')
@@ -156,3 +159,12 @@ class CreateAuctionTest(TestCase):
 
     #def test_auction_detail_page_displays_correct_remaining_auction_time(self):
 
+    #def test_auction_detail_page_renders_auction_detail_template(self):
+
+#class BidTest(TestCase):
+
+    #def test_bids_less_than_or_equal_to_current_bid_throw_validation_error(self):
+
+    #def test_valid_bid_updates_current_bid_on_page(self):
+
+    #def test_bid_within_10_percent_of_buy_now_price_increases_buy_now_price(self):
