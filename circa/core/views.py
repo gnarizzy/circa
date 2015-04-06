@@ -4,6 +4,7 @@ from core.models import Item, Auction
 from core.forms import ItemForm, AuctionForm, BidForm
 from django.contrib.auth.models import User
 from django import forms
+from decimal import *
 
 import datetime
 
@@ -61,11 +62,15 @@ def auction_detail(request, auctionid):
     if request.method == 'POST':
         form = BidForm(request.POST, auction=auctionid)
         if form.is_valid():
-            auction.current_bid = form.cleaned_data['bid']
+            bid = form.cleaned_data['bid']
+            auction.current_bid = bid
+            if bid * Decimal(1.0999) > auction.buy_now_price:
+                auction.buy_now_price = bid * Decimal(1.10)
             auction.save()
             return HttpResponseRedirect('/auction/'+str(auction.id))
     else:
         form = BidForm()
+    message = request.GET.get('message')
     item = auction.item
     time_left = auction.end_date - datetime.datetime.now()
     days = time_left.days
