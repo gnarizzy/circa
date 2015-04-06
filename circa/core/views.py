@@ -69,7 +69,8 @@ def auction_detail(request, auctionid):
             auction.save()
             return HttpResponseRedirect('/auction/'+str(auction.id))
     else:
-        form = BidForm()
+        default_bid = auction.current_bid + Decimal(1.00)
+        form = BidForm(initial={'bid':default_bid}) #prepopulate bid with $1.00 above current bid
     message = request.GET.get('message')
     item = auction.item
     time_left = auction.end_date - datetime.datetime.now()
