@@ -8,6 +8,11 @@
     <h1>{{ item.title }}</h1>
     <h3>{{ item.description }}</h3>
     <h3>Current bid: $<strong>{{ auction.current_bid }}</strong></h3>
+    <form action = "/auction/{{ auction.id }}/" method = "post">
+        {% csrf_token %}
+        {{ form }}
+        <input type = "submit" value = "Place Bid"/>
+    </form>
     <h3>You can buy this item right now for ${{ auction.buy_now_price }}</h3>
     <h3>The auction ends in {{ days }} days, {{ hours }} hours, {{ minutes }} minutes, and {{ seconds }} seconds</h3>
 
