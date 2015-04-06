@@ -1,6 +1,5 @@
 from django import forms
 from decimal import *
-
 from core.models import Item, Auction
 
 class ItemForm(forms.ModelForm):
@@ -31,4 +30,29 @@ class AuctionForm(forms.ModelForm):
 
     class Meta:
         model = Auction
-        fields = ('starting_bid', 'buy_now_price','duration') #add duration once choices issue is fixed
+        fields = ('starting_bid', 'buy_now_price','duration')
+
+#Figureout how to validate here
+class BidForm (forms.Form):
+    bid = forms.DecimalField(label="Enter your bid")
+    auctionid = forms.IntegerField(widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        super(BidForm, self).__init__(*args,**kwargs)
+        auctionid = kwargs.pop('auctionid', None)
+        self.fields['auctionid'] = auctionid
+
+
+
+
+
+#check to make sure bid isn't higher than buy it now?
+
+#make sure submitted bid is greater than current bid
+    def clean_bid(self):
+        auctionid = self.cleaned_data['auctionid']
+        auction = Auction.objects.get(pk=auctionid)
+        current_bid = auction.current_bid
+        bid = self.cleaned_data['bid']
+        if bid <= current_bid:
+            raise forms.ValidationError("Your bid must be greater than the current bid.")
