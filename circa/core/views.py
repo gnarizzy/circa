@@ -65,7 +65,7 @@ def auction_detail(request, auctionid):
             bid = form.cleaned_data['bid']
             auction.current_bid = bid
             if bid * Decimal(1.0999) > auction.buy_now_price:
-                auction.buy_now_price = bid * Decimal(1.10)
+                auction.buy_now_price = bid * Decimal(1.1000000)
             auction.save()
             return HttpResponseRedirect('/auction/'+str(auction.id))
     else:
