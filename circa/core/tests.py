@@ -145,11 +145,13 @@ class CreateAuctionTest(TestCase):
         response = self.client.get('/auction/')
         self.assertTemplateUsed(response, 'create_auction.html')
 
-    #def test_redirect_after_successful_form_submission
+    #def test_redirect_after_successful_form_submission(self):
 
-    #def test_error_thrown_if_negative_initial_bid_entered
+    #def test_error_thrown_if_negative_initial_bid_entered(self):
 
-    #def test_error_thrown_if_negative_buy_now_price_entered
+    #def test_error_thrown_if_negative_buy_now_price_entered(self):
+
+    #def test_error_thrown_if_invalid_seller_zip_code_is_entered(self):
 
 #class AuctionDetailTest(TestCase):
 
@@ -170,3 +172,18 @@ class CreateAuctionTest(TestCase):
     #def test_valid_bid_includes_success_message_on_page(self):
 
     #def test_bid_within_10_percent_of_buy_now_price_increases_buy_now_price(self):
+
+    #def test_bid_only_valid_if_buyer_zip_code_is_valid(self):
+
+#class AuctionEndTest(TestCase):
+
+    #def test_appropriate_text_on_auction_detail_page_when_auction_ends(self):
+
+    #def test_appropriate_text_on_auction_detail_page_when_user_buys_now(self):
+
+    #def test_notify_winning_bidder_on_auction_end(self):
+
+#class PaymentTest(TestCase):
+
+#class PickupTest(TestCase):
+
