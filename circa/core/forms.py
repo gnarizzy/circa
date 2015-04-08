@@ -1,6 +1,7 @@
 from django import forms
 from decimal import *
 from core.models import Item, Auction
+from core.zipcode import zipcodes
 
 class ItemForm(forms.ModelForm):
     class Meta:
@@ -35,6 +36,8 @@ class AuctionForm(forms.ModelForm):
 
 class BidForm (forms.Form):
     bid = forms.DecimalField(label="Enter your bid", decimal_places = 2)
+    zip_code = forms.IntegerField(label = "Enter your shipping zip code")
+
 
     def __init__(self, *args, **kwargs):
         self.auction = kwargs.pop('auction', None)
@@ -50,3 +53,10 @@ class BidForm (forms.Form):
             if bid <= auction_bid:
                 raise forms.ValidationError("Your bid must be greater than the current bid.")
         return bid
+
+#make sure shipping zip code is one we deliver to
+    def clean_zip_code(self):
+        zip = self.cleaned_data['zip_code']
+        if zip not in zipcodes():
+            raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
+
