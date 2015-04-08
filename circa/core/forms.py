@@ -63,7 +63,7 @@ class BidForm (forms.Form):
         return bid
 
 #make sure shipping zip code is one we deliver to
-    def clean_zip_code(self):
+    def clean_zipcode(self):
         zip = self.cleaned_data['zipcode']
         if zip not in zipcodes():
             raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
