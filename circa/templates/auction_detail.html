@@ -38,6 +38,7 @@
 <body>
     <h1>{{ item.title }}</h1>
     <h3>{{ item.description }}</h3>
+    <h4><em>Ships from zipcode {{ auction.zipcode }}</em></h4>
     <h3>Current bid: $<strong>{{ auction.current_bid }}</strong></h3>
     <form action = "/auction/{{ auction.id }}/" method = "post">
         {% csrf_token %}
