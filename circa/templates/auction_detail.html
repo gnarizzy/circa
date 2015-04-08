@@ -41,7 +41,7 @@
     <h3>Current bid: $<strong>{{ auction.current_bid }}</strong></h3>
     <form action = "/auction/{{ auction.id }}/" method = "post">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input type = "submit" value = "Place Bid"/>
     </form>
     <h3>You can buy this item right now for ${{ auction.buy_now_price }}</h3>
