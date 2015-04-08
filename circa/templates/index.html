@@ -10,7 +10,9 @@
     {%  if items %}
         <ul>
             {% for item in items %}
-            <li> <a href="/auction/{{item.auction.id}}">{{item.title}}</a> </li>
+                {% if item.auction.id %}
+                    <li> <a href="/auction/{{item.auction.id}}">{{item.title}}</a> </li>
+                {% endif %}
             {% endfor %}
         </ul>
         {% else %}
