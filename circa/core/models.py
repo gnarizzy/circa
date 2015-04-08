@@ -15,6 +15,7 @@ class Auction(models.Model):
     duration = models.IntegerField(choices = DURATION_CHOICES, default = MEDIUM) #choices
     end_date = models.DateTimeField(null = True)
     current_bidder = models.OneToOneField(User, null = True)
+    zipcode = models.IntegerField(default = 0)
 
     def __str__(self):
         return str(self.end_date)

@@ -11,6 +11,7 @@ class ItemForm(forms.ModelForm):
 class AuctionForm(forms.ModelForm):
     starting_bid = forms.DecimalField(label = "Starting bid")
     buy_now_price = forms.DecimalField(label = "Buy now price")
+    zipcode = forms.IntegerField(label = "Pickup zipcode")
 
 #Make sure starting bid is at least $1.00
     def clean_starting_bid(self):
@@ -29,14 +30,21 @@ class AuctionForm(forms.ModelForm):
 
         return buy_now_price
 
+    #make sure shipping zip code is one we deliver to
+    def clean_zipcode(self):
+        zip = self.cleaned_data['zipcode']
+        if zip not in zipcodes():
+            raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
+        return zip
+
     class Meta:
         model = Auction
-        fields = ('starting_bid', 'buy_now_price','duration')
+        fields = ('starting_bid', 'buy_now_price','duration', 'zipcode')
 
 
 class BidForm (forms.Form):
     bid = forms.DecimalField(label="Enter your bid", decimal_places = 2)
-    zip_code = forms.IntegerField(label = "Enter your shipping zip code")
+    zipcode = forms.IntegerField(label = "Enter your shipping zip code")
 
 
     def __init__(self, *args, **kwargs):
@@ -56,7 +64,8 @@ class BidForm (forms.Form):
 
 #make sure shipping zip code is one we deliver to
     def clean_zip_code(self):
-        zip = self.cleaned_data['zip_code']
+        zip = self.cleaned_data['zipcode']
         if zip not in zipcodes():
             raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
+        return zip
 
