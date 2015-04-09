@@ -23,7 +23,7 @@
                         <div class = "panel-body">
                             <div class = "panel-info">
                                 <div class="row">
-                                    <div class="col-xs-3 col-md-1">
+                                    <div class="col-xs-2 col-md-1">
                                         <a href="#" class="thumbnail">
                                              <img src="http://placehold.it/75x75" alt="...">
                                          </a>
@@ -31,13 +31,16 @@
                                      <div class="col-xs-7 col-md-8">
                                        {{ item.description }}
                                       </div>
-                                      <div class ="col-xs-2 col-md-2">
+                                      <div class ="col-xs-1 col-md-2">
                                        Current Bid: <strong>${{ item.auction.current_bid }}</strong>
-                                       <br>
+                                       </div>
+                                       <div class ="col-xs-1 col-md-2">
                                        Buy now for: <strong>${{ item.auction.buy_now_price }}</strong>
-                                       <br>
+                                       </div>
+                                       <div class ="col-xs-1 col-md-2">
                                        Auction ends in <strong> 97 hours</strong>.
-                                      </div>
+                                       </div>
+
                                 </div>
                             </div>
                         </div>
