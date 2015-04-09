@@ -53,6 +53,7 @@ class HomePageTests(TestCase):
         self.assertContains(response,'Broken laser pointer')
         self.assertContains(response,'Ten Gallon Hat')
 
+    #test ordering by soonest auction end date, test auctions that have ended don't appear
 
 class ItemModelTest(TestCase):
 # TODO change photo urls to actual files and test accordingly
