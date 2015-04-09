@@ -8,9 +8,9 @@ from decimal import *
 
 import datetime
 
-#home page
+#home page that shows items with associated auctions that haven't already ended
 def index(request):
-    item_list = Item.objects.exclude(auction__isnull=True) #only gets items with associated auctions
+    item_list = Item.objects.exclude(auction__isnull=True).exclude(auction__end_date__lte = datetime.datetime.now)
     context = {'items':item_list}
     return render(request, 'index.html', context)
 
