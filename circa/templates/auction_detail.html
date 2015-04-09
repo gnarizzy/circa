@@ -2,37 +2,44 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>{{ item.title }}|Circa</title>
+    <title>{{ item.title }} | Circa</title>
     <script type="text/javascript">
-    function countdown(days, hours, minutes, seconds, display) {
-      var d = parseInt(days, 10),
-          h = parseInt(hours, 10),
-          m = parseInt(minutes, 10),
-          s = parseInt(seconds, 10) - 1;
-      setInterval(function() {
-          display.textContent = "The auction ends in " + d + " days, " + h + " hours, " + m + " minutes, and " + s + " seconds";
+        function countdown(days, hours, minutes, seconds, display) {
+            var d = parseInt(days, 10),
+            h = parseInt(hours, 10),
+            m = parseInt(minutes, 10),
+            s = parseInt(seconds, 10) - 1;
 
-          if(--s < 0) {
-            if(--m < 0) {
-              if(--h < 0) {
-                if(--d < 0) {
-                  display.textContent = "This auction is over!";
-                } else {
-                  h = 23;
-                }
-              } else {
-                m = 59;
-              }
+            if(d < 0 || h < 0 || m < 0 || s < 0) {
+                display.textContent = "This auction is over!";
             } else {
-              s = 59;
+                setInterval(function() {
+                    var displayStr = "The auction ends in " + d + " days, "
+                     + h + " hours, " + m + " minutes, and " + s + " seconds";
+                    if(--s < 0) {
+                        if(--m < 0) {
+                            if(--h < 0) {
+                                if(--d < 0) {
+                                    displayStr = "This auction is over!";
+                                } else {
+                                    h = 23;
+                                }
+                            } else {
+                                m = 59;
+                            }
+                        } else {
+                            s = 59;
+                        }
+                    }
+
+                    display.textContent = displayStr;
+                }, 1000);
             }
-          }
-      }, 1000);
-    }
-    window.onload = function () {
+        }
+        window.onload = function () {
         var display = document.querySelector('#time');
         countdown({{ days }}, {{ hours }}, {{ minutes }}, {{ seconds }}, display);
-    };
+        };
   </script>
 </head>
 <body>
