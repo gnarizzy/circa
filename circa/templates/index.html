@@ -11,12 +11,18 @@
     <script text="text/javascript">
         function calc_time_left(end, display) {
             var time_left = end - (Date.now() / 1000);
+            var displayText;
 
-            // We only care about hours left
-            time_left = time_left / 3600;
-            time_left = Math.floor(time_left);
+            if(time_left > 0) {
+                // We only care about hours left
+                time_left = time_left / 3600;
+                time_left = Math.floor(time_left);
 
-            display.textContent = time_left + " hours";
+                displayText = time_left + " hours";
+            } else {
+                displayText = "None";
+            }
+            display.textContent = displayText
         }
         window.onload = function () {
         var display;
@@ -64,7 +70,7 @@
                                        <br>
                                        Buy now for: <strong>${{ item.auction.buy_now_price }}</strong>
                                       <br>
-                                       Auction ends in <strong><span id="time_left{{ item.auction.id }}"></span></strong>
+                                       Time Left: <strong><span id="time_left{{ item.auction.id }}"></span></strong>
                                        </div>
 
                                 </div>
