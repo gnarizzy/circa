@@ -1,24 +1,50 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head lang="en">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" media="screen">
     <title>
         Circa - Buy and Sell Locally
     </title>
 </head>
 <body>
     {%  if items %}
-        <ul>
+    <div class = "container">
+        <div class ="list-group">
             {% for item in items %}
                 {% if item.auction.id %}
-                    <li> <a href="/auction/{{item.auction.id}}">{{item.title}}</a> </li>
+
+                    <div class="panel panel-default">
+                        <div class = "panel-heading">
+                            <h3 class = "panel-title"><a href="/auction/{{item.auction.id}}">{{item.title}}</a></h3>
+                        </div>
+                        <div class = "panel-body">
+                            <div class = "panel-info">
+                            {{ item.description }} {{ item.auction.current_bid }}
+                                <div class="row">
+                                    <div class="col-xs-4 col-md-2">
+                                        <a href="#" class="thumbnail">
+                                             <img src="http://placehold.it/100x100" alt="...">
+                                         </a>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
                 {% endif %}
             {% endfor %}
-        </ul>
+        </div>
+
         {% else %}
-            <h2>This is awkward...there's nothing for sale!
-                <a href="/sell/">Why don't you sell something?</a></h2>
+            <h2>This is awkward...there's nothing for sale!</h2>
     {% endif %}
     <a href="/sell/">Why don't you sell something?</a>
+    </div>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
 </body>
 </html>
