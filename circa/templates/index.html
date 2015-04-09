@@ -21,10 +21,8 @@
         window.onload = function () {
         var display;
         {% for item in items %}
-            {% if item.auction.id %}
-                display = document.querySelector("#time_left{{ item.auction.id }}");
-                calc_time_left({{ item.auction.end_date|date:"U" }}, display);
-            {% endif %}
+            display = document.querySelector("#time_left{{ item.auction.id }}");
+            calc_time_left({{ item.auction.end_date|date:"U" }}, display);
         {% endfor %}
     };
     </script>
