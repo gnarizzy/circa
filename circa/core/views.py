@@ -10,7 +10,8 @@ import datetime
 
 #home page that shows items with associated auctions that haven't already ended
 def index(request):
-    item_list = Item.objects.exclude(auction__isnull=True).exclude(auction__end_date__lte = datetime.datetime.now)
+    now = datetime.datetime.now()
+    item_list = Item.objects.exclude(auction__isnull=True).exclude(auction__end_date__lte = now)
     context = {'items':item_list}
     return render(request, 'index.html', context)
 
