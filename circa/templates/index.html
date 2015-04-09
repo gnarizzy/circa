@@ -29,10 +29,14 @@
                                          </a>
                                      </div>
                                      <div class="col-xs-7 col-md-8">
-                                        {{ item.description }}
+                                       {{ item.description }}
                                       </div>
                                       <div class ="col-xs-2 col-md-2">
-                                        {{ item.auction.current_bid }}
+                                       Current Bid: <strong>${{ item.auction.current_bid }}</strong>
+                                       <br>
+                                       Buy now for: <strong>${{ item.auction.buy_now_price }}</strong>
+                                       <br>
+                                       Auction ends in <strong> 97 hours</strong>.
                                       </div>
                                 </div>
                             </div>
