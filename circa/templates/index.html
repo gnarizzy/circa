@@ -26,8 +26,6 @@
     <div class = "container">
         <div class ="list-group">
             {% for item in items %}
-                {% if item.auction.id %}
-
                     <div class="panel panel-default">
                         <div class = "panel-heading">
                             <h3 class = "panel-title"><a href="/auction/{{item.auction.id}}">{{item.title}}</a></h3>
@@ -58,10 +56,8 @@
 
                     </div>
 
-                {% endif %}
             {% endfor %}
         </div>
-
         {% else %}
             <h2>This is awkward...there's nothing for sale!</h2>
     {% endif %}
