@@ -22,7 +22,11 @@ class AuctionForm(forms.ModelForm):
 
 #Make sure buy now price is at least 10% greater than starting bid
     def clean_buy_now_price(self):
-        starting_bid = self.cleaned_data['starting_bid']
+        try:
+            starting_bid = self.cleaned_data['starting_bid']
+        except KeyError: #starting_bid doesn't exist because it was invalid
+            raise forms.ValidationError("Buy now price must be at least 10% higher than starting bid, which must be at "
+                                        "least $1.00")
         buy_now_price = self.cleaned_data['buy_now_price']
 
         if starting_bid * Decimal(1.0999) > buy_now_price:
