@@ -8,6 +8,26 @@
     <title>
         Circa - Buy and Sell Locally
     </title>
+    <script text="text/javascript">
+        function calc_time_left(end, display) {
+            var time_left = end - (Date.now() / 1000);
+
+            // We only care about hours left
+            time_left = time_left / 3600;
+            time_left = Math.floor(time_left);
+
+            display.textContent = time_left + " hours";
+        }
+        window.onload = function () {
+        var display;
+        {% for item in items %}
+            {% if item.auction.id %}
+                display = document.querySelector("#time_left{{ item.auction.id }}");
+                calc_time_left({{ item.auction.end_date|date:"U" }}, display);
+            {% endif %}
+        {% endfor %}
+    };
+    </script>
 </head>
 <body>
 <div class = "navbar navbar-inverse navbar-static-top">
@@ -48,7 +68,7 @@
                                        <br>
                                        Buy now for: <strong>${{ item.auction.buy_now_price }}</strong>
                                       <br>
-                                       Auction ends in <strong> 97 hours</strong>.
+                                       Auction ends in <strong><span id="time_left{{ item.auction.id }}"></span></strong>
                                        </div>
 
                                 </div>
