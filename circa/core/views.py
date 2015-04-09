@@ -10,7 +10,7 @@ import datetime
 
 #home page
 def index(request):
-    item_list = Item.objects.all()
+    item_list = Item.objects.exclude(auction__isnull=True) #only gets items with associated auctions
     context = {'items':item_list}
     return render(request, 'index.html', context)
 
