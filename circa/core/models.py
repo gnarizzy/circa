@@ -21,11 +21,11 @@ class Auction(models.Model):
         return str(self.end_date)
 
 class Item(models.Model):
-    title = models.TextField(default='')
+    title = models.CharField(max_length=100)
     description = models.TextField(default='')
-    photo1 = models.URLField(null = True)
-    photo2 = models.URLField(null = True)
-    photo3 = models.URLField(null = True)
+    #photo1 = models.URLField(null = True)
+    #photo2 = models.URLField(null = True)
+    #photo3 = models.URLField(null = True)
     auction = models.OneToOneField(Auction, null = True)
     seller = models.OneToOneField(User, related_name ='seller_profile', null = True)
     buyer = models.OneToOneField(User, related_name = 'buyer_profile', null = True)
