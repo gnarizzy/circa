@@ -8,6 +8,18 @@
     <title>Sell your stuff on Circa</title>
 </head>
     <body>
+    <div class = "navbar navbar-inverse navbar-static-top">
+        <div class = "container">
+            <a href="/" class = "navbar-brand">Circa<sup>beta</sup></a>
+            <div class="navbar-collapse" id="navigation-bar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/sell/">Sell</a></li>
+                    <li><a href="/">Login</a></li>
+                    <li><a href="/">Help</a></li>
+                 </ul>
+            </div>
+        </div>
+</div>
     <div class = "container">
         <h1>List an item for sale</h1>
 
@@ -20,10 +32,11 @@
                         {{ field }}
                     </div>
                     {%  endfor %}
-                    <input type="submit" name="submit" value="Submit item for sale" />
+                    <input type="submit" name="submit" class="btn btn-primary" value="List item" />
                 </form>
-
+        <br>
+        <p><small>Once you list your item, you'll be able to set a price, create an auction, and schedule a pickup.
+        </small></p>
     </div>
-        <h2>Once you list your item, you'll be able to create an auction for it and schedule a pickup.</h2>
     </body>
 </html>
