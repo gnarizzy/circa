@@ -30,6 +30,9 @@ class Item(models.Model):
     seller = models.OneToOneField(User, related_name ='seller_profile', null = True)
     buyer = models.OneToOneField(User, related_name = 'buyer_profile', null = True)
 
+    def __str__(self):
+        return self.title
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     alt_id = models.TextField(default=None) #Stripe
