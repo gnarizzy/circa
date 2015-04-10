@@ -5,10 +5,12 @@
     <title>Create Auction</title>
 </head>
 <body>
-    <form id ="auction_form" method="post" action="/createauction/{{ item.id }}/">
-    {% csrf_token %}
+    <div class = "container">
+         <form id ="auction_form" method="post" action="/createauction/{{ item.id }}/">
+            {% csrf_token %}
             {{ form.as_p }}
-    <input type="submit" name="submit" value="Create auction" />
-    </form>
+            <input type="submit" name="submit" class="btn btn-success" value="Create auction" />
+         </form>
+    </div>
 </body>
 </html>
