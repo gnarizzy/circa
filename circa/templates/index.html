@@ -10,15 +10,15 @@
     </title>
     <script text="text/javascript">
         function calc_time_left(end, display) {
-            var time_left = end - (Date.now() / 1000);
+            var time_left = end - (Date.now() / 1000.0);
             var displayText;
 
             if(time_left > 0) {
                 // We only care about hours left
-                time_left = time_left / 3600;
+                time_left = time_left / 3600.0;
                 if(time_left < 1){
                     //less than an hour left, display minutes
-                    time_left = time_left * 60;
+                    time_left = time_left * 60.0;
                     time_left = Math.floor(time_left);
                     displayText = time_left + " minutes";
                     }
