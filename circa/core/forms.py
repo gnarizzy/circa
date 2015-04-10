@@ -4,9 +4,11 @@ from core.models import Item, Auction
 from core.zipcode import zipcodes
 
 class ItemForm(forms.ModelForm):
+    title = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),max_length=100, help_text="Title")
+    description = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}), help_text="Description")
     class Meta:
         model = Item
-        fields = ('title', 'description','photo1','photo2','photo3',)
+        fields = ('title', 'description')
 
 class AuctionForm(forms.ModelForm):
     starting_bid = forms.DecimalField(label = "Starting bid")
