@@ -11,9 +11,9 @@ class ItemForm(forms.ModelForm):
         fields = ('title', 'description')
 
 class AuctionForm(forms.ModelForm):
-    starting_bid = forms.DecimalField(label = "Starting bid")
-    buy_now_price = forms.DecimalField(label = "Buy now price")
-    zipcode = forms.IntegerField(label = "Pickup zipcode")
+    starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}), help_text="Starting bid")
+    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),label = "Buy now price")
+    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}),label = "Pickup zipcode")
 
 #Make sure starting bid is at least $1.00
     def clean_starting_bid(self):
