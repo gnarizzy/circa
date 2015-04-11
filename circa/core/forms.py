@@ -49,8 +49,10 @@ class AuctionForm(forms.ModelForm):
 
 
 class BidForm (forms.Form):
-    bid = forms.DecimalField(label="Enter your bid", decimal_places = 2)
-    zipcode = forms.IntegerField(label = "Enter your shipping zip code")
+    bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),
+                             label="Enter your bid", decimal_places = 2)
+    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}),
+                                 label = "Enter your shipping zip code")
 
 
     def __init__(self, *args, **kwargs):
