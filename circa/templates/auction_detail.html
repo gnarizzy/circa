@@ -66,11 +66,12 @@
                 {{ item.description }}
                 <br>
                 <em>Ships from zipcode {{ auction.zipcode }}</em>
+                <br>
                 Current bid: $<strong>{{ auction.current_bid }}</strong>
                 <form action = "/auction/{{ auction.id }}/" method = "post">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <input type = "submit" value = "Place Bid"/>
+                    <input type = "submit" class ="btn btn-primary" value = "Place Bid"/>
                 </form>
                 <h3>You can buy this item right now for ${{ auction.buy_now_price }}</h3>
                 <h3><span id="time">The auction ends in {{ days }} days, {{ hours }} hours, {{ minutes }} minutes, and {{ seconds }} seconds</span></h3>
