@@ -1,25 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" media="screen">
-    <title>Sell your stuff on Circa</title>
-</head>
-    <body>
-    <div class = "navbar navbar-inverse navbar-static-top">
-        <div class = "container">
-            <a href="/" class = "navbar-brand">Circa<sup>beta</sup></a>
-            <div class="navbar-collapse" id="navigation-bar">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/sell/">Sell</a></li>
-                    <li><a href="/">Login</a></li>
-                    <li><a href="/">Help</a></li>
-                 </ul>
-            </div>
-        </div>
-</div>
+{% block body_block %}
     <div class = "container">
         <h1>List an item for sale</h1>
 
@@ -38,5 +19,4 @@
         <p><small>Once you list your item, you'll be able to set a price, create an auction, and schedule a pickup.
         </small></p>
     </div>
-    </body>
-</html>
+{% endblock %}
