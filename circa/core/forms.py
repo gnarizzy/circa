@@ -11,7 +11,7 @@ class ItemForm(forms.ModelForm):
         fields = ('title', 'description')
 
 class AuctionForm(forms.ModelForm):
-    starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}), help_text="Starting bid")
+    starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),)
     buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),label = "Buy now price")
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}),label = "Pickup zipcode")
 
