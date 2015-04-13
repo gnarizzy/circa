@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block title_block %}{{ item.title }}|Circa{% endblock %}
 {% block head_block %}
     <script type="text/javascript">
         function countdown(days, hours, minutes, seconds, display) {
@@ -47,7 +48,12 @@
             <div class = "panel-info">
                   <div class="row">
                        <div class="col-xs-12 col-md-3">
-                           <a href="#" class="thumbnail"><img src="http://placehold.it/225x225" alt="..."> </a>
+                           <span class = "hidden-xs">
+                               <a href="#" class="thumbnail"><img src="http://placehold.it/225x225" alt="..."></a>
+                           </span>
+                           <span class = "hidden-sm hidden-md hidden-lg">
+                               <a href="#" class="thumbnail"><img src="http://placehold.it/175x175" alt="..."></a>
+                           </span>
                        </div>
                        <div class="col-xs-12 col-md-4">
                            {{ item.description }}
