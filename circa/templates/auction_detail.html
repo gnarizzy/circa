@@ -12,8 +12,8 @@
                 display.textContent = "This auction is over!";
             } else {
                 setInterval(function() {
-                    var displayStr = "The auction ends in " + d + " days, "
-                     + h + " hours, " + m + " minutes, and " + s + " seconds";
+                    var displayStr = " " + d + " days, "
+                     + h + " hours, " + m + " minutes, and " + s + " seconds.";
                     if(--s < 0) {
                         if(--m < 0) {
                             if(--h < 0) {
@@ -29,7 +29,6 @@
                             s = 59;
                         }
                     }
-
                     display.textContent = displayStr;
                 }, 1000);
             }
@@ -46,18 +45,40 @@
         <div class = "panel-heading"><h1 class = "panel-title">{{ item.title }}</h1></div>
         <div class = "panel-body">
             <div class = "panel-info">
-                {{ item.description }}
-                <br>
-                <em>Ships from zipcode {{ auction.zipcode }}</em>
-                <br>
-                Current bid: $<strong>{{ auction.current_bid }}</strong>
-                <form action = "/auction/{{ auction.id }}/" method = "post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type = "submit" class ="btn btn-primary" value = "Place Bid"/>
-                </form>
-                <h3>You can buy this item right now for ${{ auction.buy_now_price }}</h3>
-                <h3><span id="time">The auction ends in {{ days }} days, {{ hours }} hours, {{ minutes }} minutes, and {{ seconds }} seconds</span></h3>
+                  <div class="row">
+                       <div class="col-xs-12 col-md-3">
+                           <a href="#" class="thumbnail"><img src="http://placehold.it/225x225" alt="..."> </a>
+                       </div>
+                       <div class="col-xs-12 col-md-4">
+                           {{ item.description }}
+                           <br>
+                           <br>
+                           This auction ends in<strong><span id="time"> <strong>{{ days }} days, {{ hours }} hours, {{ minutes }}
+                            minutes, and {{ seconds }} seconds. </span></strong>
+                            <br>
+                       </div>
+
+                       <div class ="col-xs-12 col-md-5">
+                            Current Bid: <strong>${{ item.auction.current_bid }}</strong>
+                            <br>
+                            <br>
+                            <form class="form-inline" action = "/auction/{{ auction.id }}/" method = "post">
+                                <div class = "form-group">
+                                 {% csrf_token %}
+                                 {{ form.as_p }}
+                                 <input type = "submit" class ="btn btn-primary" value = "Place Bid"/>
+                                 </div>
+                            </form>
+                            <br>
+                            <div class="form-group">
+                                <p>Buy now for: <strong>${{ item.auction.buy_now_price }}</strong></p>
+                                 <input type = "submit" class ="btn btn-success" value = "Buy Now"/>
+
+                            </div>
+
+
+                       </div>
+                  </div>
             </div>
         </div>
     </div>
