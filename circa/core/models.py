@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class Auction(models.Model):
-    SHORT = 1
-    MEDIUM = 3
-    LONG = 5
-    DURATION_CHOICES = ((SHORT, '1 day'),(MEDIUM, '3 days'), (LONG, '5 days'),)
+    SHORT = 3
+    MEDIUM = 5
+    LONG = 7
+    DURATION_CHOICES = ((SHORT, '3 days'),(MEDIUM, '5 days'), (LONG, '7 days'),)
 
     starting_bid = models.DecimalField(max_digits = 6, decimal_places = 2, default=1.00)
     current_bid = models.DecimalField(max_digits = 6, decimal_places = 2, null = True)
