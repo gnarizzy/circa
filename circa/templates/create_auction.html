@@ -2,10 +2,13 @@
 {% load static %}
 {% block body_block %}
     <div class = "container">
+        <h1>Create an auction</h1><br>
+        <div class ="col-xs-12 col-md-3">
          <form id ="auction_form" method="post" action="/createauction/{{ item.id }}/">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" name="submit" class="btn btn-success" value="Create auction" />
          </form>
+         </div>
     </div>
 {% endblock %}
