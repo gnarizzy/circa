@@ -13,6 +13,7 @@
 <body>
 {% block nav_block %}
     <nav class="navbar navbar-inverse">
+{% endblock %}
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -26,13 +27,17 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="/sell/"><span class= "glyphicon glyphicon-usd"></span> Sell</a></li>
                         <li><a href="/accounts/register/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                        <li><a href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            {% if user.is_authenticated %}
+                            <li><a href="/accounts/logout/"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                            {% else %}
+                            <li><a href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                            {% endif %}
                         <li><a href="#"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
                     </ul>
             </div>
         </div>
     </nav>
-{% endblock %}
+
     {% block body_block %}{% endblock %}
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
 </body>
