@@ -2,10 +2,14 @@
 
 
 {% block body_block %}
-<h1>Sign up for Circa</h1>
-        <form method="post" action=".">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <input type="submit" value="Sign up" />
-        </form>
+    <div class = "container">
+        <h1>Sign up for Circa</h1>
+                <form method="post" action=".">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.as_p }}
+                            <input type="submit" class="btn btn-primary" value="Sign up" />
+                        </div>
+                </form>
+    </div>
 {% endblock %}
