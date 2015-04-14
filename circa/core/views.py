@@ -5,6 +5,7 @@ from core.forms import ItemForm, AuctionForm, BidForm
 from django.contrib.auth.models import User
 from django import forms
 from decimal import *
+from django.contrib.auth.decorators import login_required
 
 import datetime
 
@@ -17,6 +18,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 #posting an item
+@login_required
 def sell(request):
 
     if request.method == 'POST':
