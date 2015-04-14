@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     url(r'^createauction/(?P<itemid>\d+)/$','core.views.create_auction',name= 'create_auction'),
     url(r'^auction/(?P<auctionid>\d+)/$','core.views.auction_detail',name= 'auction_detail'),
     url(r'^$', 'core.views.index', name='index'),
+    url(r'accounts/', include('registration.backends.simple.urls')),
     # url(r'^blog/', include('blog.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
 )
