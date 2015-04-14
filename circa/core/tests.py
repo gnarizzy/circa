@@ -188,3 +188,8 @@ class CreateAuctionTest(TestCase):
 
 #class PickupTest(TestCase):
 
+#class RegistrationTest(TestCase):
+
+#class LoginTest(TestCase):
+
+    #def test_after_login_redirected_to_previous_page(self):
