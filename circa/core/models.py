@@ -39,4 +39,4 @@ class UserProfile(models.Model):
     rating = models.DecimalField(max_digits = 4, decimal_places=2)
     num_reviews = models.IntegerField()
     address = models.TextField(default=None)
-    zipcode = models.IntegerField(defualt = 0)
+    zipcode = models.IntegerField(default = 0)
