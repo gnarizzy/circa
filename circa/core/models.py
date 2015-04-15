@@ -14,7 +14,7 @@ class Auction(models.Model):
     start_date = models.DateTimeField(auto_now_add = True)
     duration = models.IntegerField(choices = DURATION_CHOICES, default = MEDIUM) #choices
     end_date = models.DateTimeField(null = True)
-    current_bidder = models.OneToOneField(User, null = True)
+    current_bidder = models.ForeignKey(User, null = True)
     zipcode = models.IntegerField(default = 0)
 
     def __str__(self):
