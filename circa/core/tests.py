@@ -208,3 +208,6 @@ class CreateAuctionTest(TestCase):
 
     #def test_wrong_user_cant_go_to_specific_create_auction_page
 
+#test that user can bid on multiple items
+
+#test that sller can post multiple items
