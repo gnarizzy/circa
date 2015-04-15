@@ -25,7 +25,9 @@ def sell(request):
         form = ItemForm(request.POST)
 
         if form.is_valid():
-            item = form.save(commit=True)
+            item = form.save(commit=False)
+            item.seller = request.user
+            item.save()
             return HttpResponseRedirect('/createauction/'+str(item.id))
 
             #if form has errors?
