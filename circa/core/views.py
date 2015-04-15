@@ -73,13 +73,19 @@ def auction_detail(request, auctionid):
 
     if request.method == 'POST':
         form = BidForm(request.POST, auction=auctionid)
-        if form.is_valid():
-            bid = form.cleaned_data['bid']
-            auction.current_bid = bid
-            if bid * Decimal(1.0999) > auction.buy_now_price:
-                auction.buy_now_price = bid * Decimal(1.1000000)
-            auction.save()
-            return HttpResponseRedirect('/auction/'+str(auction.id))
+        if request.user.is_authenticated():
+            if form.is_valid():
+                bid = form.cleaned_data['bid']
+                auction.current_bid = bid
+                auction.current_bidder = request.user
+                if bid * Decimal(1.0999) > auction.buy_now_price:
+                    auction.buy_now_price = bid * Decimal(1.1000000)
+                auction.save()
+                return HttpResponseRedirect('/auction/'+str(auction.id))
+        else: #unauthenticated user. Redirect to login page, then bring 'em back here.
+              #TODO Figure out how to set next variable in context so manual url isnt needed
+              #TODO If they sign up through this chain of events, bring them back here
+            return HttpResponseRedirect('/accounts/login/?next=/auction/'+str(auction.id))
     else:
         default_bid = auction.current_bid + Decimal(1.00)
         form = BidForm(initial={'bid':default_bid}) #prepopulate bid with $1.00 above current bid
