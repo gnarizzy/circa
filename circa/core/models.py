@@ -27,7 +27,7 @@ class Item(models.Model):
     #photo2 = models.URLField(null = True)
     #photo3 = models.URLField(null = True)
     auction = models.OneToOneField(Auction, null = True)
-    seller = models.ForeignKey(User, related_name ='seller_profile', null = True)
+    seller = models.ForeignKey(User, related_name ='seller_profile', null = True) #many items per one seller
     buyer = models.OneToOneField(User, related_name = 'buyer_profile', null = True)
 
     def __str__(self):
