@@ -193,3 +193,18 @@ class CreateAuctionTest(TestCase):
 #class LoginTest(TestCase):
 
     #def test_after_login_redirected_to_previous_page(self):
+
+#class ListItemTest(TestCase):
+
+    #def test_item_listed_is_associated_with_current_user
+
+    #def test_auction_is_associated_with_correct_user
+
+#class AuthenticationTest(TestCase):
+
+    #def test_unauthenticated_user_cant_sell_item
+
+    #def test_unauthentiated_user_cant_go_to_specific_create_auction_page
+
+    #def test_wrong_user_cant_go_to_specific_create_auction_page
+
