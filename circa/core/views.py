@@ -1,11 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from core.models import Item, Auction
 from core.forms import ItemForm, AuctionForm, BidForm
 from django.contrib.auth.models import User
 from django import forms
 from decimal import *
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+
 
 import datetime
 
@@ -36,8 +38,12 @@ def sell(request):
     return render(request,'sell.html',{'form':form})
 
 #creating an auction for previously posted item
+@login_required
 def create_auction(request, itemid):
     item = get_object_or_404(Item, pk=itemid)
+
+    if item.seller.id is not request.user.id: #some bro wants to create an auction for an item that is not his!
+        raise PermissionDenied
 
     if request.method == 'POST':
         form = AuctionForm(request.POST)
