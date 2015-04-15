@@ -42,7 +42,14 @@
 {% endblock %}
 
 {% block body_block %}
+
 <div class = "container">
+    {% if user.id == item.auction.current_bidder.id %}
+        <div class="alert alert-success" role="alert">
+            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+            You are the highest bidder!
+            </div>
+    {% endif %}
     <div class="panel panel-info">
         <div class = "panel-heading"><h1 class = "panel-title">{{ item.title }}</h1></div>
         <div class = "panel-body">
