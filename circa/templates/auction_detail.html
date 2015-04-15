@@ -44,7 +44,7 @@
 {% block body_block %}
 
 <div class = "container">
-    {% if user.id == item.auction.current_bidder.id %}
+    {% if item.auction.current_bidder.id and user.id == item.auction.current_bidder.id %}
         <div class="alert alert-success" role="alert">
             <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
             You are the highest bidder!
