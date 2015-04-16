@@ -221,3 +221,5 @@ class CreateAuctionTest(TestCase):
 #test that sign up from required login flow redirects to original page
 
 #test that logout redirets to home page
+
+#Test signup link disappears after login
