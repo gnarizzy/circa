@@ -3,6 +3,12 @@
 {% block body_block %}
 <div class = "container">
     <h1>Login</h1>
+    {% if next %}
+    <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+            You need to log in to do that.
+    </div>
+    {% endif %}
 
         <form method="post" action=".">
              {% csrf_token %}
