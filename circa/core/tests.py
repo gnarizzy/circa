@@ -216,4 +216,8 @@ class CreateAuctionTest(TestCase):
 
 #test that people cant bid on own items
 
+#test that signup defaults to redirecting to home page
+
 #test that sign up from required login flow redirects to original page
+
+#test that logout redirets to home page
