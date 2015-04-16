@@ -28,7 +28,7 @@
                         <li><a href="/sell/"><span class= "glyphicon glyphicon-usd"></span> Sell</a></li>
                         <li><a href="/accounts/register/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
                             {% if user.is_authenticated %}
-                            <li><a href="/accounts/logout/"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
+                            <li><a href="{% url 'auth_logout' %}?next=/"><span class="glyphicon glyphicon-log-out"></span>Logout</a></li>
                             {% else %}
                             <li><a href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                             {% endif %}
