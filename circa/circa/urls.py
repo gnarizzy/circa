@@ -1,5 +1,14 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from registration.backends.simple.views import RegistrationView
+
+class MyRegistrationView(RegistrationView):
+    def get_success_url(self,request, user):
+        url = request.GET.get('next')
+        if url:
+            return url
+        else:
+            return '/'
 
 urlpatterns = patterns('',
     # Examples:
@@ -8,7 +17,8 @@ urlpatterns = patterns('',
     url(r'^createauction/(?P<itemid>\d+)/$','core.views.create_auction',name= 'create_auction'),
     url(r'^auction/(?P<auctionid>\d+)/$','core.views.auction_detail',name= 'auction_detail'),
     url(r'^$', 'core.views.index', name='index'),
-    url(r'accounts/', include('registration.backends.simple.urls')),
     # url(r'^blog/', include('blog.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
+    (r'^accounts/', include('registration.backends.simple.urls')),
 )
