@@ -215,3 +215,5 @@ class CreateAuctionTest(TestCase):
 #test highest bidder is show highest bidder message
 
 #test that people cant bid on own items
+
+#test that sign up from required login flow redirects to original page
