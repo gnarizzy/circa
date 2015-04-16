@@ -44,12 +44,21 @@
 {% block body_block %}
 
 <div class = "container">
+    {% if user.id and user.id == item.seller.id %}
+    <div class="alert alert-info" role="alert">
+            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+            This is your item. Share this link and get more bids!
+    </div>
+    {% endif %}
+
     {% if item.auction.current_bidder.id and user.id == item.auction.current_bidder.id %}
         <div class="alert alert-success" role="alert">
             <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
             You are the highest bidder!
-            </div>
+        </div>
     {% endif %}
+
+
     <div class="panel panel-info">
         <div class = "panel-heading"><h1 class = "panel-title">{{ item.title }}</h1></div>
         <div class = "panel-body">
@@ -83,14 +92,21 @@
                                 <div class = "form-group">
                                  {% csrf_token %}
                                  {{ form.as_p }}
+                                 {% if user.id and user.id == item.seller.id %}
+                                 <input type = "submit" class ="btn btn-primary disabled" value = "Place Bid"/>
+                                 {% else %}
                                  <input type = "submit" class ="btn btn-primary" value = "Place Bid"/>
+                                 {% endif %}
                                  </div>
                             </form>
                             <br>
                             <div class="form-group">
                                 <p>Buy now for: <strong>${{ item.auction.buy_now_price }}</strong></p>
-                                 <input type = "submit" class ="btn btn-success" value = "Buy Now"/>
-
+                                {% if user.id and user.id == item.seller.id %}
+                                 <input type = "submit" class ="btn btn-success disabled" value = "Buy Now"/>
+                                {% else %}
+                                <input type = "submit" class ="btn btn-success" value = "Buy Now"/>
+                                {% endif %}
                             </div>
 
 
