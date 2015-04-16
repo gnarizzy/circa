@@ -213,3 +213,5 @@ class CreateAuctionTest(TestCase):
 #test that sller can post multiple items
 
 #test highest bidder is show highest bidder message
+
+#test that people cant bid on own items
