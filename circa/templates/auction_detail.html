@@ -67,10 +67,10 @@
                        <div class="col-xs-12 col-md-3">
                            <span class = "hidden-xs">
                                {% load cropping %}
-                               <a href="#" class="thumbnail"><img src="{% cropped_thumbnail item "cropping" scale=2.0 %}" alt="..."></a>
+                               <a href="#" class="thumbnail"><img src=""{% cropped_thumbnail item "cropping" scale=1.0 %} alt="..."></a>
                            </span>
                            <span class = "hidden-sm hidden-md hidden-lg">
-                               <a href="#" class="thumbnail"><img src="http://placehold.it/175x175" alt="..."></a>
+                               <a href="#" class="thumbnail"><img src={% cropped_thumbnail item "cropping" scale=0.7 %} alt="..."></a>
                            </span>
                        </div>
                        <div class="col-xs-12 col-md-4">
