@@ -8,7 +8,7 @@ class ItemForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}), help_text="Description")
     class Meta:
         model = Item
-        fields = ('title', 'description')
+        fields = ('title', 'description','photo','cropping')
 
 class AuctionForm(forms.ModelForm):
     starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),)
