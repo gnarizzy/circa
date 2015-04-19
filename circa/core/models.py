@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from image_cropping import ImageCropField, ImageRatioField
 # Create your models here.
 
 class Auction(models.Model):
@@ -23,9 +24,8 @@ class Auction(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(default='')
-    #photo1 = models.URLField(null = True)
-    #photo2 = models.URLField(null = True)
-    #photo3 = models.URLField(null = True)
+    photo = ImageCropField(blank=True, upload_to='uploaded_images')
+    cropping = ImageRatioField('photo', '225x225')
     auction = models.OneToOneField(Auction, null = True)
     seller = models.ForeignKey(User, related_name ='seller_profile', null = True) #many items per one seller
     buyer = models.ForeignKey(User, related_name = 'buyer_profile', null = True)
