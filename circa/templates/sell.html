@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block head_block %}
+{{ form.media }}
+{% endblock %}
 {% block body_block %}
     <div class = "container">
         <h1>List an item for sale</h1>
 
-                <form id ="item_form" method="post" action="/sell/">
+                <form id ="item_form" method="post" action="/sell/"  enctype="multipart/form-data" >
                     {% csrf_token %}
                     {% for field in form.visible_fields %}
                     <div class="form-group">
