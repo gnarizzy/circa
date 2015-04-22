@@ -74,8 +74,9 @@ def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
     if request.method == 'POST':
           if request.POST['stripeToken']:
-            stripe.api_key = "sk_test_OxGdvL3kqusiKyiXmYa3Ibum"
+            stripe.api_key = "sk_live_NPgcsO9rTjNWGOYs83SMqqx0"
             token = request.POST['stripeToken']
+            email = request.POST['stripeEmail']
             amount_in_cents = int(auction.buy_now_price * 100)
             try:
                 charge = stripe.Charge.create(
@@ -84,10 +85,13 @@ def auction_detail(request, auctionid):
                     source = token,
                     description = "Circa Buy Now"
                 )
-
+                auction.buy_now_email = email
+                auction.end_date = datetime.datetime.now()
+                auction.save()
             except stripe.CardError:
-                pass #charge has been declined. Figure out what to do here.
-            return HttpResponse("test")
+                context = {'error_message':"Your credit card was declined."}
+                return HttpResponseRedirect('/auction/'+str(auction.id))
+            return HttpResponseRedirect('/success/')
           else:
             form = BidForm(request.POST, auction=auctionid)
             if request.user.is_authenticated():
@@ -118,7 +122,8 @@ def auction_detail(request, auctionid):
                'amount':stripe_amount}
     return render(request, 'auction_detail.html', context)
 
-#def charge(request):
+def success(request):
+    return render(request, 'success.html')
 
 #remove from production
 def todo(request):
