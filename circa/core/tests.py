@@ -224,4 +224,5 @@ class CreateAuctionTest(TestCase):
 
 #Test signup link disappears after login
 
-#Test all the stripe stuff, from json to template and all the tests stripe lists on their site
+#Test all the stripe stuff, from json to template and all the tests stripe lists on their site, test declined cards,
+#test creating users, test notifications after purchase is made
