@@ -223,3 +223,5 @@ class CreateAuctionTest(TestCase):
 #test that logout redirets to home page
 
 #Test signup link disappears after login
+
+#Test all the stripe stuff, from json to template and all the tests stripe lists on their site
