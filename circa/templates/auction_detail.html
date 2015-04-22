@@ -57,7 +57,12 @@
             You are the highest bidder!
         </div>
     {% endif %}
-
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+            {{error_message}}
+        </div>
+    {% endif %}
 
     <div class="panel panel-info">
         <div class = "panel-heading"><h1 class = "panel-title">{{ item.title }}</h1></div>
@@ -114,7 +119,7 @@
                                       var stripe_amount = "{{amount}}"
                                       var item = "{{item.title}}"
                                       var handler = StripeCheckout.configure({
-                                        key: 'pk_test_0wdCscoPvOmHNVl3jBMkFCmX',
+                                        key: 'pk_live_ZuwX78anbWEjFFJjWqKEkBfu',
                                         image: '/img/documentation/checkout/marketplace.png',
                                         token: function(token) {
                                           var tokenInput = $("<input type=hidden name=stripeToken />").val(token.id);
