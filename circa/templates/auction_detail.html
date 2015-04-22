@@ -106,7 +106,34 @@
                                 {% if user.id and user.id == item.seller.id %}
                                  <input type = "submit" class ="btn btn-success disabled" value = "Buy Now"/>
                                 {% else %}
-                                <input type = "submit" class ="btn btn-success" value = "Buy Now"/>
+                                <script src="https://checkout.stripe.com/checkout.js"></script>
+                                <input type = "submit" id="buyNow" class ="btn btn-success" value = "Buy Now"/>
+                                <script type = "text/javascript">
+                                      var stripe_amount = "{{amount}}"
+                                      var handler = StripeCheckout.configure({
+                                        key: 'pk_test_0wdCscoPvOmHNVl3jBMkFCmX',
+                                        image: '/img/documentation/checkout/marketplace.png',
+                                        token: function(token) {
+                                          // Use the token to create the charge with a server-side script.
+                                          // You can access the token ID with `token.id`
+                                        }
+                                      });
+
+                                      $('#buyNow').on('click', function(e) {
+                                        // Open Checkout with further options
+                                        handler.open({
+                                          name: 'Demo Site',
+                                          description: '2 widgets',
+                                          amount: stripe_amount
+                                        });
+                                        e.preventDefault();
+                                      });
+
+                                      // Close Checkout on page navigation
+                                      $(window).on('popstate', function() {
+                                        handler.close();
+                                      });
+                                </script>
                                 {% endif %}
                             </div>
 
