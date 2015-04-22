@@ -8,6 +8,7 @@ from decimal import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 import json
+import stripe
 
 
 import datetime
@@ -71,25 +72,40 @@ def create_auction(request, itemid):
 
 def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
-
     if request.method == 'POST':
-        form = BidForm(request.POST, auction=auctionid)
-        if request.user.is_authenticated():
-            if form.is_valid():
-                bid = form.cleaned_data['bid']
-                auction.current_bid = bid
-                auction.current_bidder = request.user
-                if bid * Decimal(1.0999) > auction.buy_now_price:
-                    auction.buy_now_price = bid * Decimal(1.1000000)
-                auction.save()
-                return HttpResponseRedirect('/auction/'+str(auction.id))
-        else: #unauthenticated user. Redirect to login page, then bring 'em back here.
-              #TODO Figure out how to set next variable in context so manual url isnt needed
-              #TODO If they sign up through this chain of events, bring them back here
-            return HttpResponseRedirect('/accounts/login/?next=/auction/'+str(auction.id))
-    else:
-        default_bid = auction.current_bid + Decimal(1.00)
-        form = BidForm(initial={'bid':default_bid}) #prepopulate bid with $1.00 above current bid
+          if request.POST['stripeToken']:
+            stripe.api_key = "sk_test_OxGdvL3kqusiKyiXmYa3Ibum"
+            token = request.POST['stripeToken']
+            amount_in_cents = int(auction.buy_now_price * 100)
+            try:
+                charge = stripe.Charge.create(
+                    amount = amount_in_cents,
+                    currency = "usd",
+                    source = token,
+                    description = "Circa Buy Now"
+                )
+
+            except stripe.CardError:
+                pass #charge has been declined. Figure out what to do here.
+            return HttpResponse("test")
+          else:
+            form = BidForm(request.POST, auction=auctionid)
+            if request.user.is_authenticated():
+                if form.is_valid():
+                    bid = form.cleaned_data['bid']
+                    auction.current_bid = bid
+                    auction.current_bidder = request.user
+                    if bid * Decimal(1.0999) > auction.buy_now_price:
+                        auction.buy_now_price = bid * Decimal(1.1000000)
+                    auction.save()
+                    return HttpResponseRedirect('/auction/'+str(auction.id))
+            else: #unauthenticated user. Redirect to login page, then bring 'em back here.
+                  #TODO Figure out how to set next variable in context so manual url isnt needed
+                  #TODO If they sign up through this chain of events, bring them back here
+                return HttpResponseRedirect('/accounts/login/?next=/auction/'+str(auction.id))
+
+    default_bid = auction.current_bid + Decimal(1.00)
+    form = BidForm(initial={'bid':default_bid}) #prepopulate bid with $1.00 above current bid
     item = auction.item
     time_left = auction.end_date - datetime.datetime.now()
     days = time_left.days
@@ -102,6 +118,7 @@ def auction_detail(request, auctionid):
                'amount':stripe_amount}
     return render(request, 'auction_detail.html', context)
 
+#def charge(request):
 
 #remove from production
 def todo(request):
