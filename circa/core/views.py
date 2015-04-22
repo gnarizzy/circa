@@ -7,6 +7,7 @@ from django import forms
 from decimal import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+import json
 
 
 import datetime
@@ -89,13 +90,15 @@ def auction_detail(request, auctionid):
     else:
         default_bid = auction.current_bid + Decimal(1.00)
         form = BidForm(initial={'bid':default_bid}) #prepopulate bid with $1.00 above current bid
-    message = request.GET.get('message')
     item = auction.item
     time_left = auction.end_date - datetime.datetime.now()
     days = time_left.days
     hours, remainder = divmod(time_left.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds}
+    amount = int(auction.buy_now_price * 100)
+    stripe_amount = json.dumps(amount)
+    context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
+               'amount':stripe_amount}
     return render(request, 'auction_detail.html', context)
 
 
