@@ -97,6 +97,7 @@ def auction_detail(request, auctionid):
     minutes, seconds = divmod(remainder, 60)
     amount = int(auction.buy_now_price * 100)
     stripe_amount = json.dumps(amount)
+    item_json = json.dumps(item.title)
     context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
                'amount':stripe_amount}
     return render(request, 'auction_detail.html', context)
