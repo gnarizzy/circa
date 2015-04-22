@@ -16,6 +16,7 @@ class Auction(models.Model):
     duration = models.IntegerField(choices = DURATION_CHOICES, default = MEDIUM) #choices
     end_date = models.DateTimeField(null = True)
     current_bidder = models.ForeignKey(User, null = True)
+    buy_now_email = models.EmailField(default="", null = True) #temporary field until we create users from buy now purchases
     zipcode = models.IntegerField(default = 0)
 
     def __str__(self):
