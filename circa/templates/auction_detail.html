@@ -108,8 +108,10 @@
                                 {% else %}
                                 <script src="https://checkout.stripe.com/checkout.js"></script>
                                 <input type = "submit" id="buyNow" class ="btn btn-success" value = "Buy Now"/>
+
                                 <script type = "text/javascript">
                                       var stripe_amount = "{{amount}}"
+                                      var item = "{{item.title}}"
                                       var handler = StripeCheckout.configure({
                                         key: 'pk_test_0wdCscoPvOmHNVl3jBMkFCmX',
                                         image: '/img/documentation/checkout/marketplace.png',
@@ -122,8 +124,8 @@
                                       $('#buyNow').on('click', function(e) {
                                         // Open Checkout with further options
                                         handler.open({
-                                          name: 'Demo Site',
-                                          description: '2 widgets',
+                                          name: 'Circa',
+                                          description: item,
                                           amount: stripe_amount
                                         });
                                         e.preventDefault();
