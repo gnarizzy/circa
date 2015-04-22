@@ -2,10 +2,6 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings # New Import
 from django.conf.urls.static import static # New Import
 
-
-
-
-
 from django.contrib import admin
 from registration.backends.simple.views import RegistrationView
 
