@@ -107,6 +107,7 @@
                                  <input type = "submit" class ="btn btn-success disabled" value = "Buy Now"/>
                                 {% else %}
                                 <script src="https://checkout.stripe.com/checkout.js"></script>
+
                                 <input type = "submit" id="buyNow" class ="btn btn-success" value = "Buy Now"/>
 
                                 <script type = "text/javascript">
@@ -116,8 +117,9 @@
                                         key: 'pk_test_0wdCscoPvOmHNVl3jBMkFCmX',
                                         image: '/img/documentation/checkout/marketplace.png',
                                         token: function(token) {
-                                          // Use the token to create the charge with a server-side script.
-                                          // You can access the token ID with `token.id`
+                                          var tokenInput = $("<input type=hidden name=stripeToken />").val(token.id);
+                                          var emailInput = $("<input type=hidden name=stripeEmail />").val(token.email);
+                                          $("form").append(tokenInput).append(emailInput).submit();
                                         }
                                       });
 
@@ -145,8 +147,10 @@
             </div>
         </div>
     </div>
-    <form action="/charge" method="POST">
-</form>
+
+    <form action="{{request.path}}" method="POST">
+        {% csrf_token %}
+    </form>
    <h4><small>Circa guarantees one day shipping and no-questions-asked returns for 30 days.</small></h4>
 </div>
 
