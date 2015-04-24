@@ -83,7 +83,7 @@ def auction_detail(request, auctionid):
                     amount = amount_in_cents,
                     currency = "usd",
                     source = token,
-                    description = "Circa Buy Now"
+                    description = "Circa Buy Now: " + str(auction.item.title)
                 )
                 auction.buy_now_email = email
                 auction.end_date = datetime.datetime.now()
