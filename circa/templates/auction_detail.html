@@ -120,7 +120,7 @@
                                       var item = "{{item.title}}"
                                       var handler = StripeCheckout.configure({
                                         key: 'pk_live_ZuwX78anbWEjFFJjWqKEkBfu',
-                                        image: '/img/documentation/checkout/marketplace.png',
+                                        // image: '/img/documentation/checkout/marketplace.png',
                                         token: function(token) {
                                           var tokenInput = $("<input type=hidden name=stripeToken />").val(token.id);
                                           var emailInput = $("<input type=hidden name=stripeEmail />").val(token.email);
