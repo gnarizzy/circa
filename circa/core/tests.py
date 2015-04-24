@@ -226,3 +226,5 @@ class CreateAuctionTest(TestCase):
 
 #Test all the stripe stuff, from json to template and all the tests stripe lists on their site, test declined cards,
 #test creating users, test notifications after purchase is made
+
+#test success page, help page
