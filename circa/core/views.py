@@ -125,6 +125,9 @@ def auction_detail(request, auctionid):
 def success(request):
     return render(request, 'success.html')
 
+def help(request):
+    return render(request, 'help.html')
+
 #remove from production
 def todo(request):
     return render(request,'todo.html')
