@@ -73,9 +73,9 @@ def create_auction(request, itemid):
 def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
     if request.method == 'POST':
-          if request.POST['stripeToken']:
+          token = request.POST.get('stripeToken', False)
+          if token:
             stripe.api_key = "sk_live_NPgcsO9rTjNWGOYs83SMqqx0"
-            token = request.POST['stripeToken']
             email = request.POST['stripeEmail']
             amount_in_cents = int(auction.buy_now_price * 100)
             try:
