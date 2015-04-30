@@ -146,6 +146,8 @@ class CreateAuctionTest(TestCase):
         response = self.client.get('/auction/')
         self.assertTemplateUsed(response, 'create_auction.html')
 
+    #def test_auction_cant_be_recerated_after_its_created(self):
+
     #def test_redirect_after_successful_form_submission(self):
 
     #def test_error_thrown_if_negative_initial_bid_entered(self):
@@ -228,3 +230,9 @@ class CreateAuctionTest(TestCase):
 #test creating users, test notifications after purchase is made
 
 #test success page, help page
+
+#auction_ending_test
+
+#transactional email tests-- outbid, payment complete, delivered
+
+#create deliveries, delivery object
