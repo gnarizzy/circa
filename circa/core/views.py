@@ -142,7 +142,7 @@ def pay(request):
     auctions = Auction.objects.filter(current_bidder=request.user).filter(paid_for=False).filter(end_date__lt=now)
     for auction in auctions:
         items.append(auction.item)
-    
+    return render(request, 'pay.html', {'items':items})
 
 def success(request):
     return render(request, 'success.html')
