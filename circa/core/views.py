@@ -94,6 +94,7 @@ def auction_detail(request, auctionid):
                 auction.buy_now_email = email
                 auction.end_date = datetime.datetime.now()
                 auction.current_bid = auction.buy_now_price
+                auction.paid_for = True
                 if request.user.id: #logged in user used buy it now
                     auction.current_bidder = request.user
                 else:
@@ -132,6 +133,12 @@ def auction_detail(request, auctionid):
     context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
                'amount':stripe_amount}
     return render(request, 'auction_detail.html', context)
+
+#Shows all outstanding payments and uses stripe checkout to pay
+@login_required
+def pay(request):
+    #find auctions where user is the highest bidder, payment has not been received, and have already ended
+
 
 def success(request):
     return render(request, 'success.html')
