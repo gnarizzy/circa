@@ -77,7 +77,6 @@ def create_auction(request, itemid):
 def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
 
-
     if request.method == 'POST':
           token = request.POST.get('stripeToken', False)
           if token: #Buy Now
@@ -138,7 +137,12 @@ def auction_detail(request, auctionid):
 @login_required
 def pay(request):
     #find auctions where user is the highest bidder, payment has not been received, and have already ended
-
+    now = datetime.datetime.now()
+    items = []
+    auctions = Auction.objects.filter(current_bidder=request.user).filter(paid_for=False).filter(end_date__lt=now)
+    for auction in auctions:
+        items.append(auction.item)
+    
 
 def success(request):
     return render(request, 'success.html')
