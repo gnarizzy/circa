@@ -76,10 +76,12 @@ def create_auction(request, itemid):
 
 def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
+
+
     if request.method == 'POST':
           token = request.POST.get('stripeToken', False)
-          if token:
-            stripe.api_key = "sk_live_NPgcsO9rTjNWGOYs83SMqqx0"
+          if token: #Buy Now
+            stripe.api_key = "sk_test_OxGdvL3kqusiKyiXmYa3Ibum"
             email = request.POST['stripeEmail']
             amount_in_cents = int(auction.buy_now_price * 100)
             try:
@@ -91,12 +93,17 @@ def auction_detail(request, auctionid):
                 )
                 auction.buy_now_email = email
                 auction.end_date = datetime.datetime.now()
+                auction.current_bid = auction.buy_now_price
+                if request.user.id: #logged in user used buy it now
+                    auction.current_bidder = request.user
+                else:
+                    auction.current_bidder = None #change when we create accounts for buy-now people
                 auction.save()
             except stripe.CardError:
                 context = {'error_message':"Your credit card was declined."}
                 return HttpResponseRedirect('/auction/'+str(auction.id))
             return HttpResponseRedirect('/success/')
-          else:
+          else: #Place a bid
             form = BidForm(request.POST, auction=auctionid)
             if request.user.is_authenticated():
                 if form.is_valid():
