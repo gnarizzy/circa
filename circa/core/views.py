@@ -44,6 +44,10 @@ def sell(request):
 def create_auction(request, itemid):
     item = get_object_or_404(Item, pk=itemid)
 
+    if item.auction: #item already has an auction...
+        #return expired page
+        return render(request,'expired.html')
+
     if item.seller.id is not request.user.id: #some bro wants to create an auction for an item that is not his!
         raise PermissionDenied
 
