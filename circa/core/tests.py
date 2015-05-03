@@ -238,4 +238,4 @@ class CreateAuctionTest(TestCase):
 #create deliveries, delivery object
 
 #payment flow test (pay rendersw correct template, requires login, shows correct pending payments [both one or multiple]
-#and allows payment) 
+#and allows payment)
