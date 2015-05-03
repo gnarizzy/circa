@@ -231,8 +231,9 @@ class CreateAuctionTest(TestCase):
 
 #test success page, help page
 
-#auction_ending_test
+#auction_ending_test (can't bid on item, appropriate text, etc.)
 
 #transactional email tests-- outbid, payment complete, delivered
 
 #create deliveries, delivery object
+
