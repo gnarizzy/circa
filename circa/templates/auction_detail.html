@@ -98,7 +98,7 @@
                                 <div class = "form-group">
                                  {% csrf_token %}
                                  {{ form.as_p }}
-                                 {% if user.id and user.id == item.seller.id %}
+                                 {% if user.id and user.id == item.seller.id or over == 1%}
                                  <input type = "submit" class ="btn btn-primary disabled" value = "Place Bid"/>
                                  {% else %}
                                  <input type = "submit" class ="btn btn-primary" value = "Place Bid"/>
@@ -108,7 +108,7 @@
                             <br>
                             <div class="form-group">
                                 <p>Buy now for: <strong>${{ item.auction.buy_now_price }}</strong></p>
-                                {% if user.id and user.id == item.seller.id %}
+                                {% if user.id and user.id == item.seller.id or over == 1%}
                                  <input type = "submit" class ="btn btn-success disabled" value = "Buy Now"/>
                                 {% else %}
                                 <script src="https://checkout.stripe.com/checkout.js"></script>

@@ -122,6 +122,10 @@ def auction_detail(request, auctionid):
     default_bid = auction.current_bid + Decimal(1.00)
     form = BidForm(initial={'bid':default_bid}) #prepopulate bid with $1.00 above current bid
     item = auction.item
+    if auction.end_date < datetime.datetime.now():
+        over = 1
+    else:
+        over = 0
     time_left = auction.end_date - datetime.datetime.now()
     days = time_left.days
     hours, remainder = divmod(time_left.seconds, 3600)
@@ -130,7 +134,7 @@ def auction_detail(request, auctionid):
     stripe_amount = json.dumps(amount)
     item_json = json.dumps(item.title)
     context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
-               'amount':stripe_amount}
+               'amount':stripe_amount, 'over': over}
     return render(request, 'auction_detail.html', context)
 
 #Shows all outstanding payments and uses stripe checkout to pay
