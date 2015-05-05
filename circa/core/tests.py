@@ -231,9 +231,11 @@ class CreateAuctionTest(TestCase):
 
 #test success page, help page
 
-#auction_ending_test (can't bid on item, appropriate text, etc.)
+#auction_ending_test (can't bid on item, appropriate text, message if user hasn't paid yet, message if user has paid,  etc.)
 
-#transactional email tests-- outbid, payment complete, delivered
+#test to make sure POST cant be submitted to auction that has ended
+
+#transactional email tests-- outbid, payment complete, delivered, reminder to pay
 
 #create deliveries, delivery object
 
