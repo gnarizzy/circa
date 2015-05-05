@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from core.models import Item, Auction
 from core.forms import ItemForm, AuctionForm, BidForm
+from core.keys import test_secret_key, secret_key
 from django.contrib.auth.models import User
 from django import forms
 from decimal import *
@@ -80,7 +81,7 @@ def auction_detail(request, auctionid):
     if request.method == 'POST':
           token = request.POST.get('stripeToken', False)
           if token: #Buy Now
-            stripe.api_key = "sk_live_NPgcsO9rTjNWGOYs83SMqqx0"
+            stripe.api_key = secret_key()
             email = request.POST['stripeEmail']
             amount_in_cents = int(auction.buy_now_price * 100)
             try:
