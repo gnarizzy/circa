@@ -262,3 +262,5 @@ class CreateAuctionTest(TestCase):
 
 #payment flow test (pay rendersw correct template, requires login, shows correct pending payments [both one or multiple]
 #and allows payment)
+
+#403 tests
