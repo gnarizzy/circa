@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -8,12 +8,15 @@ from core.forms import ItemForm
 from core.models import UserProfile
 from django.contrib.auth.models import User
 
-from core.views import index, sell, create_auction
+from core.views import index, sell, create_auction, auction_detail
 
 #Still a lot of work left before these tests constitute a robust suite, but it's a solid start
 
 
 class HomePageTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+
 # TODO Check for correct text in case no items are for sale
     def test_root_url_resolves_to_index_view(self):
         found = resolve('/')
@@ -56,6 +59,9 @@ class HomePageTests(TestCase):
     #test ordering by soonest auction end date, test auctions that have ended don't appear
 
 class ItemModelTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
 # TODO change photo urls to actual files and test accordingly
 # TODO Refactor this
     def test_saving_and_retrieving_items(self):
@@ -81,9 +87,7 @@ class ItemModelTest(TestCase):
 
         desc = 'Its an SAT, its a tutor, what more do you want?'
         photo_1 = 'http://someurl.com'
-        photo_2 = 'http://someurl2.com'
-        photo_3 = 'http://someurl3.com'
-        first_item = Item(description = desc, photo1 = photo_1, photo2 = photo_2, photo3 = photo_3, auction = auction1,
+        first_item = Item(description = desc, photo = photo_1, auction = auction1,
                           seller = seller_1, buyer = buyer_1)
 
         first_item.save()
@@ -98,9 +102,7 @@ class ItemModelTest(TestCase):
         second_saved_item = saved_items[1]
 
         self.assertEqual(first_saved_item.description, 'Its an SAT, its a tutor, what more do you want?')
-        self.assertEqual(first_saved_item.photo1, 'http://someurl.com')
-        self.assertEqual(first_saved_item.photo2, 'http://someurl2.com')
-        self.assertEqual(first_saved_item.photo3, 'http://someurl3.com')
+        self.assertEqual(first_saved_item.photo, 'http://someurl.com')
         self.assertEqual(first_saved_item.auction, auction1)
         self.assertEqual(first_saved_item.seller, seller_1)
         self.assertEqual(first_saved_item.buyer, buyer_1)
@@ -113,8 +115,10 @@ class ItemModelTest(TestCase):
 
 class PostItemTest(TestCase):
 
-    def test_sell_url_resolves_to_sell_view(self):
+    def setUp(self):
+        self.client = Client()
 
+    def test_sell_url_resolves_to_sell_view(self):
         found = resolve('/sell/')
         self.assertEqual(found.func, sell)
 
@@ -124,6 +128,8 @@ class PostItemTest(TestCase):
 
     def test_sell_page_uses_item_form(self):
         response = self.client.get('/sell/')
+
+        # I don't think this is being checked correctly
         self.assertIsInstance(response.context['form'], ItemForm)
 
 #may be helpful for writing form tests! http://www.effectivedjango.com/forms.html
@@ -136,17 +142,32 @@ class PostItemTest(TestCase):
 
 class CreateAuctionTest(TestCase):
 
+    def setUp(self):
+        auction = Auction()
+        auction.save()
+
+        desc = "Potato cannon"
+        photo_1 = "http://potatocannon.com"
+        seller_1 = User(username = "greg")
+        seller_1.save()
+
+        item = Item(description = desc, photo = photo_1,
+                          seller = seller_1)
+        item.save()
+
+        self.client = Client()
+
+    # TODO I believe this is currently mislabeled
     def test_auction_url_resolves_to_create_auction_view(self):
+        found = resolve('/auction/0/')
+        self.assertEqual(found.func, auction_detail)
 
-#should be changed to createauction url
-        found = resolve('/auction/')
-        self.assertEqual(found.func,create_auction)
-
+    # TODO I also believe this is currently mislabeled
     def test_auction_page_renders_auction_template(self):
-        response = self.client.get('/auction/')
+        response = self.client.get('/createauction/0/')
         self.assertTemplateUsed(response, 'create_auction.html')
 
-    #def test_auction_cant_be_recerated_after_its_created(self):
+    #def test_auction_cant_be_recreated_after_its_created(self):
 
     #def test_redirect_after_successful_form_submission(self):
 
