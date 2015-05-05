@@ -74,7 +74,7 @@ def create_auction(request, itemid):
     return render(request, 'create_auction.html', context)
 
 #Displays the requested auction along with info about auction item, or 404 page
-
+#TODO use keys.py file to send public key to template
 def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
 
@@ -97,6 +97,7 @@ def auction_detail(request, auctionid):
                 auction.paid_for = True
                 if request.user.id: #logged in user used buy it now
                     auction.current_bidder = request.user
+                    #TODO upate item.buyer
                 else:
                     auction.current_bidder = None #change when we create accounts for buy-now people
                 auction.save()
@@ -105,6 +106,7 @@ def auction_detail(request, auctionid):
                 return HttpResponseRedirect('/auction/'+str(auction.id))
             return HttpResponseRedirect('/success/')
           else: #Place a bid
+            #TODO update item.buyer
             form = BidForm(request.POST, auction=auctionid)
             if request.user.is_authenticated():
                 if form.is_valid():
