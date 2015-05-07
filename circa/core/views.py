@@ -145,8 +145,9 @@ def auction_detail(request, auctionid):
 def pay(request):
     #find auctions where user is the highest bidder, payment has not been received, and have already ended
     now = datetime.datetime.now()
+    user = request.user
     items = []
-    auctions = Auction.objects.filter(current_bidder=request.user).filter(paid_for=False).filter(end_date__lt=now)
+    auctions = Auction.objects.filter(current_bidder=user).filter(paid_for=False).filter(end_date__lt=now)
     for auction in auctions:
         items.append(auction.item)
     return render(request, 'pay.html', {'items':items})
