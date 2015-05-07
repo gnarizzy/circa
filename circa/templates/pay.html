@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
 {% block body_block %}
     <div class = "container">
+        <h2>
+            Pending auctions
+        </h2>
+        {% if items %}
+            <p>You've won the following auctions. Pay for them so you can get your stuff!</p>
+        {% else %}
+            <p>You have no outstanding unpaid auctions. Let's <a href="http://cdn0.dailydot.com/uploaded/images/original/2013/1/7/cage6.jpg" target="_blank">celebrate!</a></p>
+        {% endif %}
+
+         <li>
         {% for item in items %}
-            {{item.title}} {{item.auction.current_bid}}
+                <ol>{{item.title}} {{item.auction.id}} {{item.auction.current_bid}}</ol>
         {% endfor %}
+        </li>
     </div>
 {% endblock %}
