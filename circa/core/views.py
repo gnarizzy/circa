@@ -140,7 +140,7 @@ def auction_detail(request, auctionid):
                'amount':stripe_amount, 'over': over}
     return render(request, 'auction_detail.html', context)
 
-#Shows all outstanding payments and uses stripe checkout to pay
+#Shows all outstanding, unpaid auctions for user
 @login_required
 def pay(request):
     #find auctions where user is the highest bidder, payment has not been received, and have already ended
@@ -151,6 +151,21 @@ def pay(request):
     for auction in auctions:
         items.append(auction.item)
     return render(request, 'pay.html', {'items':items})
+
+#uses stripe checkout for user to pay for auction once bidding ends
+@login_required
+def auction_pay(request, auctionid):
+    auction = get_object_or_404(Auction, pk=auctionid)
+    if request.user.id is not auction.current_bidder.id: #user is trying to pay for someone else's auction
+        raise PermissionDenied
+    elapsed = datetime.datetime.now() - auction.end_date
+    days = elapsed.days
+    hours, remainder = divmod(elapsed.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    amount = int(auction.current_bid * 100)
+    stripe_amount = json.dumps(amount)
+    context = {'days': days, 'hours':hours, 'minutes': minutes, 'auction':auction}
+    return render(request, 'auction_pay.html'. context)
 
 def success(request):
     return render(request, 'success.html')
