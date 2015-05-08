@@ -265,4 +265,6 @@ class CreateAuctionTest(TestCase):
 #auction_pay test (correct template, correct item, check for correct user and raise error if incorrect user, actually takes payment,
 #updates buyer and seller on item, updates paid field on auction).
 
+#test if after item bought redirected to /pay/
+
 #403 tests
