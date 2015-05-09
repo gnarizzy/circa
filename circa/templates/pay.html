@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block body_block %}
+{% load cropping %}
+    <div class = "container">
+        <div class="panel panel-info">
+        <div class = "panel-heading"><h1 class = "panel-title">{{ auction.item.title }}</h1></div>
+        <div class = "panel-body">
+            <div class = "panel-info">
+                  <div class="row">
+                       <div class="col-xs-12 col-md-3">
+                           <span class = "hidden-xs">
+
+                               <a href="#" class="thumbnail"><img src="{% cropped_thumbnail item "cropping" scale=1.0 %}" alt="..."></a>
+                           </span>
+                           <span class = "hidden-sm hidden-md hidden-lg">
+                               <a href="#" class="thumbnail"><img src="{% cropped_thumbnail item "cropping" scale=0.78 %}" alt="..."></a>
+                           </span>
+                       </div>
+                       <div class="col-xs-12 col-md-4">
+                           {{ auction.item.description }}
+                           <br>
+                           <br>
+                           <em>Ships from zipcode {{ auction.zipcode }}</em>
+                           <br>
+                           <br>
+                           This auction ended <strong>{{ days }} days, {{ hours }} hours, and {{ minutes }}
+                            minutes </strong>ago.
+                            <br>
+                       </div>
+
+                       <div class ="col-xs-12 col-md-5">
+                           <div class="form-group">
+                                <p>Your Winning Bid: <strong>${{ auction.current_bid}}</strong></p>
+                                <script src="https://checkout.stripe.com/checkout.js"></script>
+
+                                <input type = "submit" id="buyNow" class ="btn btn-success" value = "Pay Now"/>
+
+                                <script type = "text/javascript">
+                                      var stripe_amount = "{{amount}}"
+                                      var item = "{{item.title}}"
+                                      var handler = StripeCheckout.configure({
+                                        key: 'pk_live_ZuwX78anbWEjFFJjWqKEkBfu',
+                                        // image: '/img/documentation/checkout/marketplace.png',
+                                        token: function(token) {
+                                          var tokenInput = $("<input type=hidden name=stripeToken />").val(token.id);
+                                          var emailInput = $("<input type=hidden name=stripeEmail />").val(token.email);
+                                          $("form").append(tokenInput).append(emailInput).submit();
+                                        }
+                                      });
+
+                                      $('#buyNow').on('click', function(e) {
+                                        // Open Checkout with further options
+                                        handler.open({
+                                          name: 'Circa',
+                                          description: item,
+                                          amount: stripe_amount
+                                        });
+                                        e.preventDefault();
+                                      });
+
+                                      // Close Checkout on page navigation
+                                      $(window).on('popstate', function() {
+                                        handler.close();
+                                      });
+                                </script>
+                            </div>
+    </div>
+{% endblock %}
