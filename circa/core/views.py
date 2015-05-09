@@ -158,6 +158,9 @@ def auction_pay(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
     if request.user.id is not auction.current_bidder.id: #user is trying to pay for someone else's auction
         raise PermissionDenied
+    if auction.paid_for: #user already paid for item
+        return render('expired.html')
+
     elapsed = datetime.datetime.now() - auction.end_date
     days = elapsed.days
     hours, remainder = divmod(elapsed.seconds, 3600)
