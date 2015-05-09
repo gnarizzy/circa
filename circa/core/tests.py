@@ -263,7 +263,7 @@ class CreateAuctionTest(TestCase):
 #payment flow test (pay rendersw correct template, requires login, shows correct pending payments [both one or multiple])
 
 #auction_pay test (correct template, correct item, check for correct user and raise error if incorrect user, actually takes payment,
-#updates buyer and seller on item, updates paid field on auction).
+#updates buyer and seller on item, updates paid field on auction, expired if already paid for).
 
 #test if after item bought redirected to /pay/
 
