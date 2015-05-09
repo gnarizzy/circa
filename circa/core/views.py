@@ -156,6 +156,7 @@ def pending(request):
 @login_required
 def pay(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
+    item = auction.item
     if request.user.id is not auction.current_bidder.id: #user is trying to pay for someone else's auction
         raise PermissionDenied
     if auction.paid_for: #user already paid for item
@@ -167,8 +168,8 @@ def pay(request, auctionid):
     minutes, seconds = divmod(remainder, 60)
     amount = int(auction.current_bid * 100)
     stripe_amount = json.dumps(amount)
-    context = {'days': days, 'hours':hours, 'minutes': minutes, 'auction':auction}
-    return render(request, 'auction_pay.html', context)
+    context = {'days': days, 'hours':hours, 'minutes': minutes, 'auction':auction, 'item':item}
+    return render(request, 'pay.html', context)
 
 def success(request):
     return render(request, 'success.html')
