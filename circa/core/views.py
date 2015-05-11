@@ -81,7 +81,7 @@ def auction_detail(request, auctionid):
     if request.method == 'POST':
           token = request.POST.get('stripeToken', False)
           if token: #Buy Now
-            stripe.api_key = secret_key()
+            stripe.api_key = test_secret_key()
             email = request.POST['stripeEmail']
             amount_in_cents = int(auction.buy_now_price * 100)
             try:
@@ -89,7 +89,7 @@ def auction_detail(request, auctionid):
                     amount = amount_in_cents,
                     currency = "usd",
                     source = token,
-                    description = "Circa Buy Now: " + str(auction.item.title)
+                    description = "Circa Buy Now "+ str(auctionid) + ": " + str(auction.item.title)
                 )
                 auction.buy_now_email = email
                 auction.end_date = datetime.datetime.now()
@@ -101,10 +101,12 @@ def auction_detail(request, auctionid):
                 else:
                     auction.current_bidder = None #change when we create accounts for buy-now people
                 auction.save()
+                return HttpResponseRedirect('/success/')
             except stripe.CardError:
                 context = {'error_message':"Your credit card was declined."}
-                return HttpResponseRedirect('/auction/'+str(auction.id))
-            return HttpResponseRedirect('/success/')
+                #return HttpResponseRedirect('/auction/'+str(auction.id))
+                return HttpResponseRedirect('/')
+
           else: #Place a bid
             #TODO update item.buyer
             form = BidForm(request.POST, auction=auctionid)
@@ -161,14 +163,38 @@ def pay(request, auctionid):
         raise PermissionDenied
     if auction.paid_for: #user already paid for item
         return render(request, 'expired.html')
+    if request.method == 'POST':
+        token = request.POST.get('stripeToken', False)
+        if token: #Successfully submitted Stripe
+            stripe.api_key = test_secret_key()
+            #email = request.POST['stripeEmail']
+            amount_in_cents = int(auction.current_bid * 100)
+            try:
+                charge = stripe.Charge.create(
+                    amount = amount_in_cents,
+                    currency = "usd",
+                    source = token,
+                    description = "Circa Sale " + str(auctionid) + ": " + str(auction.item.title)
+                )
+                item.buyer = request.user
+                auction.paid_for = True
+                auction.save()
+                item.save()
+                return HttpResponseRedirect('/pending/')
 
+            except stripe.CardError:
+                raise Exception
+                context = {'error_message':"Your credit card was declined."}
+                return HttpResponseRedirect('/')
+        else:
+            return HttpResponseRedirect('/sell/')
     elapsed = datetime.datetime.now() - auction.end_date
     days = elapsed.days
     hours, remainder = divmod(elapsed.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     amount = int(auction.current_bid * 100)
     stripe_amount = json.dumps(amount)
-    context = {'days': days, 'hours':hours, 'minutes': minutes, 'auction':auction, 'item':item}
+    context = {'days': days, 'hours':hours, 'minutes': minutes, 'auction':auction, 'amount':stripe_amount, 'item':item}
     return render(request, 'pay.html', context)
 
 def success(request):
