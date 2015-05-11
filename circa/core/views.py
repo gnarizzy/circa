@@ -122,6 +122,7 @@ def auction_detail(request, auctionid):
             else: #unauthenticated user. Redirect to login page, then bring 'em back here.
                   #TODO Figure out how to set next variable in context so manual url isnt needed
                   #TODO If they sign up through this chain of events, bring them back here
+                  #TODO Save the bid they entered and prepopulate form with it when they are brought back here
                 return HttpResponseRedirect('/accounts/login/?next=/auction/'+str(auction.id))
 
     default_bid = auction.current_bid + Decimal(1.00)
@@ -185,9 +186,9 @@ def pay(request, auctionid):
             except stripe.CardError:
                 raise Exception
                 context = {'error_message':"Your credit card was declined."}
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect(request.path)
         else:
-            return HttpResponseRedirect('/sell/')
+            return HttpResponseRedirect('/todo/')
     elapsed = datetime.datetime.now() - auction.end_date
     days = elapsed.days
     hours, remainder = divmod(elapsed.seconds, 3600)
