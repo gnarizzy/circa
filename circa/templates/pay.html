@@ -33,6 +33,8 @@
                                 <p>Your Winning Bid: <strong>${{ auction.current_bid}}</strong></p>
                                 <script src="https://checkout.stripe.com/checkout.js"></script>
 
+                                <form action = "/pay/{{ auction.id }}/" method = "post">
+                                     {% csrf_token %}
                                 <input type = "submit" id="buyNow" class ="btn btn-success" value = "Pay Now"/>
 
                                 <script type = "text/javascript">
@@ -63,6 +65,7 @@
                                         handler.close();
                                       });
                                 </script>
+                                </form>
                             </div>
     </div>
 {% endblock %}
