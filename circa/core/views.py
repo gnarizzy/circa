@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from core.models import Item, Auction
+from core.models import Item, Auction, UserProfile
 from core.forms import ItemForm, AuctionForm, BidForm
 from core.keys import test_secret_key, secret_key
 from django.contrib.auth.models import User
@@ -201,6 +201,10 @@ def pay(request, auctionid):
 #Allows users to connect their Stripe accounts to Circa
 @login_required
 def connect(request):
+    if request.user.user_profile:
+
+    else:
+
     return render(request, 'connect.html')
 def success(request):
     return render(request, 'success.html')
