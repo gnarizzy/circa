@@ -268,12 +268,14 @@ class CreateAuctionTest(TestCase):
 #test if after item bought redirected to /pay/
 
 #test /connect renders correct template, requires login, has apprpriate response based onwhether they've already  connected,
-#responds appropriately if they have already connected, if they fail to authorize connection,
+#responds appropriately if they have already connected, if they fail to authorize connection, if they give the wrong authorization scope
 
 #test that appprpriate measures takes place if Stripe connection is revoked
 
 #test than transfers to seller accounts are proprerly associated with teh purchase of their item
 
 #test refuns of all aspects of the process
+
+#test Stripe receipt confirmation
 
 #403 tests
