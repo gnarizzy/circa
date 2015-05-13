@@ -198,6 +198,10 @@ def pay(request, auctionid):
     context = {'days': days, 'hours':hours, 'minutes': minutes, 'auction':auction, 'amount':stripe_amount, 'item':item}
     return render(request, 'pay.html', context)
 
+#Allows users to connect their Stripe accounts to Circa
+@login_required
+def connect(request):
+    return render(request, 'connect.html')
 def success(request):
     return render(request, 'success.html')
 
