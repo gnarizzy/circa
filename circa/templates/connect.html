@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+ {% load static %}
+{% block body_block %}
+    <div class = "container">
+        <a href = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_663NHttujFEYYZLkMxFjsR0rANfyocBQ&scope=read_write" class = "stripe-connect">
+            <span>Connect with Stripe</span>
+        </a>
+    </div>
+    <link href="{% static 'css/connect.css'%}" rel="stylesheet" media="screen">
+{% endblock %}
