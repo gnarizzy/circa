@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from core.models import Item, Auction, UserProfile
 from core.forms import ItemForm, AuctionForm, BidForm
-from core.keys import test_secret_key, secret_key
+from core.keys import *
 from django.contrib.auth.models import User
 from django import forms
 from decimal import *
@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 import json
 import stripe
-
+import requests
 
 import datetime
 
@@ -203,14 +203,21 @@ def pay(request, auctionid):
 @login_required
 def connect(request):
     if request.user.user_profile: #has a profile, check if there is already stripe data
-        print('hi')
+        pass
+
+        #ask if something is wrong with their connect, if so email us
     else:
         profile = UserProfile(user = request.user)
         code = request.GET.get('code', None)
-
-
+        data = {'grant_type': 'authorization_code',
+            'client_id': test_client_id(),
+            'client_secret': test_secret_key(),
+            'code': code
+           }
+        url = "hi"
 
     return render(request, 'connect.html')
+
 def success(request):
     return render(request, 'success.html')
 
