@@ -270,7 +270,7 @@ class CreateAuctionTest(TestCase):
 #test /connect renders correct template, requires login, has apprpriate response based onwhether they've already  connected,
 #responds appropriately if they have already connected, if they fail to authorize connection, if they give the wrong authorization scope
 
-#test that appprpriate measures takes place if Stripe connection is revoked
+#test that appprpriate measures takes place if Stripe connection is revoked, state token for security
 
 #test than transfers to seller accounts are proprerly associated with teh purchase of their item
 
