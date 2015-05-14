@@ -38,7 +38,7 @@ class Item(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     alt_id = models.TextField(default=None) #Stripe
-    rating = models.DecimalField(max_digits = 4, decimal_places=2, bkank = True)
+    rating = models.DecimalField(max_digits = 4, decimal_places=2, blank = True)
     num_reviews = models.IntegerField(default = 0)
     address = models.TextField(default=None)
     zipcode = models.IntegerField(default = 0)
