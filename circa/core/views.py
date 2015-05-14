@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django import forms
 from decimal import *
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 import json
 import stripe
 import requests
@@ -202,11 +202,18 @@ def pay(request, auctionid):
 #To prevent CSRF, add state token and validate for that
 @login_required
 def connect(request):
-    if request.user.user_profile: #has a profile, check if there is already stripe data
-        pass
+    is_connected = False
+    user = request.user
+    try:
+        user.UserProfile #will throw an exception if it doesn't exist
+        if UserProfile.alt_id: #already connected to Stripe
+            is_connected = True
+    except ObjectDoesNotExist:
+    if not is_connected:
+        stripe.api_key = test_secret_key()
+        account = stripe.Account.create(country='US', managed=True)
+        print(account)
 
-        #ask if something is wrong with their connect, if so email us
-    else:
         profile = UserProfile(user = request.user)
         code = request.GET.get('code', None)
         data = {'grant_type': 'authorization_code',
@@ -214,9 +221,11 @@ def connect(request):
             'client_secret': test_secret_key(),
             'code': code
            }
-        url = "hi"
+        url = "https://connect.stripe.com/oauth/token"
+        response = requests.post(url, params=data)
+        print (response)
 
-    return render(request, 'connect.html')
+        return render(request, 'connect.html')
 
 def success(request):
     return render(request, 'success.html')
