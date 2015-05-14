@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 
 from core.views import index, sell, create_auction, auction_detail
 
+import core.email as email
+
 #Still a lot of work left before these tests constitute a robust suite, but it's a solid start
 
 
@@ -279,3 +281,33 @@ class CreateAuctionTest(TestCase):
 #test Stripe receipt confirmation
 
 #403 tests
+
+class MandrillTest(TestCase):
+
+    def setUp(self):
+        auction = Auction()
+        auction.save()
+
+        desc = 'Potato cannon'
+        photo_1 = 'http://potatocannon.com'
+        seller_1 = User(username = 'greg')
+        seller_1.save()
+
+        item = Item(description = desc, photo = photo_1,
+                          seller = seller_1)
+        item.save()
+
+        buyer_1 = User(username = 'Jared', email = 'jared@example.com')
+        buyer_1.save()
+
+        self.client = Client()
+
+    def test_out_bid_notification(self):
+        response = email.out_bid_notification()
+        pass
+
+    def test_won_auction_notification(self):
+        pass
+
+    def test_welcome_new_user_notification(self):
+        pass

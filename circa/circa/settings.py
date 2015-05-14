@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from core.keys import mandrill_key, mandrill_test_key
 from easy_thumbnails.conf import Settings as thumbnail_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -45,7 +46,12 @@ INSTALLED_APPS = (
     'easy_thumbnails',
     'image_cropping',
     'core',
+    'djrill'
 )
+
+MANDRILL_API_KEY = mandrill_test_key()
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+DEFAULT_FROM_EMAIL = "andrew@usecirca.com"
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
