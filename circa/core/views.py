@@ -199,11 +199,16 @@ def pay(request, auctionid):
     return render(request, 'pay.html', context)
 
 #Allows users to connect their Stripe accounts to Circa
+#To prevent CSRF, add state token and validate for that
 @login_required
 def connect(request):
-    if request.user.user_profile:
-
+    if request.user.user_profile: #has a profile, check if there is already stripe data
+        print('hi')
     else:
+        profile = UserProfile(user = request.user)
+        code = request.GET.get('code', None)
+
+
 
     return render(request, 'connect.html')
 def success(request):
