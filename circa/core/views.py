@@ -209,6 +209,7 @@ def connect(request):
         if UserProfile.alt_id: #already connected to Stripe
             is_connected = True
     except ObjectDoesNotExist:
+        is_connected = False
     if not is_connected:
         stripe.api_key = test_secret_key()
         account = stripe.Account.create(country='US', managed=True)
