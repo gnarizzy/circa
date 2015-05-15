@@ -10,7 +10,7 @@
             s = parseInt(seconds, 10) - 1;
 
             if(d < 0 || h < 0 || m < 0 || s < 0) {
-                display.textContent = "This auction is over!";
+                display.textContent = "";
             } else {
                 setInterval(function() {
                     var displayStr = " " + d + " days, "
