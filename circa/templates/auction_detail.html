@@ -85,8 +85,12 @@
                            <em>Ships from zipcode {{ item.auction.zipcode }}</em>
                            <br>
                            <br>
+                           {% if over == 1 %}
+                           <strong>This auction is over!</strong>
+                           {% else %}
                            This auction ends in<strong><span id="time"> <strong>{{ days }} days, {{ hours }} hours, {{ minutes }}
                             minutes, and {{ seconds }} seconds.</strong></span>
+                           {% endif %}
                             <br>
                        </div>
 
