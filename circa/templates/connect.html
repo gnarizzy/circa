@@ -2,16 +2,20 @@
  {% load static %}
 {% block body_block %}
     <div class = "container">
-        <p>
-            Circa uses <a href="https://stripe.com">Stripe</a> for all payment-related tasks. Stripe powers payments for
-            many popular products and companies such as <a href="http://kickstarter.com">Kickstarter</a>,
-            <a href="http://lyft.com">Lyft</a>, and <a href="http://instacart.com">Instacart</a>. We use Stripe to electronically
-            transfer money to people who sell stuff on Circa. Connect or create your Stripe account and start getting paid!
-        </p>
-        <br>
-        <a href = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_663NHttujFEYYZLkMxFjsR0rANfyocBQ&scope=read_write" class = "stripe-connect">
-            <span>Connect with Stripe</span>
-        </a>
+
+            You've already connected your banking information to Circa, so go sell stuff and get paid!
+
+            <p>
+                Circa uses <a href="https://stripe.com">Stripe</a> for all payment-related tasks. Stripe powers payments for
+                many popular products and companies such as <a href="http://kickstarter.com">Kickstarter</a>,
+                <a href="http://lyft.com">Lyft</a>, and <a href="http://instacart.com">Instacart</a>. We use Stripe to electronically
+                transfer money to people who sell stuff on Circa. Connect or create your Stripe account and start getting paid!
+            </p>
+            <br>
+            <a href = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=ca_663NHttujFEYYZLkMxFjsR0rANfyocBQ&scope=read_write" class = "stripe-connect">
+                <span>Connect with Stripe</span>
+            </a>
+
     </div>
     <link href="{% static 'css/connect.css'%}" rel="stylesheet" media="screen">
 {% endblock %}
