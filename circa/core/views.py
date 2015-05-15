@@ -203,30 +203,21 @@ def pay(request, auctionid):
 @login_required
 def connect(request):
     is_connected = False
-    user = request.user
-    try:
-        user.UserProfile #will throw an exception if it doesn't exist
-        if UserProfile.alt_id: #already connected to Stripe
-            is_connected = True
-    except ObjectDoesNotExist:
+    current_user = request.user
+    if hasattr(current_user, 'UserProfile'):
+            if UserProfile.alt_id: #already connected to Stripe
+                is_connected = True
+    else:
         is_connected = False
     if not is_connected:
+        profile = UserProfile(user = current_user)
         stripe.api_key = test_secret_key()
         account = stripe.Account.create(country='US', managed=True)
-        print(account)
-
-        profile = UserProfile(user = request.user)
-        code = request.GET.get('code', None)
-        data = {'grant_type': 'authorization_code',
-            'client_id': test_client_id(),
-            'client_secret': test_secret_key(),
-            'code': code
-           }
-        url = "https://connect.stripe.com/oauth/token"
-        response = requests.post(url, params=data)
-        print (response)
-
-        return render(request, 'connect.html')
+        profile.alt_id = account['id']
+        #profile.save()
+        is_connected = True
+    context = {'connected': is_connected}
+    return render(request, 'connect.html', context)
 
 def success(request):
     return render(request, 'success.html')
