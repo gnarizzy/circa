@@ -17,7 +17,7 @@ AUCTION_WON = "Dear {},\n\nCongratulations on winning {}! Can you reply to this 
               "Sincerely,\nAndrew\nCS '15 and Co-Founder of Circa"
 
 WELCOME_NEW_USER = "Dear {},\n\nThank you for creating an account with us!  Circa offers the ability to buy and " \
-                   "sell lightly used electronics locally.  We handled payment, shipping, returns, and fraud " \
+                   "sell lightly used electronics locally.  We handle payment, shipping, returns, and fraud " \
                    "protection.\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback " \
                    "on how your experience with us is. We want to create the best way for students to buy and sell " \
                    "electronics.\n\n" \
@@ -26,13 +26,16 @@ WELCOME_NEW_USER = "Dear {},\n\nThank you for creating an account with us!  Circ
 
 def out_bid_notification(user, auction):
     hours_left = datetime.datetime.now() - auction.end_date
-    hours_left = hours_left.seconds / 3600
+    hours_left = '%.2f' % (hours_left.seconds / 3600)
     content = OUT_BID.format(user.username, auction.item.title, auction.current_bid, hours_left, auction.buy_now_price)
+
+    recipient = list()
+    recipient.append(user.email)
 
     message = EmailMessage(
         subject="You've been Out Bid on {}".format(auction.item.title),
         body=content,
-        to=user.email
+        to=recipient
     )
     message.send()
     return message.mandrill_response[0]
@@ -41,10 +44,13 @@ def out_bid_notification(user, auction):
 def auction_won_notification(user, auction):
     content = AUCTION_WON.format(user.username, auction.item.title)
 
+    recipient = list()
+    recipient.append(user.email)
+
     message = EmailMessage(
         subject="You've won {}".format(auction.item.title),
         body=content,
-        to=user.email
+        to=recipient
     )
     message.send()
     return message.mandrill_response[0]
@@ -53,10 +59,13 @@ def auction_won_notification(user, auction):
 def welcome_new_user_notification(user):
     content = WELCOME_NEW_USER.format(user.username)
 
+    recipient = list()
+    recipient.append(user.email)
+
     message = EmailMessage(
         subject="Welcome to Circa!",
         body=content,
-        to=user.email
+        to=recipient
     )
     message.send()
     return message.mandrill_response[0]

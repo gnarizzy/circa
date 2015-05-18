@@ -50,7 +50,11 @@ INSTALLED_APPS = (
     'djrill'
 )
 
-MANDRILL_API_KEY = mandrill_test_key()
+if DEBUG:
+    MANDRILL_API_KEY = mandrill_test_key()
+else:
+    MANDRILL_API_KEY = mandrill_key()
+
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 DEFAULT_FROM_EMAIL = "andrew@usecirca.com"
 
