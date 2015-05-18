@@ -95,6 +95,23 @@ class HomePageTests(TestCase):
 
     # test ordering by soonest auction end date ***Andrew Note: This would probably be a functional test***
 
+# class SellPageTest(TestCase):
+#
+#     def test_sell_url_resolves_to_sell_view(self):
+#         found = resolve('/sell/')
+#         self.assertEqual(found.func, sell)
+#
+#     def test_sell_page_renders_sell_template(self):
+#         response = self.client.get('/sell/')
+#         self.assertTemplateUsed(response, 'sell.html')
+#
+#     def test_sell_page_uses_item_form(self):
+#         response = self.client.get('/sell/')
+#
+#         # I don't think this is being checked correctly
+#         self.assertIsInstance(response.context['form'], ItemForm)
+
+
 class ModelTest(TestCase):
 
     def add_items(self):
@@ -151,6 +168,14 @@ class ModelTest(TestCase):
                 auction=auction
             )
 
+    # TODO revisit when alt_id is established
+    # def user_profile_integrity_issue(self):
+    #     with transaction.atomic():  # Tester's note: This prevents TransactionManagementErrors
+    #         two_faced_user = User.objects.create_user(username='ShiftySteve')
+    #         UserProfile.objects.create(user=two_faced_user)
+    #     with transaction.atomic():
+    #         UserProfile.objects.create(user=two_faced_user)
+
     def test_saving_and_retrieving_items(self):
         self.add_items()
 
@@ -185,29 +210,20 @@ class ModelTest(TestCase):
             self.fail('The seller can also be the buyer')
 
 
-# TODO Add tests for saving and retrieving other models
-# TODO Test one-to-one relations
+    # TODO revisit when alt_id is established
+    # def test_userprofile_is_unique_to_user(self):
+    #     try:
+    #         self.user_profile_integrity_issue()
+    #     except IntegrityError:
+    #         userprofiles = UserProfile.objects.all()
+    #
+    #         self.assertEqual(userprofiles.count(), 1)
+    #     else:
+    #         self.fail('A User can be mapped to more than one UserProfile')
+
+
 # TODO Test form stuff
 # TODO Investigate two urls.py
-#
-# class PostItemTest(TestCase):
-#
-#     def setUp(self):
-#         self.client = Client()
-#
-#     def test_sell_url_resolves_to_sell_view(self):
-#         found = resolve('/sell/')
-#         self.assertEqual(found.func, sell)
-#
-#     def test_sell_page_renders_sell_template(self):
-#         response = self.client.get('/sell/')
-#         self.assertTemplateUsed(response, 'sell.html')
-#
-#     def test_sell_page_uses_item_form(self):
-#         response = self.client.get('/sell/')
-#
-#         # I don't think this is being checked correctly
-#         self.assertIsInstance(response.context['form'], ItemForm)
 
 #may be helpful for writing form tests! http://www.effectivedjango.com/forms.html
 
@@ -215,7 +231,7 @@ class ModelTest(TestCase):
 
     #def_test_redirect_after_successful_form_submission(self):
 
-    # TODO test form validation?
+    # test form validation?
 
 # class CreateAuctionTest(TestCase):
 #
