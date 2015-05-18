@@ -36,9 +36,9 @@ ALLOWED_HOSTS = ['localhost']
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
-    #'django.contrib.sites',
+    'django.contrib.sites',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -111,12 +111,12 @@ USE_TZ = False
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-# if(DEBUG):
-#     # IOURL
-#     SITE_ID = 3
-# else:
-#     # Production
-#     SITE_ID = 4
+if(DEBUG):
+    # IOURL
+    SITE_ID = 3
+else:
+    # Production
+    SITE_ID = 4
 
 REGISTRATION_OPEN = True
 ACCOUNT_ACTIVATION_DAYS = 7
