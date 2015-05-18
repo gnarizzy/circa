@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^pending/', 'core.views.pending', name='pending'),
     url(r'^pay/(?P<auctionid>\d+)/$', 'core.views.pay', name = 'pay'),
     url(r'^connect/', 'core.views.connect', name='connect'),
+    url(r'^policies/terms', 'core.views.terms', name='terms'), #parameterize as we get more policy info
     #url(r'^blog/', include('blog.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
