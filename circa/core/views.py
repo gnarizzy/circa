@@ -226,6 +226,8 @@ def connect(request):
     context = {'connected': is_connected}
     return render(request, 'connect.html', context)
 
+def terms(request):
+    return render(request, 'terms.html')
 def success(request):
     return render(request, 'success.html')
 
