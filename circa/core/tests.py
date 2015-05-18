@@ -1,4 +1,5 @@
 from django.test import TestCase, Client
+from django.utils import timezone
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
@@ -11,15 +12,57 @@ from django.contrib.auth.models import User
 from core.views import index, sell, create_auction, auction_detail
 
 import core.email as email
+from datetime import timedelta
 
 #Still a lot of work left before these tests constitute a robust suite, but it's a solid start
 
 
 class HomePageTests(TestCase):
-    def setUp(self):
-        self.client = Client()
 
-# TODO Check for correct text in case no items are for sale
+    def add_auctions(self):
+        auction1 = Auction.objects.create()
+        auction2 = Auction.objects.create()
+        buyer_1 = User.objects.create(username = 'First Buyer')
+        buyer_2 = User.objects.create(username = 'Second Buyer')
+        seller_1 = User.objects.create(username = 'First Seller')
+        seller_2 = User.objects.create(username = 'Second Seller')
+        item_1=Item.objects.create(
+            title='Broken laser pointer',
+            description='This thing is broken and useless',
+            auction = auction1,
+            buyer=buyer_1,
+            seller=seller_1
+        )
+        item_2=Item.objects.create(
+            title='Ten Gallon Hat',
+            description='If people shoot at you, they will miss',
+            auction = auction2,
+            buyer=buyer_2,
+            seller=seller_2
+        )
+
+    def add_expired_auction(self):
+        expired_auction = Auction.objects.create(end_date=timezone.now() - timedelta(days=1))
+        winning_buyer = User.objects.create(username='Frankendoodle')
+        lucky_seller = User.objects.create(username='Spongebob')
+        Item.objects.create(
+            title='Giant magical pencil',
+            description='\"You doodle, me Spongebob\"',
+            auction = expired_auction,
+            buyer=winning_buyer,
+            seller=lucky_seller
+        )
+
+    def add_auctionless_item(self):
+        buyer = User.objects.create(username='Dwight')
+        seller = User.objects.create(username='Stanley')
+        Item.objects.create(
+            title='Schrute Bucks',
+            description='Conversion rate of Shrute Bucks to Stanley Nickels is 1:1000',
+            buyer=buyer,
+            seller=seller
+        )
+
     def test_root_url_resolves_to_index_view(self):
         found = resolve('/')
         self.assertEqual(found.func, index)
@@ -28,111 +71,106 @@ class HomePageTests(TestCase):
         response = self.client.get('/')
         self.assertTemplateUsed(response, 'index.html')
 
+    def test_home_page_displays_correct_message_with_no_items(self):
+        response = self.client.get('/')
+        self.assertContains(response, 'This is awkward...there\'s nothing for sale!')
+
     def test_home_page_lists_items(self):
-        auction1 = Auction()
-        auction2 = Auction()
-
-        auction1.save()
-        auction2.save()
-
-        buyer_1 = User(username = 'First Buyer')
-        buyer_1.save()
-
-        buyer_2 = User(username = 'Second Buyer')
-        buyer_2.save()
-
-        seller_1 = User(username = 'First Seller')
-        seller_1.save()
-
-        seller_2 = User(username = 'Second Seller')
-        seller_2.save()
-
-        item_1=Item(title='Broken laser pointer',description='This thing is broken and useless',auction = auction1,
-                    buyer=buyer_1, seller=seller_1)
-        item_2=Item(title='Ten Gallon Hat',description='If people shoot at you, they will miss',auction = auction2,
-                    buyer=buyer_2, seller=seller_2)
-        item_1.save()
-        item_2.save()
+        self.add_auctions()
         response = self.client.get('/')
 
         self.assertContains(response,'Broken laser pointer')
         self.assertContains(response,'Ten Gallon Hat')
+        self.assertNotContains(response, 'This is awkward...there\'s nothing for sale!')
 
-    #test ordering by soonest auction end date, test auctions that have ended don't appear
+    def test_home_page_does_not_list_auctions_that_have_ended(self):
+        self.add_auctions()
+        response = self.client.get('/')
 
-class ItemModelTest(TestCase):
-    def setUp(self):
-        self.client = Client()
+        self.assertNotContains(response, 'Giant magical pencil')
 
-# TODO change photo urls to actual files and test accordingly
-# TODO Refactor this
-    def test_saving_and_retrieving_items(self):
+    def test_home_page_does_not_list_items_with_no_auction(self):
+        self.add_auctions()
+        self.add_auctionless_item()
+        response = self.client.get('/')
 
-        auction1 = Auction()
-        auction2 = Auction()
+        self.assertNotContains(response, 'Schrute Bucks')
 
-        auction1.save()
-        auction2.save()
+    #test ordering by soonest auction end date ***Andrew Note: This would probably be a functional test***
 
-        buyer_1 = User(username = 'First Buyer')
-        buyer_1.save()
-
-        buyer_2 = User(username = 'Second Buyer')
-        buyer_2.save()
-
-
-        seller_1 = User(username = 'First Seller')
-        seller_1.save()
-
-        seller_2 = User(username = 'Second Seller')
-        seller_2.save()
-
-        desc = 'Its an SAT, its a tutor, what more do you want?'
-        photo_1 = 'http://someurl.com'
-        first_item = Item(description = desc, photo = photo_1, auction = auction1,
-                          seller = seller_1, buyer = buyer_1)
-
-        first_item.save()
-
-        second_item = Item(description='GYROSCOPES!', auction=auction2, seller = seller_2, buyer = buyer_2)
-        second_item.save()
-
-        saved_items = Item.objects.all()
-        self.assertEqual(saved_items.count(),2)
-
-        first_saved_item = saved_items[0]
-        second_saved_item = saved_items[1]
-
-        self.assertEqual(first_saved_item.description, 'Its an SAT, its a tutor, what more do you want?')
-        self.assertEqual(first_saved_item.photo, 'http://someurl.com')
-        self.assertEqual(first_saved_item.auction, auction1)
-        self.assertEqual(first_saved_item.seller, seller_1)
-        self.assertEqual(first_saved_item.buyer, buyer_1)
-        self.assertEqual(second_saved_item.description, 'GYROSCOPES!')
-
-# TODO Add tests for saving and retrieving other models
-# TODO Test one-to-one relations
-# TODO Test form stuff
-# TODO Investigate two urls.py
-
-class PostItemTest(TestCase):
-
-    def setUp(self):
-        self.client = Client()
-
-    def test_sell_url_resolves_to_sell_view(self):
-        found = resolve('/sell/')
-        self.assertEqual(found.func, sell)
-
-    def test_sell_page_renders_sell_template(self):
-        response = self.client.get('/sell/')
-        self.assertTemplateUsed(response, 'sell.html')
-
-    def test_sell_page_uses_item_form(self):
-        response = self.client.get('/sell/')
-
-        # I don't think this is being checked correctly
-        self.assertIsInstance(response.context['form'], ItemForm)
+# class ItemModelTest(TestCase):
+#     def setUp(self):
+#         self.client = Client()
+#
+# # TODO change photo urls to actual files and test accordingly
+# # TODO Refactor this
+#     def test_saving_and_retrieving_items(self):
+#
+#         auction1 = Auction()
+#         auction2 = Auction()
+#
+#         auction1.save()
+#         auction2.save()
+#
+#         buyer_1 = User(username = 'First Buyer')
+#         buyer_1.save()
+#
+#         buyer_2 = User(username = 'Second Buyer')
+#         buyer_2.save()
+#
+#
+#         seller_1 = User(username = 'First Seller')
+#         seller_1.save()
+#
+#         seller_2 = User(username = 'Second Seller')
+#         seller_2.save()
+#
+#         desc = 'Its an SAT, its a tutor, what more do you want?'
+#         photo_1 = 'http://someurl.com'
+#         first_item = Item(description = desc, photo = photo_1, auction = auction1,
+#                           seller = seller_1, buyer = buyer_1)
+#
+#         first_item.save()
+#
+#         second_item = Item(description='GYROSCOPES!', auction=auction2, seller = seller_2, buyer = buyer_2)
+#         second_item.save()
+#
+#         saved_items = Item.objects.all()
+#         self.assertEqual(saved_items.count(),2)
+#
+#         first_saved_item = saved_items[0]
+#         second_saved_item = saved_items[1]
+#
+#         self.assertEqual(first_saved_item.description, 'Its an SAT, its a tutor, what more do you want?')
+#         self.assertEqual(first_saved_item.photo, 'http://someurl.com')
+#         self.assertEqual(first_saved_item.auction, auction1)
+#         self.assertEqual(first_saved_item.seller, seller_1)
+#         self.assertEqual(first_saved_item.buyer, buyer_1)
+#         self.assertEqual(second_saved_item.description, 'GYROSCOPES!')
+#
+# # TODO Add tests for saving and retrieving other models
+# # TODO Test one-to-one relations
+# # TODO Test form stuff
+# # TODO Investigate two urls.py
+#
+# class PostItemTest(TestCase):
+#
+#     def setUp(self):
+#         self.client = Client()
+#
+#     def test_sell_url_resolves_to_sell_view(self):
+#         found = resolve('/sell/')
+#         self.assertEqual(found.func, sell)
+#
+#     def test_sell_page_renders_sell_template(self):
+#         response = self.client.get('/sell/')
+#         self.assertTemplateUsed(response, 'sell.html')
+#
+#     def test_sell_page_uses_item_form(self):
+#         response = self.client.get('/sell/')
+#
+#         # I don't think this is being checked correctly
+#         self.assertIsInstance(response.context['form'], ItemForm)
 
 #may be helpful for writing form tests! http://www.effectivedjango.com/forms.html
 
@@ -142,32 +180,32 @@ class PostItemTest(TestCase):
 
     # TODO test form validation?
 
-class CreateAuctionTest(TestCase):
-
-    def setUp(self):
-        auction = Auction()
-        auction.save()
-
-        desc = "Potato cannon"
-        photo_1 = "http://potatocannon.com"
-        seller_1 = User(username = "greg")
-        seller_1.save()
-
-        item = Item(description = desc, photo = photo_1,
-                          seller = seller_1)
-        item.save()
-
-        self.client = Client()
-
-    # TODO I believe this is currently mislabeled
-    def test_auction_url_resolves_to_create_auction_view(self):
-        found = resolve('/auction/0/')
-        self.assertEqual(found.func, auction_detail)
-
-    # TODO I also believe this is currently mislabeled
-    def test_auction_page_renders_auction_template(self):
-        response = self.client.get('/createauction/0/')
-        self.assertTemplateUsed(response, 'create_auction.html')
+# class CreateAuctionTest(TestCase):
+#
+#     def setUp(self):
+#         auction = Auction()
+#         auction.save()
+#
+#         desc = "Potato cannon"
+#         photo_1 = "http://potatocannon.com"
+#         seller_1 = User(username = "greg")
+#         seller_1.save()
+#
+#         item = Item(description = desc, photo = photo_1,
+#                           seller = seller_1)
+#         item.save()
+#
+#         self.client = Client()
+#
+#     # TODO I believe this is currently mislabeled
+#     def test_auction_url_resolves_to_create_auction_view(self):
+#         found = resolve('/auction/0/')
+#         self.assertEqual(found.func, auction_detail)
+#
+#     # TODO I also believe this is currently mislabeled
+#     def test_auction_page_renders_auction_template(self):
+#         response = self.client.get('/createauction/0/')
+#         self.assertTemplateUsed(response, 'create_auction.html')
 
     #def test_auction_cant_be_recreated_after_its_created(self):
 
@@ -281,33 +319,3 @@ class CreateAuctionTest(TestCase):
 #test Stripe receipt confirmation
 
 #403 tests
-
-class MandrillTest(TestCase):
-
-    def setUp(self):
-        auction = Auction()
-        auction.save()
-
-        desc = 'Potato cannon'
-        photo_1 = 'http://potatocannon.com'
-        seller_1 = User(username = 'greg')
-        seller_1.save()
-
-        item = Item(description = desc, photo = photo_1,
-                          seller = seller_1)
-        item.save()
-
-        buyer_1 = User(username = 'Jared', email = 'jared@example.com')
-        buyer_1.save()
-
-        self.client = Client()
-
-    def test_out_bid_notification(self):
-        response = email.out_bid_notification()
-        pass
-
-    def test_won_auction_notification(self):
-        pass
-
-    def test_welcome_new_user_notification(self):
-        pass
