@@ -1,31 +1,25 @@
-from django.test import TestCase, Client
-from django.utils import timezone
+from django.contrib.auth.models import User
 from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from core.models import Item
-from core.models import Auction
-from core.forms import ItemForm
-from core.models import UserProfile
-from django.contrib.auth.models import User
+from django.test import TestCase, Client
+from django.utils import timezone
 
+from core.forms import ItemForm
+from core.models import Item, Auction, UserProfile
 from core.views import index, sell, create_auction, auction_detail
 
-import core.email as email
 from datetime import timedelta
-
-#Still a lot of work left before these tests constitute a robust suite, but it's a solid start
-
 
 class HomePageTests(TestCase):
 
     def add_auctions(self):
         auction1 = Auction.objects.create()
         auction2 = Auction.objects.create()
-        buyer_1 = User.objects.create(username = 'First Buyer')
-        buyer_2 = User.objects.create(username = 'Second Buyer')
-        seller_1 = User.objects.create(username = 'First Seller')
-        seller_2 = User.objects.create(username = 'Second Seller')
+        buyer_1 = User.objects.create_user(username='First Buyer')
+        buyer_2 = User.objects.create_user(username='Second Buyer')
+        seller_1 = User.objects.create_user(username='First Seller')
+        seller_2 = User.objects.create_user(username='Second Seller')
         item_1=Item.objects.create(
             title='Broken laser pointer',
             description='This thing is broken and useless',
@@ -43,8 +37,8 @@ class HomePageTests(TestCase):
 
     def add_expired_auction(self):
         expired_auction = Auction.objects.create(end_date=timezone.now() - timedelta(days=1))
-        winning_buyer = User.objects.create(username='Frankendoodle')
-        lucky_seller = User.objects.create(username='Spongebob')
+        winning_buyer = User.objects.create_user(username='Frankendoodle')
+        lucky_seller = User.objects.create_user(username='Spongebob')
         Item.objects.create(
             title='Giant magical pencil',
             description='\"You doodle, me Spongebob\"',
@@ -53,9 +47,9 @@ class HomePageTests(TestCase):
             seller=lucky_seller
         )
 
-    def add_auctionless_item(self):
-        buyer = User.objects.create(username='Dwight')
-        seller = User.objects.create(username='Stanley')
+    def add_item_without_auction(self):
+        buyer = User.objects.create_user(username='Dwight')
+        seller = User.objects.create_user(username='Stanley')
         Item.objects.create(
             title='Schrute Bucks',
             description='Conversion rate of Shrute Bucks to Stanley Nickels is 1:1000',
@@ -91,12 +85,40 @@ class HomePageTests(TestCase):
 
     def test_home_page_does_not_list_items_with_no_auction(self):
         self.add_auctions()
-        self.add_auctionless_item()
+        self.add_item_without_auction()
         response = self.client.get('/')
 
         self.assertNotContains(response, 'Schrute Bucks')
 
     #test ordering by soonest auction end date ***Andrew Note: This would probably be a functional test***
+
+class ModelTest(TestCase):
+
+    def add_items(self):
+        auction_1 = Auction.objects.create
+        seller = User.objects.create_user(username='Breadface')
+        Item.objects.create(
+            title='An old, crappy laptop',
+            description='Water has been spilled on it, so the key board doesn\'t work',
+            photo='http://localhost:8000/picture',
+            seller=seller
+        )
+        Item.objects.create(
+            title='A joystick that no one wants',
+            description=':-(',
+            photo='http://localhost:8000/picture2',
+            seller=seller
+        )
+
+    def test_saving_and_retrieving_items(self):
+        self.add_items()
+
+        saved_item = Item.objects.first()
+
+        self.assertEqual(Item.objects.all().count(), 2)
+        self.assertEqual(saved_item.title, 'An old, crappy laptop')
+        self.assertEqual(saved_item.seller.username, 'Breadface')
+        self.assertEqual(saved_item.auction, None)
 
 # class ItemModelTest(TestCase):
 #     def setUp(self):
