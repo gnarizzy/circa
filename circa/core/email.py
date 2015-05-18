@@ -1,6 +1,6 @@
 # A helper module to generate emails and avoid spaghetti code
 from django.core.mail import EmailMessage
-from circa.settings import SITE_DOMAIN
+from circa.settings import ALLOWED_HOSTS
 
 import datetime
 
@@ -42,7 +42,7 @@ def out_bid_notification(user, auction):
         auction.current_bid,
         time_string,
         auction.buy_now_price,
-        SITE_DOMAIN + '/auction/{}'.format(auction.id)
+        ALLOWED_HOSTS[0] + '/auction/{}'.format(auction.id)
     )
 
     recipient = list()
