@@ -9,13 +9,11 @@
 
                 <form id ="item_form" method="post" action="/sell/"  enctype="multipart/form-data" >
                     {% csrf_token %}
-                    {% for field in form.visible_fields %}
                     <div class="form-group">
-                        {{ field.errors }}
-                        {{ field.help_text }}
-                        {{ field }}
+                        {{ form.as_p }}
+
                     </div>
-                    {%  endfor %}
+
                     <input type="submit" name="submit" class="btn btn-primary" value="List item" />
                 </form>
         <br>
