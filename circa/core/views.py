@@ -119,7 +119,7 @@ def auction_detail(request, auctionid):
                     auction.current_bidder = request.user
 
                     if prev_bidder is not None:
-                        print(out_bid_notification(prev_bidder, auction))
+                        out_bid_notification(prev_bidder, auction)
 
                     if bid * Decimal(1.0999) > auction.buy_now_price:
                         auction.buy_now_price = bid * Decimal(1.1000000)

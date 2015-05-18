@@ -56,7 +56,7 @@ else:
     MANDRILL_API_KEY = mandrill_key()
 
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
-DEFAULT_FROM_EMAIL = "andrew@usecirca.com"
+DEFAULT_FROM_EMAIL = "support@usecirca.com"
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -128,4 +128,6 @@ ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_AUTO_LOGIN = True
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
+
+SITE_DOMAIN = 'localhost:8000'
 
