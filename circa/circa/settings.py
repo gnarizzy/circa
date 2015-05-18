@@ -111,7 +111,12 @@ USE_TZ = False
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-SITE_ID = 2
+if(DEBUG):
+    # IOURL
+    SITE_ID = 3
+else:
+    # Production
+    SITE_ID = 4
 
 REGISTRATION_OPEN = True
 ACCOUNT_ACTIVATION_DAYS = 7
