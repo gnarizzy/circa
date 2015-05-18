@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import resolve
+from django.db import transaction
+from django.db.utils import IntegrityError
 from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.test import TestCase, Client
@@ -79,6 +81,7 @@ class HomePageTests(TestCase):
 
     def test_home_page_does_not_list_auctions_that_have_ended(self):
         self.add_auctions()
+        self.add_expired_auction()
         response = self.client.get('/')
 
         self.assertNotContains(response, 'Giant magical pencil')
@@ -90,90 +93,102 @@ class HomePageTests(TestCase):
 
         self.assertNotContains(response, 'Schrute Bucks')
 
-    #test ordering by soonest auction end date ***Andrew Note: This would probably be a functional test***
+    # test ordering by soonest auction end date ***Andrew Note: This would probably be a functional test***
 
 class ModelTest(TestCase):
 
     def add_items(self):
-        auction_1 = Auction.objects.create
+        auction_1 = Auction.objects.create()
+        auction_2 = Auction.objects.create()
         seller = User.objects.create_user(username='Breadface')
+        buyer = User.objects.create_user(username='ClumpOfHair')
         Item.objects.create(
             title='An old, crappy laptop',
             description='Water has been spilled on it, so the key board doesn\'t work',
             photo='http://localhost:8000/picture',
-            seller=seller
+            seller=seller,
+            buyer=buyer,
+            auction=auction_1
         )
         Item.objects.create(
             title='A joystick that no one wants',
             description=':-(',
             photo='http://localhost:8000/picture2',
-            seller=seller
+            seller=seller,
+            auction=auction_2
         )
+
+    def auction_integrity_issue(self):
+        with transaction.atomic():  # Tester's note: This prevents TransactionManagementErrors
+            overly_enthusiastic_auction = Auction.objects.create()
+            cheatsy_seller = User.objects.create_user(username='ClumpOfHair')
+            Item.objects.create(
+                title='An old, crappy laptop',
+                description='Water has been spilled on it, so the key board doesn\'t work',
+                photo='http://localhost:8000/picture',
+                seller=cheatsy_seller,
+                auction=overly_enthusiastic_auction
+            )
+        with transaction.atomic():
+            Item.objects.create(
+                title='A joystick that no one wants',
+                description=':-(',
+                photo='http://localhost:8000/picture2',
+                seller=cheatsy_seller,
+                auction=overly_enthusiastic_auction
+            )
+
+    def buyer_seller_integrity_issue(self):
+        with transaction.atomic():  # Tester's note: This prevents TransactionManagementErrors
+            auction = Auction.objects.create()
+            remorseful_seller = User.objects.create_user(username='ClumpOfHair')
+            Item.objects.create(
+                title='An old, crappy laptop',
+                description='Water has been spilled on it, so the key board doesn\'t work',
+                photo='http://localhost:8000/picture',
+                seller=remorseful_seller,
+                buyer=remorseful_seller,
+                auction=auction
+            )
 
     def test_saving_and_retrieving_items(self):
         self.add_items()
 
-        saved_item = Item.objects.first()
+        saved_items = Item.objects.all()
 
-        self.assertEqual(Item.objects.all().count(), 2)
-        self.assertEqual(saved_item.title, 'An old, crappy laptop')
-        self.assertEqual(saved_item.seller.username, 'Breadface')
-        self.assertEqual(saved_item.auction, None)
+        item_1 = saved_items[0]
+        item_2 = saved_items[1]
 
-# class ItemModelTest(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#
-# # TODO change photo urls to actual files and test accordingly
-# # TODO Refactor this
-#     def test_saving_and_retrieving_items(self):
-#
-#         auction1 = Auction()
-#         auction2 = Auction()
-#
-#         auction1.save()
-#         auction2.save()
-#
-#         buyer_1 = User(username = 'First Buyer')
-#         buyer_1.save()
-#
-#         buyer_2 = User(username = 'Second Buyer')
-#         buyer_2.save()
-#
-#
-#         seller_1 = User(username = 'First Seller')
-#         seller_1.save()
-#
-#         seller_2 = User(username = 'Second Seller')
-#         seller_2.save()
-#
-#         desc = 'Its an SAT, its a tutor, what more do you want?'
-#         photo_1 = 'http://someurl.com'
-#         first_item = Item(description = desc, photo = photo_1, auction = auction1,
-#                           seller = seller_1, buyer = buyer_1)
-#
-#         first_item.save()
-#
-#         second_item = Item(description='GYROSCOPES!', auction=auction2, seller = seller_2, buyer = buyer_2)
-#         second_item.save()
-#
-#         saved_items = Item.objects.all()
-#         self.assertEqual(saved_items.count(),2)
-#
-#         first_saved_item = saved_items[0]
-#         second_saved_item = saved_items[1]
-#
-#         self.assertEqual(first_saved_item.description, 'Its an SAT, its a tutor, what more do you want?')
-#         self.assertEqual(first_saved_item.photo, 'http://someurl.com')
-#         self.assertEqual(first_saved_item.auction, auction1)
-#         self.assertEqual(first_saved_item.seller, seller_1)
-#         self.assertEqual(first_saved_item.buyer, buyer_1)
-#         self.assertEqual(second_saved_item.description, 'GYROSCOPES!')
-#
-# # TODO Add tests for saving and retrieving other models
-# # TODO Test one-to-one relations
-# # TODO Test form stuff
-# # TODO Investigate two urls.py
+        self.assertEqual(saved_items.count(), 2)
+        self.assertEqual(item_1.title, 'An old, crappy laptop')
+        self.assertEqual(item_1.seller.username, 'Breadface')
+        self.assertIsNone(item_2.buyer)
+
+    def test_auction_to_item_is_one_to_one(self):
+        try:
+            self.auction_integrity_issue()
+        except IntegrityError:
+            saved_items = Item.objects.all()
+
+            self.assertEqual(saved_items.count(), 1)
+        else:
+            self.fail('The Auction/Item relationship is not one-to-one')
+
+    def test_seller_cannot_buy_own_item(self):
+        try:
+            self.buyer_seller_integrity_issue()
+        except IntegrityError:
+            saved_items = Item.objects.all()
+
+            self.assertEqual(saved_items.count(), 0)
+        else:
+            self.fail('The seller can also be the buyer')
+
+
+# TODO Add tests for saving and retrieving other models
+# TODO Test one-to-one relations
+# TODO Test form stuff
+# TODO Investigate two urls.py
 #
 # class PostItemTest(TestCase):
 #

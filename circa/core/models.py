@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from image_cropping import ImageCropField, ImageRatioField
 # Create your models here.
@@ -7,7 +8,7 @@ class Auction(models.Model):
     SHORT = 3
     MEDIUM = 5
     LONG = 7
-    DURATION_CHOICES = ((SHORT, '3 days'),(MEDIUM, '5 days'), (LONG, '7 days'),)
+    DURATION_CHOICES = ((SHORT, '3 days'), (MEDIUM, '5 days'), (LONG, '7 days'),)
 
     starting_bid = models.DecimalField(max_digits=6, decimal_places=2, default=1.00)
     current_bid = models.DecimalField(max_digits=6, decimal_places=2, null=True)
@@ -31,6 +32,12 @@ class Item(models.Model):
     auction = models.OneToOneField(Auction, null=True)
     seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # many items per one seller
     buyer = models.ForeignKey(User, related_name='buyer_profile', null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.seller is not None and self.buyer is not None and self.seller == self.buyer:
+            raise IntegrityError('seller cannot also be the buyer')
+        else:
+            super(Item, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
