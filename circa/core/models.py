@@ -27,7 +27,7 @@ class Auction(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(default='')
-    photo = ImageCropField(blank=True, upload_to='uploaded_images')
+    photo = ImageCropField(upload_to='uploaded_images')
     cropping = ImageRatioField('photo', '225x225')
     auction = models.OneToOneField(Auction, null=True)
     seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # many items per one seller
