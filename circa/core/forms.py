@@ -1,32 +1,33 @@
-from django import forms
-from decimal import *
 from core.models import Item, Auction
 from core.zipcode import zipcodes
+from decimal import *
+from django import forms
 
 class ItemForm(forms.ModelForm):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control'}),max_length=100 )
-    description = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control'}))
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=100)
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+
     class Meta:
         model = Item
-        fields = ('title', 'description','photo')
+        fields = ('title', 'description', 'photo')
 
 class AuctionForm(forms.ModelForm):
-    starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),)
-    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),label = "Buy now price")
-    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}),label = "Pickup zipcode")
+    starting_bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}),)
+    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Buy now price')
+    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Pickup zipcode')
 
-#Make sure starting bid is at least $1.00
+    # Make sure starting bid is at least $1.00
     def clean_starting_bid(self):
         starting_bid = self.cleaned_data['starting_bid']
         if starting_bid < 1:
             raise forms.ValidationError("The minimum starting bid is $1.00.")
         return starting_bid
 
-#Make sure buy now price is at least 10% greater than starting bid
+    # Make sure buy now price is at least 10% greater than starting bid
     def clean_buy_now_price(self):
         try:
             starting_bid = self.cleaned_data['starting_bid']
-        except KeyError: #starting_bid doesn't exist because it was invalid
+        except KeyError:  # starting_bid doesn't exist because it was invalid
             raise forms.ValidationError("Buy now price must be at least 10% higher than starting bid, which must be at "
                                         "least $1.00")
         buy_now_price = self.cleaned_data['buy_now_price']
@@ -36,12 +37,12 @@ class AuctionForm(forms.ModelForm):
 
         return buy_now_price
 
-    #make sure shipping zip code is one we deliver to
+    # make sure shipping zip code is one we deliver to
     def clean_zipcode(self):
-        zip = self.cleaned_data['zipcode']
-        if zip not in zipcodes():
+        zip_code = self.cleaned_data['zipcode']
+        if zip_code not in zipcodes():
             raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
-        return zip
+        return zip_code
 
     class Meta:
         model = Auction
@@ -49,19 +50,18 @@ class AuctionForm(forms.ModelForm):
 
 
 class BidForm (forms.Form):
-    bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class':'form-control'}),
-                             label="Your bid", decimal_places = 2)
-    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control'}),
-                                 label = "Zip code")
-
+    bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                             label='Your bid', decimal_places = 2)
+    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
+                                 label='Zip code')
 
     def __init__(self, *args, **kwargs):
         self.auction = kwargs.pop('auction', None)
         super(BidForm, self).__init__(*args,**kwargs)
 
-#check to make sure bid isn't higher than buy it now?
+    # check to make sure bid isn't higher than buy it now?
 
-#make sure submitted bid is greater than current bid
+    # make sure submitted bid is greater than current bid
     def clean_bid(self):
         bid = self.cleaned_data['bid']
         if self.auction:
@@ -70,7 +70,7 @@ class BidForm (forms.Form):
                 raise forms.ValidationError("Your bid must be greater than the current bid.")
         return bid
 
-#make sure shipping zip code is one we deliver to
+    # make sure shipping zip code is one we deliver to
     def clean_zipcode(self):
         zip = self.cleaned_data['zipcode']
         if zip not in zipcodes():
