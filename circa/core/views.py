@@ -20,7 +20,7 @@ def index(request):
     now = datetime.datetime.now()
     item_list = Item.objects.exclude(auction__isnull=True).exclude(auction__end_date__lte = now)\
         .order_by('auction__end_date')
-    context = {'items':item_list}
+    context = {'items': item_list}
     return render(request, 'index.html', context)
 
 #posting an item
@@ -39,7 +39,7 @@ def sell(request):
             #if form has errors?
     else:
         form = ItemForm()
-    return render(request,'sell.html',{'form':form})
+    return render(request,'sell.html',{'form': form})
 
 #creating an auction for previously posted item
 @login_required
@@ -90,18 +90,23 @@ def auction_detail(request, auctionid):
                     amount=amount_in_cents,
                     currency="usd",
                     source=token,
-                    description="Circa Buy Now "+ str(auctionid) + ": " + str(auction.item.title)
+                    description="Circa Buy Now " + str(auctionid) + ": " + str(auction.item.title)
                 )
                 auction.buy_now_email = email
                 auction.end_date = datetime.datetime.now()
                 auction.current_bid = auction.buy_now_price
                 auction.paid_for = True
+                prev_bidder = auction.current_bidder
                 if request.user.id:  # logged in user used buy it now
                     auction.current_bidder = request.user
                     # TODO update item.buyer
                 else:
                     auction.current_bidder = None  # change when we create accounts for buy-now people
                 auction.save()
+
+                if prev_bidder is not None:
+                    print(lost_auction_notification(prev_bidder, auction))
+
                 return HttpResponseRedirect('/success/')
             except stripe.CardError:
                 context = {'error_message': "Your credit card was declined."}

@@ -11,6 +11,11 @@ OUT_BID = "Hey {},\n\nUnfortunately, you've been outbid on {}. The current bid i
           "Thanks for using Circa, and feel free to reply to this email with any questions or feedback." \
           "\n\nSincerely,\n\nThe Circa Team"
 
+LOST_AUCTION = "Hey {},\n\nUnfortunately, someone has used the buy now option on {}, which " \
+               "has ended the auction. To avoid this in future auctions, you can click \"Buy Now\" to pay for the " \
+               "item immediately and guarantee that you'll get it within 24 hours.\n\nThanks for using Circa, and " \
+               "feel free to reply to this email with any questions or feedback.\n\nSincerely,\n\nThe Circa Team"
+
 AUCTION_WON = "Dear {},\n\nCongratulations on winning {}! Can you reply to this email with your address " \
               "and preferred delivery time? Your item will be delivered within 24 hours of the seller handing it off " \
               "to us.\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how " \
@@ -30,7 +35,6 @@ def out_bid_notification(user, auction):
     time_left = auction.end_date - datetime.datetime.now()
     hours = time_left.total_seconds() / 3600
     minutes = (time_left.total_seconds() / 60) % 60
-
     if hours < 1:
         time_string = '%d minutes' % minutes
     else:
@@ -50,6 +54,20 @@ def out_bid_notification(user, auction):
 
     message = EmailMessage(
         subject="You've been outbid on {}".format(auction.item.title),
+        body=content,
+        to=recipient
+    )
+    message.send()
+    return message.mandrill_response[0]
+
+def lost_auction_notification(user, auction):
+    content = LOST_AUCTION.format(user.username, auction.item.title)
+
+    recipient = list()
+    recipient.append(user.email)
+
+    message = EmailMessage(
+        subject="You've lost the auction for {}".format(auction.item.title),
         body=content,
         to=recipient
     )
