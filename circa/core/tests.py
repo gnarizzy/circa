@@ -95,22 +95,64 @@ class HomePageTests(TestCase):
 
     # test ordering by soonest auction end date ***Andrew Note: This would probably be a functional test***
 
-# class SellPageTest(TestCase):
-#
-#     def test_sell_url_resolves_to_sell_view(self):
-#         found = resolve('/sell/')
-#         self.assertEqual(found.func, sell)
-#
-#     def test_sell_page_renders_sell_template(self):
-#         response = self.client.get('/sell/')
-#         self.assertTemplateUsed(response, 'sell.html')
-#
-#     def test_sell_page_uses_item_form(self):
-#         response = self.client.get('/sell/')
-#
-#         # I don't think this is being checked correctly
-#         self.assertIsInstance(response.context['form'], ItemForm)
+class SellPageTest(TestCase):
 
+    def auth_user(self):
+        User.objects.create_user(username='Juan', password='Pablo')
+        self.client.post('/accounts/login/', {'username': 'Juan', 'password': 'Pablo'})
+
+    def create_item(self):
+        with open('static/images/test_image.jpg','rb') as fp:
+            response = self.client.post(
+                '/sell/',
+                {'title': 'Crap',
+                 'description': 'In a bucket',
+                 'photo': fp}
+            )
+
+    def test_sell_url_resolves_to_sell_view(self):
+        found = resolve('/sell/')
+        self.assertEqual(found.func, sell)
+
+    def test_sell_page_redirects_to_login_when_unauthenticated(self):
+        response = self.client.get('/sell/')
+        self.assertRedirects(response, '/accounts/login/?next=/sell/')
+
+    def test_sell_page_renders_sell_view_when_authenticated(self):
+        self.auth_user()
+        response = self.client.get('/sell/')
+        self.assertTemplateUsed(response, 'sell.html')
+
+    def test_fields_cannot_be_empty(self):
+        self.auth_user()
+        # this is intentionally missing a photo attachement
+        response = self.client.post('/sell/', {'title': 'Crap', 'description': 'In a bucket'})
+
+        self.assertContains(response, 'This field is required.')
+
+    def test_valid_item_submission_goes_to_createauction(self):
+        self.auth_user()
+        with open('static/images/test_image.jpg','rb') as fp:
+            response = self.client.post(
+                '/sell/',
+                {'title': 'Crap',
+                 'description': 'In a bucket',
+                 'photo': fp}
+            )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/createauction/1', response.url)
+
+    def test_valid_item_submission_creates_item(self):
+        self.auth_user()
+        self.create_item()
+
+        all_items = Item.objects.all()
+        user = User.objects.first()
+
+        self.assertEqual(all_items.count(), 1)
+        self.assertEqual(all_items[0].title, 'Crap')
+        self.assertEqual(all_items[0].seller, user)
 
 class ModelTest(TestCase):
 
@@ -332,7 +374,9 @@ class ModelTest(TestCase):
 
 #test that people cant bid on own items
 
-#test that signup defaults to redirecting to home page
+#test that sign up defaults to redirecting to home page
+
+#test that unique usernames AND unique email addresses are enforced
 
 #test that sign up from required login flow redirects to original page
 
