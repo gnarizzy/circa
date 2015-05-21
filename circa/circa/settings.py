@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from core.keys import mandrill_key, mandrill_test_key
+from core.keys import *
 from easy_thumbnails.conf import Settings as thumbnail_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -43,11 +43,12 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
     'registration',
     'easy_thumbnails',
     'image_cropping',
     'core',
-    'djrill'
+    'djrill',
 )
 
 if DEBUG:
@@ -84,7 +85,20 @@ ROOT_URLCONF = 'circa.urls'
 
 WSGI_APPLICATION = 'circa.wsgi.application'
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social.backends.facebook.FacebookOAuth2',
+)
 
+if DEBUG:
+    SOCIAL_AUTH_FACEBOOK_KEY = facebook_test_app_id()
+    SOCIAL_AUTH_FACEBOOK_SECRET = facebook_test_app_secret()
+else:
+    SOCIAL_AUTH_FACEBOOK_KEY = facebook_app_id()
+    SOCIAL_AUTH_FACEBOOK_SECRET = facebook_app_secret()
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_URL = '/accounts/login/'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases

@@ -16,6 +16,7 @@
              <input type="submit" class="btn btn-primary" value="Log in" />
              <input type="hidden" name="next" value="{{ next }}" />
         </form>
+        <p>Or <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a></p>
     <br>
     <p>Feeling sad and left out? <a href="{% url 'registration_register' %}?next={{ next }}">Sign up for Circa</a>!</p>
 </div>
