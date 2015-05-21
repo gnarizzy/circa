@@ -102,7 +102,7 @@ class SellPageTest(TestCase):
         self.client.post('/accounts/login/', {'username': 'Juan', 'password': 'Pablo'})
 
     def create_item(self):
-        with open('static/images/test_image.jpg','rb') as fp:
+        with open('static/other/test_image.jpg','rb') as fp:
             response = self.client.post(
                 '/sell/',
                 {'title': 'Crap',
@@ -132,7 +132,7 @@ class SellPageTest(TestCase):
 
     def test_valid_item_submission_goes_to_createauction(self):
         self.auth_user()
-        with open('static/images/test_image.jpg','rb') as fp:
+        with open('static/other/test_image.jpg','rb') as fp:
             response = self.client.post(
                 '/sell/',
                 {'title': 'Crap',
@@ -153,6 +153,22 @@ class SellPageTest(TestCase):
         self.assertEqual(all_items.count(), 1)
         self.assertEqual(all_items[0].title, 'Crap')
         self.assertEqual(all_items[0].seller, user)
+
+class CreateAuctionTest(TestCase):
+
+    def create_item(self):
+        with open('static/other/test_image.jpg','rb') as fp:
+            response = self.client.post(
+                '/sell/',
+                {'title': 'Crap',
+                 'description': 'In a bucket',
+                 'photo': fp}
+            )
+
+    def test_createauction_url_resolves_to_sell_view(self):
+        self.create_item()
+        found = resolve('/createauction/1')
+        self.assertEqual(found.func, create_auction)
 
 class ModelTest(TestCase):
 
