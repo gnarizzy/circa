@@ -1,0 +1,6 @@
+keys.py
+settings.py
+db.sqlite3
+media/
+.idea/
+__pycache__/
