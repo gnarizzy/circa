@@ -431,4 +431,12 @@ class ModelTest(TestCase):
 
 #test Stripe receipt confirmation
 
-#403 tests
+#403 tests (they come at appropriate times, basically)
+
+#expired page tests
+
+#test that Facebook login works
+
+#test that proper error message comes up if no email address is given
+
+#test that things don't blow up if facebook email is already in server--maybe try to merge accounts by prompting user?
