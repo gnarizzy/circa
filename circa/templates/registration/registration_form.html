@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load static %}
 
 {% block body_block %}
     <div class = "container">
@@ -11,5 +11,9 @@
                             <input type="submit" class="btn btn-primary" value="Sign up" />
                         </div>
                 </form>
+        <br>
+            <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">
+                <img src="{% static 'other/fb-login-image.png' %}" alt = "Log in with Facebook">
+            </a>
     </div>
 {% endblock %}
