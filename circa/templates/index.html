@@ -62,7 +62,7 @@
                                          </a>
                                      </div>
                                      <div class="col-xs-0 col-md-7">
-                                       <span class = "hidden-xs"> {{ item.description }}</span>
+                                       <span class = "hidden-xs"> {{ item.description|linebreaks }}</span>
                                       </div>
                                       <div class ="col-xs-5 col-md-3">
                                        Current Bid: <strong>${{ item.auction.current_bid }}</strong>
