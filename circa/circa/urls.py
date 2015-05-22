@@ -15,17 +15,17 @@ class MyRegistrationView(RegistrationView):
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^todo/','core.views.todo', name= 'todo'),
-    url(r'^sell/','core.views.sell', name= 'sell'),
-    url(r'^createauction/(?P<itemid>\d+)/$','core.views.create_auction',name= 'create_auction'),
-    url(r'^auction/(?P<auctionid>\d+)/$','core.views.auction_detail',name= 'auction_detail'),
+    url(r'^todo/','core.views.todo', name='todo'),
+    url(r'^sell/','core.views.sell', name='sell'),
+    url(r'^createauction/(?P<itemid>\d+)/$','core.views.create_auction', name='create_auction'),
+    url(r'^auction/(?P<auctionid>\d+)/$','core.views.auction_detail', name='auction_detail'),
     url(r'^$', 'core.views.index', name='index'),
-    url(r'^success/', 'core.views.success',name='success'),
-    url(r'^help/', 'core.views.help',name='help'),
+    url(r'^success/', 'core.views.success', name='success'),
+    url(r'^help/', 'core.views.help', name='help'),
     url(r'^pending/', 'core.views.pending', name='pending'),
     url(r'^pay/(?P<auctionid>\d+)/$', 'core.views.pay', name = 'pay'),
     url(r'^connect/', 'core.views.connect', name='connect'),
-    url(r'^policies/terms', 'core.views.terms', name='terms'), #parameterize as we get more policy info
+    url(r'^policies/terms', 'core.views.terms', name='terms'), # parameterize as we get more policy info
     #url(r'^blog/', include('blog.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
