@@ -6,6 +6,7 @@
             padding-top: 70px;
         }
     </style>
+
     <script text="text/javascript">
         function calc_time_left(end, display) {
             var time_left = end - (Date.now() / 1000.0);
@@ -37,54 +38,62 @@
         {% endfor %}
     };
     </script>
+    <link href="{% static 'css/jumbotron-narrow.css'%}" rel="stylesheet" media="screen">
+
 {% endblock %}
 {% block nav_block %}
-<nav class="navbar navbar-inverse navbar-fixed-top">
-
-
+    <nav class="navbar navbar-inverse navbar-fixed-top">
 {% endblock %}
 {% block body_block %}
-    {%  if items %}
-    {% load cropping %}
-    <div class = "container">
-        <div class = "list-group">
-            {% for item in items %}
-                    <div class="panel panel-info">
-                        <div class = "panel-heading">
-                            <h3 class = "panel-title"><a href="/auction/{{item.auction.id}}">{{item.title}}</a></h3>
-                        </div>
-                        <div class = "panel-body">
-                            <div class = "panel-info">
-                                <div class="row">
-                                    <div class="col-xs-7 col-md-2">
-                                        <a href="/auction/{{item.auction.id}}" class="thumbnail">
-                                             <img src="{% cropped_thumbnail item "cropping" scale=0.444 %}" alt="...">
-                                         </a>
-                                     </div>
-                                     <div class="col-xs-0 col-md-7">
-                                       <span class = "hidden-xs"> {{ item.description|linebreaks }}</span>
-                                      </div>
-                                      <div class ="col-xs-5 col-md-3">
-                                       Current Bid: <strong>${{ item.auction.current_bid }}</strong>
-                                       <br>
-                                       Buy now for: <strong>${{ item.auction.buy_now_price }}</strong>
-                                      <br>
-                                       Time Left: <strong><span id="time_left{{ item.auction.id }}"></span></strong>
-                                       </div>
+        <div class = "container">
+            <div class="jumbotron">
+                <h1>Buy and Sell at GT</h1>
+                <p>Circa makes buying and selling electronics around Georgia Tech easy. No more haggling, giving contact info to
+            strangers, awkward meetups, or getting scammed. Scroll down to begin shopping.</p>
+                <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+            </div>
+            <br>
+            {%  if items %}
+            {% load cropping %}
 
+            <div class = "list-group">
+                {% for item in items %}
+                        <div class="panel panel-info">
+                            <div class = "panel-heading">
+                                <h3 class = "panel-title"><a href="/auction/{{item.auction.id}}">{{item.title}}</a></h3>
+                            </div>
+                            <div class = "panel-body">
+                                <div class = "panel-info">
+                                    <div class="row">
+                                        <div class="col-xs-7 col-md-2">
+                                            <a href="/auction/{{item.auction.id}}" class="thumbnail">
+                                                 <img src="{% cropped_thumbnail item "cropping" scale=0.444 %}" alt="...">
+                                             </a>
+                                         </div>
+                                         <div class="col-xs-0 col-md-7">
+                                           <span class = "hidden-xs"> {{ item.description|linebreaks }}</span>
+                                          </div>
+                                          <div class ="col-xs-5 col-md-3">
+                                           Current Bid: <strong>${{ item.auction.current_bid }}</strong>
+                                           <br>
+                                           Buy now for: <strong>${{ item.auction.buy_now_price }}</strong>
+                                          <br>
+                                           Time Left: <strong><span id="time_left{{ item.auction.id }}"></span></strong>
+                                           </div>
+
+                                    </div>
                                 </div>
                             </div>
+
+
                         </div>
 
-
-                    </div>
-
-            {% endfor %}
+                {% endfor %}
+            </div>
+            {% else %}
+                <h2>This is awkward...there's nothing for sale!</h2>
+        {% endif %}
         </div>
-        {% else %}
-            <h2>This is awkward...there's nothing for sale!</h2>
-    {% endif %}
-    </div>
 
 
 {% endblock %}
