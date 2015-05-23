@@ -1,0 +1,71 @@
+{% extends 'base.html'%}
+{% block title_block %}
+    About Circa
+{% endblock %}
+{% block body_block %}
+    <div class = "container">
+       <h1>About Circa</h1>
+        <dl>
+           <dt>What is Circa?</dt>
+               <dd>Circa is a service for the Georgia Tech community that allows students to buy and sell electronics
+                   with each other. We handle all the logistics including pricing, payment, shipping, and fraud protection.
+                   No more haggling over prices with multiple people, coordinating awkward meetups, giving contact information
+                   to strangers, or getting scammed!</dd>
+               <br>
+           <dt>How does buying on Circa work?</dt>
+                <dd>
+                    <ol>
+                        <li>Bid on an item (or use the Buy Now option to skip to step 3)</li>
+                        <li>Win the auction</li>
+                        <li>Pay securely online</li>
+                        <li>The item arrives at your doorstep the next day</li>
+                        <li>Profit???</li>
+                    </ol>
+                </dd>
+                <br>
+            <dt>How does selling on Circa work?</dt>
+                <dd>
+                    <ol>
+                        <li>Post your item, and share the link with others</li>
+                        <li>We pick up the item and you get paid. Circa takes a 10% commission to help us cover
+                        payment processing, delivery costs, and hosting expenses.</li>
+                        <li>Profit!!!</li>
+                    </ol>
+                </dd>
+            `   <br>
+           <dt>How do returns on Circa work?</dt>
+                <dd>
+                    <ol>
+                        <li>Tell us you want to return the item within 30 days of purchase. No questions asked.</li>
+                        <li>We pick it up, you get your money back!</li>
+                    </ol>
+                </dd>
+                <br>
+           <dt>Is my credit card number safe on Circa?</dt>
+                <dd>
+                    Our site uses <a href = "https://en.wikipedia.org/wiki/Transport_Layer_Security">Secure Sockets Layer
+                    </a> to force <a href = "https://en.wikipedia.org/wiki/HTTPS">HTTPS </a> on every page, ensuring
+                    that data transferred between your computer and Circa is encrypted. Circa uses
+                    <a href = "https://stripe.com">Stripe</a> for payment processing, so your
+                    credit card number never touches our server. Even if we're hacked, your credit card is safe.
+                    You can learn more about <a href = "https://stripe.com/help/security">Stripe's security measures
+                    here.</a>
+                    <br>
+                    If you find a security issue or bug of any other kind, please email support@usecirca.com immediately
+                    and we'll resolve it as soon as possible.
+                </dd>
+                <br>
+           <dt>Where is Circa available?</dt>
+                <dd>
+                    Circa is available to all the zip codes around Georgia Tech: 30308, 30309, 30313, 30318, and 30332.
+                    Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!
+                </dd>
+                <br>
+           <dt>I still need help! What do I do?</dt>
+                <dd>
+                    Email us at support@usecirca.com. We'll get back to you in under 24 hours or we'll buy you donuts!
+                </dd>
+        </dl>
+    </div>
+
+{% endblock %}
