@@ -46,13 +46,15 @@
 {% endblock %}
 {% block body_block %}
         <div class = "container">
-            <div class="jumbotron">
-                <h1>Buy and Sell at GT</h1>
-                <p>Circa makes buying and selling electronics around Georgia Tech easy. No more haggling, giving contact info to
-            strangers, awkward meetups, or getting scammed. Scroll down to begin shopping.</p>
-                <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
-            </div>
-            <br>
+            {% if not user.id %}
+                <div class="jumbotron">
+                    <h1>Buy and Sell at GT</h1>
+                    <p>Circa makes buying and selling electronics around Georgia Tech easy. No more haggling, giving contact info to
+                strangers, awkward meetups, or getting scammed. Scroll down to begin shopping.</p>
+                    <p><a class="btn btn-primary btn-lg" href="/about" role="button">Learn more</a></p>
+                </div>
+                <br>
+            {% endif %}
             {%  if items %}
             {% load cropping %}
 
