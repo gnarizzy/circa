@@ -233,6 +233,10 @@ def connect(request):
 
 def terms(request):
     return render(request, 'terms.html')
+
+def about(request):
+    return render(request, 'about.html')
+
 def success(request):
     return render(request, 'success.html')
 
