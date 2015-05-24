@@ -17,7 +17,7 @@
              <input type="hidden" name="next" value="{{ next }}" />
         </form>
         <br>
-            <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">
+            <a href="{% url 'social:begin' 'facebook' %}?next={{ next }}">
                 <img src="{% static 'other/fb-login-image.png' %}" alt = "Log in with Facebook">
             </a>
     <br>
