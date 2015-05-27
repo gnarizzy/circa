@@ -20,7 +20,8 @@
             <a href="{% url 'social:begin' 'facebook' %}?next={{ next }}">
                 <img src="{% static 'other/fb-login-image.png' %}" alt = "Log in with Facebook">
             </a>
-    <br>
+    <br><br>
     <p>Feeling sad and left out? <a href="{% url 'registration_register' %}?next={{ next }}">Sign up for Circa</a>!</p>
+    <p>Feeling forgetful? <a href="{% url 'auth_password_reset' %}">Reset your password</a>!</p>
 </div>
 {% endblock %}
