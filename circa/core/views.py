@@ -132,7 +132,23 @@ def auction_detail(request, auctionid):
                     if bid * Decimal(1.0999) > auction.buy_now_price:
                         auction.buy_now_price = bid * Decimal(1.1000000)
                     auction.save()
-
+                else: #invalid bid...lots of repeated code here :(
+                    default_bid = auction.current_bid + Decimal(1.00)
+                    item = auction.item
+                    if auction.end_date < datetime.datetime.now():
+                        over = 1
+                    else:
+                        over = 0
+                    time_left = auction.end_date - datetime.datetime.now()
+                    days = time_left.days
+                    hours, remainder = divmod(time_left.seconds, 3600)
+                    minutes, seconds = divmod(remainder, 60)
+                    amount = int(auction.buy_now_price * 100)
+                    stripe_amount = json.dumps(amount)
+                    item_json = json.dumps(item.title)
+                    context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
+                               'amount':stripe_amount, 'over': over}
+                    return render(request, 'auction_detail.html', context)
                 return HttpResponseRedirect(request.path)
             else:  # unauthenticated user. Redirect to login page, then bring 'em back here.
                 # TODO Figure out how to set next variable in context so manual url isn't needed
