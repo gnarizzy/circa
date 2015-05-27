@@ -74,6 +74,7 @@ class BidForm (forms.Form):
     def clean_zipcode(self):
         zip = self.cleaned_data['zipcode']
         if zip not in zipcodes():
-            raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
+            raise forms.ValidationError("Unfortunately, Circa is only available in zips near Georgia Tech. Visit our "
+                                        "help page to see which zipcodes are available.")
         return zip
 
