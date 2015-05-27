@@ -442,3 +442,7 @@ class ModelTest(TestCase):
 #test that proper error message comes up if no email address is given
 
 #test that things don't blow up if facebook email is already in server--maybe try to merge accounts by prompting user?
+
+#test password reset
+
+#test force unique email addresses and usernames
