@@ -105,7 +105,7 @@ def auction_detail(request, auctionid):
                     auction.current_bidder = None  # change when we create accounts for buy-now people
                 auction.save()
 
-                print(auction_won_buy_now_notification(auction))
+                print(auction_won_buy_now_notification(email, auction))
 
                 if prev_bidder is not None:
                     print(lost_auction_notification(prev_bidder, auction))
@@ -132,7 +132,7 @@ def auction_detail(request, auctionid):
                     if bid * Decimal(1.0999) > auction.buy_now_price:
                         auction.buy_now_price = bid * Decimal(1.1000000)
                     auction.save()
-                else: #invalid bid...lots of repeated code here :(
+                else: # invalid bid...lots of repeated code here :(
                     default_bid = auction.current_bid + Decimal(1.00)
                     item = auction.item
                     if auction.end_date < datetime.datetime.now():
@@ -197,6 +197,7 @@ def pay(request, auctionid):
         return render(request, 'expired.html')
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
+        email = request.POST['stripeEmail']
         if token: # Successfully submitted Stripe
             stripe.api_key = test_secret_key()
             # email = request.POST['stripeEmail']
@@ -213,7 +214,7 @@ def pay(request, auctionid):
                 auction.save()
                 item.save()
 
-                auction_won_buy_now_notification(auction)
+                auction_won_buy_now_notification(email, auction)
 
                 return HttpResponseRedirect('/pending/')
 

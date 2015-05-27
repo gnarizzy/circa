@@ -96,11 +96,11 @@ def auction_won_notification(user, auction):
     message.send()
     return message.mandrill_response[0]
 
-def auction_won_buy_now_notification(auction):
+def auction_won_buy_now_notification(email, auction):
     content = AUCTION_WON_BUY_NOW.format(auction.item.title, auction.buy_now_price)
 
     recipient = list()
-    recipient.append(auction.buy_now_email)
+    recipient.append(email)
 
     message = EmailMessage(
         subject="You've bought {}".format(auction.item.title),
