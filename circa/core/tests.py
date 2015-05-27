@@ -350,6 +350,8 @@ class ModelTest(TestCase):
 
     #def test_bid_only_valid_if_buyer_zip_code_is_valid(self):
 
+    #def test_error_message_if_invalid_ziocode
+
 #class AuctionEndTest(TestCase):
 
     #def test_appropriate_text_on_auction_detail_page_when_auction_ends(self):
