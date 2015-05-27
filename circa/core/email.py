@@ -18,13 +18,21 @@ LOST_AUCTION = "Hey {},\n\nUnfortunately, someone has used the buy now option on
 
 AUCTION_WON = "Dear {},\n\nCongratulations on winning {}! Can you reply to this email with your address " \
               "and preferred delivery time? Your item will be delivered within 24 hours of the seller handing it off " \
-              "to us.\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how " \
+              "to us.\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how " \
               "your experience with us was. We want to create the best way for students to buy and sell " \
               "electronics.\n\n" \
               "Sincerely,\n\nThe Circa Team"
 
+AUCTION_WON_BUY_NOW = "Hello,\n\nCongratulations on getting the {}! This email is to confirm that you paid ${} for this " \
+                      "item.  Can you reply with your address " \
+                      "and preferred delivery time? Your item will be delivered within 24 hours of the seller handing it off " \
+                      "to us.\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how " \
+                      "your experience with us was. We want to create the best way for students to buy and sell " \
+                      "electronics.\n\n" \
+                      "Sincerely,\n\nThe Circa Team"
+
 WELCOME_NEW_USER = "Dear {},\n\nThank you for creating an account with us!  Circa offers the ability to buy and " \
-                   "sell lightly used electronics locally.  We handle payment, shipping, returns, and fraud " \
+                   "sell electronics locally.  We handle payment, shipping, returns, and fraud " \
                    "protection.\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback " \
                    "on how your experience with us is. We want to create the best way for students to buy and sell " \
                    "electronics.\n\n" \
@@ -88,6 +96,19 @@ def auction_won_notification(user, auction):
     message.send()
     return message.mandrill_response[0]
 
+def auction_won_buy_now_notification(auction):
+    content = AUCTION_WON_BUY_NOW.format(auction.item.title, auction.buy_now_price)
+
+    recipient = list()
+    recipient.append(auction.buy_now_email)
+
+    message = EmailMessage(
+        subject="You've bought {}".format(auction.item.title),
+        body=content,
+        to=recipient
+    )
+    message.send()
+    return message.mandrill_response[0]
 
 def welcome_new_user_notification(user):
     content = WELCOME_NEW_USER.format(user.username)

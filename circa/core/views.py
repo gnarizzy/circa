@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from core.email import *
@@ -15,7 +16,7 @@ import requests
 
 import datetime
 
-#home page that shows items with associated auctions that haven't already ended
+# home page that shows items with associated auctions that haven't already ended
 def index(request):
     now = datetime.datetime.now()
     item_list = Item.objects.exclude(auction__isnull=True).exclude(auction__end_date__lte = now)\
@@ -104,6 +105,8 @@ def auction_detail(request, auctionid):
                     auction.current_bidder = None  # change when we create accounts for buy-now people
                 auction.save()
 
+                print(auction_won_buy_now_notification(auction))
+
                 if prev_bidder is not None:
                     print(lost_auction_notification(prev_bidder, auction))
 
@@ -129,7 +132,8 @@ def auction_detail(request, auctionid):
                     if bid * Decimal(1.0999) > auction.buy_now_price:
                         auction.buy_now_price = bid * Decimal(1.1000000)
                     auction.save()
-                return HttpResponseRedirect('/auction/'+str(auction.id))
+
+                return HttpResponseRedirect(request.path)
             else:  # unauthenticated user. Redirect to login page, then bring 'em back here.
                 # TODO Figure out how to set next variable in context so manual url isn't needed
                 # TODO If they sign up through this chain of events, bring them back here
@@ -192,6 +196,9 @@ def pay(request, auctionid):
                 auction.paid_for = True
                 auction.save()
                 item.save()
+
+                auction_won_buy_now_notification(auction)
+
                 return HttpResponseRedirect('/pending/')
 
             except stripe.CardError:
