@@ -83,7 +83,7 @@ def auction_detail(request, auctionid):
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
         if token:  # Buy Now
-            stripe.api_key = test_secret_key()
+            stripe.api_key = secret_key()
             email = request.POST['stripeEmail']
             amount_in_cents = int(auction.buy_now_price * 100)
             try:
@@ -199,7 +199,7 @@ def pay(request, auctionid):
         token = request.POST.get('stripeToken', False)
         email = request.POST['stripeEmail']
         if token: # Successfully submitted Stripe
-            stripe.api_key = test_secret_key()
+            stripe.api_key = secret_key()
             # email = request.POST['stripeEmail']
             amount_in_cents = int(auction.current_bid * 100)
             try:
@@ -247,7 +247,7 @@ def connect(request):
         is_connected = False
     if not is_connected:
         profile = UserProfile(user = current_user)
-        stripe.api_key = test_secret_key()
+        stripe.api_key = secret_key()
         account = stripe.Account.create(country='US', managed=True)
         profile.alt_id = account['id']
         # profile.save()
