@@ -171,7 +171,7 @@ def auction_detail(request, auctionid):
     stripe_amount = json.dumps(amount)
     item_json = json.dumps(item.title)
     context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
-               'amount':stripe_amount, 'over': over}
+               'amount':stripe_amount, 'over': over, 'stripe_key': public_key()}
     return render(request, 'auction_detail.html', context)
 
 # Shows all outstanding, unpaid auctions for user
