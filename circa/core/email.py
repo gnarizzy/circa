@@ -97,7 +97,7 @@ def auction_won_notification(user, auction):
     return message.mandrill_response[0]
 
 def auction_won_buy_now_notification(email, auction):
-    content = AUCTION_WON_BUY_NOW.format(auction.item.title, auction.buy_now_price)
+    content = AUCTION_WON_BUY_NOW.format(auction.item.title, auction.current_bid)
 
     recipient = list()
     recipient.append(email)
