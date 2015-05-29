@@ -19,7 +19,7 @@ import datetime
 # home page that shows items with associated auctions that haven't already ended
 def index(request):
     now = datetime.datetime.now()
-    item_list = Item.objects.exclude(auction__isnull=True).exclude(auction__end_date__lte = now)\
+    item_list = Item.objects.exclude(auction__isnull=True).exclude(auction__end_date__lte=now)\
         .order_by('auction__end_date')
     context = {'items': item_list}
     return render(request, 'index.html', context)
@@ -60,10 +60,6 @@ def create_auction(request, itemid):
         if form.is_valid():
             auction = form.save(commit=False)
             auction.current_bid = auction.starting_bid
-            now = datetime.datetime.now()
-            duration = datetime.timedelta(days=auction.duration)
-            end_date = now + duration
-            auction.end_date = end_date
             auction.save()
             item.auction = auction
             item.save()
@@ -79,6 +75,9 @@ def create_auction(request, itemid):
 # TODO use keys.py file to send public key to template
 def auction_detail(request, auctionid):
     auction = get_object_or_404(Auction, pk=auctionid)
+
+    default_bid = auction.current_bid + Decimal(1.00)
+    form = BidForm(initial={'bid': default_bid})  # pre-populate offer with $1.00 above current offer
 
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
@@ -116,13 +115,14 @@ def auction_detail(request, auctionid):
                 # return HttpResponseRedirect('/auction/'+str(auction.id))
                 return HttpResponseRedirect('/')
 
-        else:  # Place a bid
+        else:  # Make an Offer
             # TODO update item.buyer
             form = BidForm(request.POST, auction=auctionid)
             if request.user.is_authenticated():
                 if form.is_valid():
                     bid = form.cleaned_data['bid']
                     auction.current_bid = bid
+                    auction.end_date = datetime.datetime.now() + datetime.timedelta(hours=1)
                     prev_bidder = auction.current_bidder
                     auction.current_bidder = request.user
 
@@ -132,46 +132,30 @@ def auction_detail(request, auctionid):
                     if bid * Decimal(1.0999) > auction.buy_now_price:
                         auction.buy_now_price = bid * Decimal(1.1000000)
                     auction.save()
-                else: # invalid bid...lots of repeated code here :(
-                    default_bid = auction.current_bid + Decimal(1.00)
-                    item = auction.item
-                    if auction.end_date < datetime.datetime.now():
-                        over = 1
-                    else:
-                        over = 0
-                    time_left = auction.end_date - datetime.datetime.now()
-                    days = time_left.days
-                    hours, remainder = divmod(time_left.seconds, 3600)
-                    minutes, seconds = divmod(remainder, 60)
-                    amount = int(auction.buy_now_price * 100)
-                    stripe_amount = json.dumps(amount)
-                    item_json = json.dumps(item.title)
-                    context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
-                               'amount':stripe_amount, 'over': over}
-                    return render(request, 'auction_detail.html', context)
-                return HttpResponseRedirect(request.path)
+                    return HttpResponseRedirect(request.path)
             else:  # unauthenticated user. Redirect to login page, then bring 'em back here.
                 # TODO Figure out how to set next variable in context so manual url isn't needed
                 # TODO If they sign up through this chain of events, bring them back here
                 # TODO Save the bid they entered and prepopulate form with it when they are brought back here
                 return HttpResponseRedirect('/accounts/login/?next=/auction/'+str(auction.id))
 
-    default_bid = auction.current_bid + Decimal(1.00)
-    form = BidForm(initial={'bid': default_bid})  # pre-populate bid with $1.00 above current bid
     item = auction.item
-    if auction.end_date < datetime.datetime.now():
-        over = 1
+    minutes = 0
+    seconds = 0
+    if auction.end_date is None:
+        status = 2
+    elif auction.end_date < datetime.datetime.now():
+        status = 1
     else:
-        over = 0
-    time_left = auction.end_date - datetime.datetime.now()
-    days = time_left.days
-    hours, remainder = divmod(time_left.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
+        status = 0
+        minutes, seconds = divmod((auction.end_date - datetime.datetime.now()).total_seconds(), 60)
+        minutes = round(minutes)
+        seconds = round(seconds)
     amount = int(auction.buy_now_price * 100)
     stripe_amount = json.dumps(amount)
     item_json = json.dumps(item.title)
-    context = {'auction':auction, 'form':form,'item':item, 'days':days,'hours':hours,'minutes':minutes,'seconds':seconds,
-               'amount':stripe_amount, 'over': over, 'stripe_key': public_key()}
+    context = {'auction': auction, 'form': form,'item': item, 'amount': stripe_amount, 'status': status,
+               'minutes': minutes, 'seconds': seconds, 'stripe_key': public_key()}
     return render(request, 'auction_detail.html', context)
 
 # Shows all outstanding, unpaid auctions for user
@@ -184,7 +168,7 @@ def pending(request):
     auctions = Auction.objects.filter(current_bidder=user).filter(paid_for=False).filter(end_date__lt=now)
     for auction in auctions:
         items.append(auction.item)
-    return render(request, 'pending.html', {'items':items})
+    return render(request, 'pending.html', {'items': items})
 
 # uses stripe checkout for user to pay for auction once bidding ends
 @login_required
@@ -193,7 +177,7 @@ def pay(request, auctionid):
     item = auction.item
     if request.user.id is not auction.current_bidder.id:  # user is trying to pay for someone else's auction
         raise PermissionDenied
-    if auction.paid_for: # user already paid for item
+    if auction.paid_for:  # user already paid for item
         return render(request, 'expired.html')
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)

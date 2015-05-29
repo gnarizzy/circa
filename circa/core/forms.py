@@ -46,12 +46,12 @@ class AuctionForm(forms.ModelForm):
 
     class Meta:
         model = Auction
-        fields = ('starting_bid', 'buy_now_price','duration', 'zipcode')
+        fields = ('starting_bid', 'buy_now_price', 'zipcode')
 
 
 class BidForm (forms.Form):
     bid = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
-                             label='Your bid', decimal_places = 2)
+                             label='Your offer', decimal_places = 2)
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                  label='Zip code')
 

@@ -2,32 +2,21 @@
 {% load static %}
 {% block title_block %}{{ item.title }}|Circa{% endblock %}
 {% block head_block %}
-    <script type="text/javascript">
-        function countdown(days, hours, minutes, seconds, display) {
-            var d = parseInt(days, 10),
-            h = parseInt(hours, 10),
-            m = parseInt(minutes, 10),
+<script type="text/javascript">
+    function countdown(minutes, seconds, display) {
+            m = parseInt(minutes, 10);
             s = parseInt(seconds, 10) - 1;
 
-            if(d < 0 || h < 0 || m < 0 || s < 0) {
+            if(s < 0) {
                 display.textContent = "";
             } else {
                 setInterval(function() {
-                    var displayStr = " " + d + " days, "
-                     + h + " hours, " + m + " minutes, and " + s + " seconds.";
+                    var displayStr = m + " minutes and " + s + " seconds";
                     if(--s < 0) {
                         if(--m < 0) {
-                            if(--h < 0) {
-                                if(--d < 0) {
-                                    displayStr = "";
-                                } else {
-                                    h = 23;
-                                }
-                            } else {
-                                m = 59;
-                            }
+                            displayStr = "";
                         } else {
-                            s = 59;
+                            s = 59
                         }
                     }
                     display.textContent = displayStr;
@@ -36,9 +25,9 @@
         }
         window.onload = function () {
         var display = document.querySelector('#time');
-        countdown({{ days }}, {{ hours }}, {{ minutes }}, {{ seconds }}, display);
+        countdown({{ minutes }}, {{ seconds }}, display);
         };
-  </script>
+</script>
 {% endblock %}
 
 {% block body_block %}
@@ -47,14 +36,14 @@
     {% if user.id and user.id == item.seller.id %}
     <div class="alert alert-info" role="alert">
             <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-            This is your item. Share this link and get more bids!
+            This is your item. Share this link and get more offers!
     </div>
     {% endif %}
 
     {% if item.auction.current_bidder.id and user.id == item.auction.current_bidder.id %}
         <div class="alert alert-success" role="alert">
             <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
-            You are the highest bidder!
+            You currently have the highest offer!
         </div>
     {% endif %}
     {% if error_message %}
@@ -85,17 +74,22 @@
                            <em>Ships from zipcode {{ item.auction.zipcode }}</em>
                            <br>
                            <br>
-                           {% if over == 1 %}
-                           <strong>This auction is over!</strong>
+                           {% if status == 2 %}
+                           <strong>Nobody has made an offer on this item yet</strong>
+                           {% elif status == 1 %}
+                           <strong>This item has been claimed</strong>
                            {% else %}
-                           This auction ends in <strong><span id="time">{{ days }} days, {{ hours }} hours, {{ minutes }}
-                            minutes, and {{ seconds }} seconds.</span></strong>
+                           The current offer will be accepted in
+                           <br>
+                           <strong><span id="time"> {{ minutes }} minutes and {{ seconds }} seconds</span></strong>
+                           <br>
+                            unless a higher offer is made.
                            {% endif %}
                             <br>
                        </div>
 
                        <div class ="col-xs-12 col-md-5">
-                            Current Bid: <strong>${{ item.auction.current_bid }}</strong>
+                            Current Offer: <strong>${{ item.auction.current_bid }}</strong>
                             <br>
                             <br>
                             <form class="form-inline" action = "/auction/{{ auction.id }}/" method = "post">
@@ -103,9 +97,9 @@
                                  {% csrf_token %}
                                  {{ form.as_p }}
                                  {% if user.id and user.id == item.seller.id or over == 1%}
-                                 <input type = "submit" class ="btn btn-primary disabled" value = "Place Bid"/>
+                                 <input type = "submit" class ="btn btn-primary disabled" value = "Make Offer"/>
                                  {% else %}
-                                 <input type = "submit" class ="btn btn-primary" value = "Place Bid"/>
+                                 <input type = "submit" class ="btn btn-primary" value = "Make Offer"/>
                                  {% endif %}
                                  </div>
                             </form>
