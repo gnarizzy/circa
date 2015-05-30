@@ -3,7 +3,7 @@
 {% load cropping %}
     <div class = "container">
         <div class="panel panel-info">
-        <div class = "panel-heading"><h1 class = "panel-title">{{ auction.item.title }}</h1></div>
+        <div class = "panel-heading"><h1 class = "panel-title">{{ listing.item.title }}</h1></div>
         <div class = "panel-body">
             <div class = "panel-info">
                   <div class="row">
@@ -17,23 +17,23 @@
                            </span>
                        </div>
                        <div class="col-xs-12 col-md-4">
-                           {{ auction.item.description }}
+                           {{ listing.item.description }}
                            <br>
                            <br>
-                           <em>Ships from zipcode {{ auction.zipcode }}</em>
+                           <em>Ships from zipcode {{ listing.zipcode }}</em>
                            <br>
                            <br>
-                           This auction ended <strong>{{ days }} days, {{ hours }} hours, and {{ minutes }}
+                           This listing ended <strong>{{ days }} days, {{ hours }} hours, and {{ minutes }}
                             minutes </strong>ago.
                             <br>
                        </div>
 
                        <div class ="col-xs-12 col-md-5">
                            <div class="form-group">
-                                <p>Your Winning Bid: <strong>${{ auction.current_bid}}</strong></p>
+                                <p>Your Winning Offer: <strong>${{ listing.current_offer}}</strong></p>
                                 <script src="https://checkout.stripe.com/checkout.js"></script>
 
-                                <form action = "/pay/{{ auction.id }}/" method = "post">
+                                <form action = "/pay/{{ listing.id }}/" method = "post">
                                      {% csrf_token %}
                                 <input type = "submit" id="buyNow" class ="btn btn-success" value = "Pay Now"/>
 
@@ -67,5 +67,10 @@
                                 </script>
                                 </form>
                             </div>
+                       </div>
+                  </div>
+            </div>
+        </div>
+        </div>
     </div>
 {% endblock %}

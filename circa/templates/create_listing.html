@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title_block %}
+    Create a Listing
+{% endblock %}
+{% block body_block %}
+    <div class = "container">
+        <h1>Create a listing</h1><br>
+        <div class ="col-xs-12 col-md-3">
+         <form id ="listing_form" method="post" action="/createlisting/{{ item.id }}/">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" name="submit" class="btn btn-success" value="Create Listing" />
+         </form>
+         </div>
+    </div>
+{% endblock %}

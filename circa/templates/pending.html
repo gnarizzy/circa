@@ -2,26 +2,26 @@
 {% block body_block %}
     <div class = "container">
         <h1>
-            Pending auctions
+            Pending offers
         </h1>
         {% if items %}
-            <p>You've won these auctions but haven't paid for them yet. Pay now so you can get your stuff!</p>
+            <p>Your offers have been accepted on these items, but you haven't paid for them yet. Pay now so you can get your stuff!</p>
             <br>
             <table class = "table table-striped">
             <tr>
                 <th>Item</th>
-                <th>Your Winning Bid</th>
+                <th>Your Winning Offer</th>
             </tr>
             {% for item in items %}
                 <tr>
-                    <td><a href = "/pay/{{item.auction.id}}/">{{item.title}}</a></td>
-                    <td>${{item.auction.current_bid}}</td>
+                    <td><a href = "/pay/{{item.listing.id}}/">{{item.title}}</a></td>
+                    <td>${{item.listing.current_offer}}</td>
                 </tr>
 
             {% endfor %}
         </table>
         {% else %}
-            <p>You have no outstanding unpaid auctions. Let's <a href="http://cdn0.dailydot.com/uploaded/images/original/2013/1/7/cage6.jpg" target="_blank">celebrate!</a></p>
+            <p>You have no outstanding unpaid offers. Let's <a href="http://cdn0.dailydot.com/uploaded/images/original/2013/1/7/cage6.jpg" target="_blank">celebrate!</a></p>
         {% endif %}
 
 

@@ -316,7 +316,7 @@ class ModelTest(TestCase):
 #     # TODO I also believe this is currently mislabeled
 #     def test_auction_page_renders_auction_template(self):
 #         response = self.client.get('/createauction/0/')
-#         self.assertTemplateUsed(response, 'create_auction.html')
+#         self.assertTemplateUsed(response, 'create_listing.html')
 
     #def test_auction_cant_be_recreated_after_its_created(self):
 
