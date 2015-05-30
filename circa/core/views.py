@@ -251,6 +251,9 @@ def success(request):
 def help(request):
     return render(request, 'help.html')
 
+def dashboard(request):
+    return render(request,'dashboard.html')
+
 # remove from production
 def todo(request):
     return render(request,'todo.html')
