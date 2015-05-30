@@ -4,7 +4,7 @@ from django.db import transaction
 from django.db.utils import IntegrityError
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.utils import timezone
 
 from core.forms import ItemForm
