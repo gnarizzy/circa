@@ -16,7 +16,7 @@ import requests
 
 import datetime
 
-# home page that shows items with associated auctions that haven't already ended
+# home page that shows items with associated listings that haven't already ended
 def index(request):
     now = datetime.datetime.now()
     item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
@@ -42,15 +42,15 @@ def sell(request):
         form = ItemForm()
     return render(request, 'sell.html', {'form': form})
 
-# creating an auction for previously posted item
+# creating an listing for previously posted item
 @login_required
 def create_listing(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
 
-    if item.auction:  # item already has an auction
+    if item.listing:  # item already has a listing
         return render(request, 'expired.html')
 
-    if item.seller.id is not request.user.id:  # some bro wants to create an auction for an item that is not his!
+    if item.seller.id is not request.user.id:  # some bro wants to create a listing for an item that is not his!
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -62,7 +62,7 @@ def create_listing(request, item_id):
             listing.save()
             item.listing = listing
             item.save()
-            return HttpResponseRedirect('/auction/'+str(listing.id))
+            return HttpResponseRedirect('/listing/'+str(listing.id))
 
     else:
         form = ListingForm()
@@ -70,7 +70,7 @@ def create_listing(request, item_id):
     context = {'item': item, 'form': form}
     return render(request, 'create_listing.html', context)
 
-# Displays the requested auction along with info about auction item, or 404 page
+# Displays the requested listing along with info about listing item, or 404 page
 # TODO use keys.py file to send public key to template
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
@@ -103,20 +103,20 @@ def listing_detail(request, listing_id):
                     listing.current_offer_user= None  # change when we create accounts for buy-now people
                 listing.save()
 
-                print(auction_won_buy_now_notification(email, listing))
+                print(listing_buy_now_notification(email, listing))
 
                 if prev_offer_user is not None:
-                    print(lost_auction_notification(prev_offer_user, listing))
+                    print(lost_listing_notification(prev_offer_user, listing))
 
                 return HttpResponseRedirect('/success/')
             except stripe.CardError:
                 # context = {'error_message': "Your credit card was declined."}
-                # return HttpResponseRedirect('/auction/'+str(auction.id))
+                # return HttpResponseRedirect('/listing/'+str(listing.id))
                 return HttpResponseRedirect('/')
 
         else:  # Make an Offer
             # TODO update item.buyer
-            form = OfferForm(request.POST, auction=listing_id)
+            form = OfferForm(request.POST, listing=listing_id)
             if request.user.is_authenticated():
                 if form.is_valid():
                     bid = form.cleaned_data['bid']
@@ -136,7 +136,7 @@ def listing_detail(request, listing_id):
                 # TODO Figure out how to set next variable in context so manual url isn't needed
                 # TODO If they sign up through this chain of events, bring them back here
                 # TODO Save the bid they entered and prepopulate form with it when they are brought back here
-                return HttpResponseRedirect('/accounts/login/?next=/auction/'+str(listing.id))
+                return HttpResponseRedirect('/accounts/login/?next=/listing/'+str(listing.id))
 
     item = listing.item
     minutes = 0
@@ -158,10 +158,10 @@ def listing_detail(request, listing_id):
                'minutes': minutes, 'seconds': seconds, 'stripe_key': public_key()}
     return render(request, 'listing_detail.html', context)
 
-# Shows all outstanding, unpaid auctions for user
+# Shows all outstanding, unpaid listings for user
 @login_required
 def pending(request):
-    # find auctions where user is the highest bidder, payment has not been received, and have already ended
+    # find lisings where user is the highest bidder, payment has not been received, and have already ended
     now = datetime.datetime.now()
     user = request.user
     items = []
@@ -170,12 +170,12 @@ def pending(request):
         items.append(listing.item)
     return render(request, 'pending.html', {'items': items})
 
-# uses stripe checkout for user to pay for auction once bidding ends
+# uses stripe checkout for user to pay for listing once offer has been accepted
 @login_required
 def pay(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
-    if request.user.id is not listing.current_offer_user.id:  # user is trying to pay for someone else's auction
+    if request.user.id is not listing.current_offer_user.id:  # user is trying to pay for someone else's listing
         raise PermissionDenied
     if listing.paid_for:  # user already paid for item
         return render(request, 'expired.html')
@@ -198,7 +198,7 @@ def pay(request, listing_id):
                 listing.save()
                 item.save()
 
-                auction_won_buy_now_notification(email, listing)
+                listing_buy_now_notification(email, listing)
 
                 return HttpResponseRedirect('/pending/')
 

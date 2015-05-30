@@ -56,7 +56,7 @@ class OfferForm (forms.Form):
                                  label='Zip code')
 
     def __init__(self, *args, **kwargs):
-        self.auction = kwargs.pop('auction', None)
+        self.listing = kwargs.pop('listing', None)
         super(OfferForm, self).__init__(*args,**kwargs)
 
     # check to make sure offer isn't higher than buy it now?
@@ -64,9 +64,9 @@ class OfferForm (forms.Form):
     # make sure submitted offer is greater than current offer
     def clean_offer(self):
         offer = self.cleaned_data['bid']
-        if self.auction:
-            auction_offer = Listing.objects.get(pk=self.auction).current_offer
-            if offer <= auction_offer:
+        if self.listing:
+            listing_offer = Listing.objects.get(pk=self.listing).current_offer
+            if offer <= listing_offer:
                 raise forms.ValidationError("Your bid must be greater than the current bid.")
         return offer
 

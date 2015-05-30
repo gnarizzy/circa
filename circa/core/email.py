@@ -46,7 +46,7 @@ def offer_denied_notification(user, listing):
         listing.item.title,
         listing.current_offer,
         listing.buy_now_price,
-        ALLOWED_HOSTS[0] + '/auction/{}'.format(listing.id)
+        ALLOWED_HOSTS[0] + '/listing/{}'.format(listing.id)
     )
 
     recipient = list()
@@ -88,14 +88,14 @@ def offer_accepted_notification(user, listing):
     message.send()
     return message.mandrill_response[0]
 
-def auction_won_buy_now_notification(email, auction):
-    content = LISTING_BUY_NOW.format(auction.item.title, auction.current_bid)
+def listing_buy_now_notification(email, listing):
+    content = LISTING_BUY_NOW.format(listing.item.title, listing.current_bid)
 
     recipient = list()
     recipient.append(email)
 
     message = EmailMessage(
-        subject="You've bought {}".format(auction.item.title),
+        subject="You've bought {}".format(listing.item.title),
         body=content,
         to=recipient
     )
