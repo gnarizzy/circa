@@ -8,16 +8,16 @@ from django.test import TestCase, Client
 from django.utils import timezone
 
 from core.forms import ItemForm
-from core.models import Item, Auction, UserProfile
-from core.views import index, sell, create_auction, auction_detail
+from core.models import Item, Listing, UserProfile
+from core.views import index, sell, create_listing, listing_detail
 
 from datetime import timedelta
 
 class HomePageTests(TestCase):
 
-    def add_auctions(self):
-        auction1 = Auction.objects.create()
-        auction2 = Auction.objects.create()
+    def add_listings(self):
+        listing1 = Listing.objects.create()
+        listing2 = Listing.objects.create()
         buyer_1 = User.objects.create_user(username='First Buyer')
         buyer_2 = User.objects.create_user(username='Second Buyer')
         seller_1 = User.objects.create_user(username='First Seller')
@@ -25,31 +25,31 @@ class HomePageTests(TestCase):
         item_1=Item.objects.create(
             title='Broken laser pointer',
             description='This thing is broken and useless',
-            auction = auction1,
+            listing = listing1,
             buyer=buyer_1,
             seller=seller_1
         )
         item_2=Item.objects.create(
             title='Ten Gallon Hat',
             description='If people shoot at you, they will miss',
-            auction = auction2,
+            listing = listing2,
             buyer=buyer_2,
             seller=seller_2
         )
 
-    def add_expired_auction(self):
-        expired_auction = Auction.objects.create(end_date=timezone.now() - timedelta(days=1))
+    def add_expired_listing(self):
+        expired_listing = Listing.objects.create(end_date=timezone.now() - timedelta(days=1))
         winning_buyer = User.objects.create_user(username='Frankendoodle')
         lucky_seller = User.objects.create_user(username='Spongebob')
         Item.objects.create(
             title='Giant magical pencil',
             description='\"You doodle, me Spongebob\"',
-            auction = expired_auction,
+            listing = expired_listing,
             buyer=winning_buyer,
             seller=lucky_seller
         )
 
-    def add_item_without_auction(self):
+    def add_item_without_listing(self):
         buyer = User.objects.create_user(username='Dwight')
         seller = User.objects.create_user(username='Stanley')
         Item.objects.create(
@@ -72,28 +72,28 @@ class HomePageTests(TestCase):
         self.assertContains(response, 'This is awkward...there\'s nothing for sale!')
 
     def test_home_page_lists_items(self):
-        self.add_auctions()
+        self.add_listings()
         response = self.client.get('/')
 
         self.assertContains(response,'Broken laser pointer')
         self.assertContains(response,'Ten Gallon Hat')
         self.assertNotContains(response, 'This is awkward...there\'s nothing for sale!')
 
-    def test_home_page_does_not_list_auctions_that_have_ended(self):
-        self.add_auctions()
-        self.add_expired_auction()
+    def test_home_page_does_not_list_listings_that_have_ended(self):
+        self.add_listings()
+        self.add_expired_listing()
         response = self.client.get('/')
 
         self.assertNotContains(response, 'Giant magical pencil')
 
-    def test_home_page_does_not_list_items_with_no_auction(self):
-        self.add_auctions()
-        self.add_item_without_auction()
+    def test_home_page_does_not_list_items_with_no_listing(self):
+        self.add_listings()
+        self.add_item_without_listing()
         response = self.client.get('/')
 
         self.assertNotContains(response, 'Schrute Bucks')
 
-    # test ordering by soonest auction end date ***Andrew Note: This would probably be a functional test***
+    # test ordering by soonest listing end date ***Andrew Note: This would probably be a functional test***
 
 class SellPageTest(TestCase):
 
@@ -130,7 +130,7 @@ class SellPageTest(TestCase):
 
         self.assertContains(response, 'This field is required.')
 
-    def test_valid_item_submission_goes_to_createauction(self):
+    def test_valid_item_submission_goes_to_createlisting(self):
         self.auth_user()
         with open('static/other/test_image.jpg','rb') as fp:
             response = self.client.post(
@@ -141,7 +141,7 @@ class SellPageTest(TestCase):
             )
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/createauction/1', response.url)
+        self.assertIn('/createlisting/1', response.url)
 
     def test_valid_item_submission_creates_item(self):
         self.auth_user()
@@ -154,27 +154,11 @@ class SellPageTest(TestCase):
         self.assertEqual(all_items[0].title, 'Crap')
         self.assertEqual(all_items[0].seller, user)
 
-class CreateAuctionTest(TestCase):
-
-    def create_item(self):
-        with open('static/other/test_image.jpg','rb') as fp:
-            response = self.client.post(
-                '/sell/',
-                {'title': 'Crap',
-                 'description': 'In a bucket',
-                 'photo': fp}
-            )
-
-    def test_createauction_url_resolves_to_sell_view(self):
-        self.create_item()
-        found = resolve('/createauction/1')
-        self.assertEqual(found.func, create_auction)
-
 class ModelTest(TestCase):
 
     def add_items(self):
-        auction_1 = Auction.objects.create()
-        auction_2 = Auction.objects.create()
+        listing_1 = Listing.objects.create()
+        listing_2 = Listing.objects.create()
         seller = User.objects.create_user(username='Breadface')
         buyer = User.objects.create_user(username='ClumpOfHair')
         Item.objects.create(
@@ -183,26 +167,26 @@ class ModelTest(TestCase):
             photo='http://localhost:8000/picture',
             seller=seller,
             buyer=buyer,
-            auction=auction_1
+            listing=listing_1
         )
         Item.objects.create(
             title='A joystick that no one wants',
             description=':-(',
             photo='http://localhost:8000/picture2',
             seller=seller,
-            auction=auction_2
+            listing=listing_2
         )
 
-    def auction_integrity_issue(self):
+    def listing_integrity_issue(self):
         with transaction.atomic():  # Tester's note: This prevents TransactionManagementErrors
-            overly_enthusiastic_auction = Auction.objects.create()
+            overly_enthusiastic_listing = Listing.objects.create()
             cheatsy_seller = User.objects.create_user(username='ClumpOfHair')
             Item.objects.create(
                 title='An old, crappy laptop',
                 description='Water has been spilled on it, so the key board doesn\'t work',
                 photo='http://localhost:8000/picture',
                 seller=cheatsy_seller,
-                auction=overly_enthusiastic_auction
+                listing=overly_enthusiastic_listing
             )
         with transaction.atomic():
             Item.objects.create(
@@ -210,12 +194,12 @@ class ModelTest(TestCase):
                 description=':-(',
                 photo='http://localhost:8000/picture2',
                 seller=cheatsy_seller,
-                auction=overly_enthusiastic_auction
+                listing=overly_enthusiastic_listing
             )
 
     def buyer_seller_integrity_issue(self):
         with transaction.atomic():  # Tester's note: This prevents TransactionManagementErrors
-            auction = Auction.objects.create()
+            listing = Listing.objects.create()
             remorseful_seller = User.objects.create_user(username='ClumpOfHair')
             Item.objects.create(
                 title='An old, crappy laptop',
@@ -223,7 +207,7 @@ class ModelTest(TestCase):
                 photo='http://localhost:8000/picture',
                 seller=remorseful_seller,
                 buyer=remorseful_seller,
-                auction=auction
+                listing=listing
             )
 
     # TODO revisit when alt_id is established
@@ -247,15 +231,15 @@ class ModelTest(TestCase):
         self.assertEqual(item_1.seller.username, 'Breadface')
         self.assertIsNone(item_2.buyer)
 
-    def test_auction_to_item_is_one_to_one(self):
+    def test_listing_to_item_is_one_to_one(self):
         try:
-            self.auction_integrity_issue()
+            self.listing_integrity_issue()
         except IntegrityError:
             saved_items = Item.objects.all()
 
             self.assertEqual(saved_items.count(), 1)
         else:
-            self.fail('The Auction/Item relationship is not one-to-one')
+            self.fail('The Listing/Item relationship is not one-to-one')
 
     def test_seller_cannot_buy_own_item(self):
         try:
