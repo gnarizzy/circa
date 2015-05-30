@@ -119,8 +119,8 @@ def listing_detail(request, listing_id):
             form = OfferForm(request.POST, listing=listing_id)
             if request.user.is_authenticated():
                 if form.is_valid():
-                    bid = form.cleaned_data['bid']
-                    listing.current_offer = bid
+                    offer = form.cleaned_data['offer']
+                    listing.current_offer = offer
                     listing.end_date = datetime.datetime.now() + datetime.timedelta(hours=1)
                     prev_offer_user = listing.current_offer_user
                     listing.current_offer_user= request.user
@@ -128,14 +128,14 @@ def listing_detail(request, listing_id):
                     if prev_offer_user is not None:
                         offer_denied_notification(prev_offer_user, listing)
 
-                    if bid * Decimal(1.0999) > listing.buy_now_price:
-                        listing.buy_now_price = bid * Decimal(1.1000000)
+                    if offer * Decimal(1.0999) > listing.buy_now_price:
+                        listing.buy_now_price = offer * Decimal(1.1000000)
                     listing.save()
                     return HttpResponseRedirect(request.path)
             else:  # unauthenticated user. Redirect to login page, then bring 'em back here.
                 # TODO Figure out how to set next variable in context so manual url isn't needed
                 # TODO If they sign up through this chain of events, bring them back here
-                # TODO Save the bid they entered and prepopulate form with it when they are brought back here
+                # TODO Save the offer they entered and prepopulate form with it when they are brought back here
                 return HttpResponseRedirect('/accounts/login/?next=/listing/'+str(listing.id))
 
     item = listing.item
@@ -143,7 +143,7 @@ def listing_detail(request, listing_id):
     seconds = 0
     if listing.end_date is None:
         status = 2
-        # form.fields['bid'].widget = forms.HiddenInput()
+        # form.fields['offer'].widget = forms.HiddenInput()
     elif listing.end_date < datetime.datetime.now():
         status = 1
     else:
@@ -161,11 +161,11 @@ def listing_detail(request, listing_id):
 # Shows all outstanding, unpaid listings for user
 @login_required
 def pending(request):
-    # find lisings where user is the highest bidder, payment has not been received, and have already ended
+    # find listings where user is the highest offer user, payment has not been received, and have already ended
     now = datetime.datetime.now()
     user = request.user
     items = []
-    listings = Listing.objects.filter(current_bidder=user).filter(paid_for=False).filter(end_date__lt=now)
+    listings = Listing.objects.filter(current_offer_user=user).filter(paid_for=False).filter(end_date__lt=now)
     for listing in listings:
         items.append(listing.item)
     return render(request, 'pending.html', {'items': items})
