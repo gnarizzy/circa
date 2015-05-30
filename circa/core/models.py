@@ -5,16 +5,10 @@ from image_cropping import ImageCropField, ImageRatioField
 # Create your models here.
 
 class Listing(models.Model):
-    SHORT = 3
-    MEDIUM = 5
-    LONG = 7
-    DURATION_CHOICES = ((SHORT, '3 days'), (MEDIUM, '5 days'), (LONG, '7 days'),)
-
     starting_offer = models.DecimalField(max_digits=6, decimal_places=2, default=1.00)
     current_offer = models.DecimalField(max_digits=6, decimal_places=2, null=True)
     buy_now_price = models.DecimalField(max_digits=6, decimal_places=2, default=1.10)
     start_date = models.DateTimeField(auto_now_add=True)
-    duration = models.IntegerField(choices=DURATION_CHOICES, default=MEDIUM)  # choices
     end_date = models.DateTimeField(null=True)
     current_offer_user = models.ForeignKey(User, null=True, blank=True)
     buy_now_email = models.EmailField(blank=True, null=True)  # temporary field until we create users from buy now purchases
