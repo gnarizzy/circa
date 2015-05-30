@@ -27,6 +27,7 @@ urlpatterns = patterns('',
     url(r'^connect/', 'core.views.connect', name='connect'),
     url(r'^about/', 'core.views.about', name='about'),
     url(r'^policies/terms', 'core.views.terms', name='terms'),  # parameterize as we get more policy info
+    url(r'^dashboard','core.views.dashboard', name='terms'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
