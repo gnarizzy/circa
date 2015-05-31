@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head_block %}
-    <link href="{% static 'css/dashboard.css'%}" rel="stylesheet" media="screen">
     <link rel="stylesheet" type="text/css" href="{% static 'css/content.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/header.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/widgets.css'%}">
     <script type="text/javascript" src="{% static 'js/app.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js'%}"></script>
 {% endblock %}
 {% block title_block %}
     Dashboard
@@ -156,7 +156,7 @@
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon red pull-left">
-                    <i class="fa fa-tasks"></i>
+                    <i class="glyphicon glyphicon-fire"></i>
                   </div>
                   <div class="widget-content pull-left">
                     <div class="title">6.9</div>
@@ -170,11 +170,11 @@
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon orange pull-left">
-                    <i class="fa fa-sitemap"></i>
+                    <i class="glyphicon glyphicon-usd"></i>
                   </div>
                   <div class="widget-content pull-left">
-                    <div class="title">225</div>
-                    <div class="comment">Documents</div>
+                    <div class="title">$225</div>
+                    <div class="comment">Earnings</div>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -185,11 +185,11 @@
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon blue pull-left">
-                    <i class="glyphicon glyphicon-usd"></i>
+                    <i class="glyphicon glyphicon-book"></i>
                   </div>
                   <div class="widget-content pull-left">
-                    <div class="title">$6.9</div>
-                    <div class="comment">Earnings</div>
+                    <div class="title">6.9</div>
+                    <div class="comment">Active Items</div>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -291,20 +291,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-lg-6">
-              <div class="widget">
-                <div class="widget-title">
-                  <i class="fa fa-cog fa-spin"></i> Loading Directive
-                  <a href="http://tobiasahlin.com/spinkit/" target="_blank" class="pull-right">SpinKit</a>
-                </div>
-                <div class="widget-body">
-                  <div class="loading">
-                    <div class="double-bounce1"></div>
-                    <div class="double-bounce2"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+
           </div>
 
         <!-- End Main Content -->
