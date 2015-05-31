@@ -2,6 +2,13 @@
 {% load static %}
 {% block head_block %}
     <link href="{% static 'css/dashboard.css'%}" rel="stylesheet" media="screen">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/content.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/header.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/widgets.css'%}">
+    <script type="text/javascript" src="{% static 'js/app.js'%}"></script>
+    <script type="text/javascript" src="bower_components/jquery.cookie/jquery.cookie.js"></script>
 {% endblock %}
 {% block title_block %}
     Dashboard
@@ -9,186 +16,307 @@
 {% block nav_block %}
     <nav class="navbar navbar-inverse navbar-fixed-top">
 {% endblock %}
+
 {% block body_block %}
+<body>
+  <div id="page-wrapper" class="active">
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Analytics</a></li>
-            <li><a href="#">Export</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="">Nav item</a></li>
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-            <li><a href="">More navigation</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-          </ul>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+      <ul class="sidebar">
+        <li id="toggle-sidebar" class="sidebar-main">
+          <a href="#">
+            Dashboard
+            <span class="menu-icon glyphicon glyphicon-transfer"></span>
+          </a>
+        </li>
+        <li class="sidebar-title"><span>NAVIGATION</span></li>
+        <li class="sidebar-list">
+          <a href="#">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#">Servers <span class="menu-icon fa fa-tasks"></span></a>
+        </li>
+        <li class="sidebar-list">
+          <a href="#">Settings <span class="menu-icon fa fa-cogs"></span></a>
+        </li>
+        <li class="sidebar-title separator"><span>QUICK LINKS</span></li>
+        <li class="sidebar-list">
+          <a href="#" target="_blank">Forums <span class="menu-icon fa fa-external-link"></span></a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="col-xs-4">
+          <a href="https://github.com/Ehesp/Responsive-Dashboard" target="_blank">
+            Github
+          </a>
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Dashboard</h1>
-
-          <div class="row placeholders">
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-            <div class="col-xs-6 col-sm-3 placeholder">
-              <img data-src="holder.js/200x200/auto/vine" class="img-responsive" alt="Generic placeholder thumbnail">
-              <h4>Label</h4>
-              <span class="text-muted">Something else</span>
-            </div>
-          </div>
-
-          <h2 class="sub-header">Section title</h2>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                  <th>Header</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1,001</td>
-                  <td>Lorem</td>
-                  <td>ipsum</td>
-                  <td>dolor</td>
-                  <td>sit</td>
-                </tr>
-                <tr>
-                  <td>1,002</td>
-                  <td>amet</td>
-                  <td>consectetur</td>
-                  <td>adipiscing</td>
-                  <td>elit</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>Integer</td>
-                  <td>nec</td>
-                  <td>odio</td>
-                  <td>Praesent</td>
-                </tr>
-                <tr>
-                  <td>1,003</td>
-                  <td>libero</td>
-                  <td>Sed</td>
-                  <td>cursus</td>
-                  <td>ante</td>
-                </tr>
-                <tr>
-                  <td>1,004</td>
-                  <td>dapibus</td>
-                  <td>diam</td>
-                  <td>Sed</td>
-                  <td>nisi</td>
-                </tr>
-                <tr>
-                  <td>1,005</td>
-                  <td>Nulla</td>
-                  <td>quis</td>
-                  <td>sem</td>
-                  <td>at</td>
-                </tr>
-                <tr>
-                  <td>1,006</td>
-                  <td>nibh</td>
-                  <td>elementum</td>
-                  <td>imperdiet</td>
-                  <td>Duis</td>
-                </tr>
-                <tr>
-                  <td>1,007</td>
-                  <td>sagittis</td>
-                  <td>ipsum</td>
-                  <td>Praesent</td>
-                  <td>mauris</td>
-                </tr>
-                <tr>
-                  <td>1,008</td>
-                  <td>Fusce</td>
-                  <td>nec</td>
-                  <td>tellus</td>
-                  <td>sed</td>
-                </tr>
-                <tr>
-                  <td>1,009</td>
-                  <td>augue</td>
-                  <td>semper</td>
-                  <td>porta</td>
-                  <td>Mauris</td>
-                </tr>
-                <tr>
-                  <td>1,010</td>
-                  <td>massa</td>
-                  <td>Vestibulum</td>
-                  <td>lacinia</td>
-                  <td>arcu</td>
-                </tr>
-                <tr>
-                  <td>1,011</td>
-                  <td>eget</td>
-                  <td>nulla</td>
-                  <td>Class</td>
-                  <td>aptent</td>
-                </tr>
-                <tr>
-                  <td>1,012</td>
-                  <td>taciti</td>
-                  <td>sociosqu</td>
-                  <td>ad</td>
-                  <td>litora</td>
-                </tr>
-                <tr>
-                  <td>1,013</td>
-                  <td>torquent</td>
-                  <td>per</td>
-                  <td>conubia</td>
-                  <td>nostra</td>
-                </tr>
-                <tr>
-                  <td>1,014</td>
-                  <td>per</td>
-                  <td>inceptos</td>
-                  <td>himenaeos</td>
-                  <td>Curabitur</td>
-                </tr>
-                <tr>
-                  <td>1,015</td>
-                  <td>sodales</td>
-                  <td>ligula</td>
-                  <td>in</td>
-                  <td>libero</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="col-xs-4">
+          <a href="#" target="_blank">
+            About
+          </a>
+        </div>
+        <div class="col-xs-4">
+          <a href="#">
+            Support
+          </a>
         </div>
       </div>
     </div>
+
+    <!-- End Sidebar -->
+
+    <div id="content-wrapper">
+      <div class="page-content">
+
+        <!-- Header Bar -->
+
+        <div class="row header">
+          <div class="col-xs-12">
+            <div class="meta pull-left">
+              <div class="page">
+                Dashboard
+              </div>
+              <div class="breadcrumb-links">
+                Home / Dashboard
+              </div>
+            </div>
+            <div class="user pull-right">
+              <div class="item dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img src="img/avatar.jpg">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li class="dropdown-header">
+                    Joe Bloggs
+                  </li>
+                  <li class="divider"></li>
+                  <li class="link">
+                    <a href="#">
+                      Profile
+                    </a>
+                  </li>
+                  <li class="link">
+                    <a href="#">
+                      Menu Item
+                    </a>
+                  </li>
+                  <li class="link">
+                    <a href="#">
+                      Menu Item
+                    </a>
+                  </li>
+                  <li class="divider"></li>
+                  <li class="link">
+                    <a href="#">
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="item dropdown">
+               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="fa fa-bell-o"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                  <li class="dropdown-header">
+                    Notifications
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href="#">Server Down!</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- End Header Bar -->
+
+        <!-- Main Content -->
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-success">Thanks for visiting! Feel free to create pull requests to improve the dashboard!</div>
+              <div class="alert alert-danger">Found a bug? Create an issue with as many details as you can.</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-3 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon green pull-left">
+                    <i class="fa fa-users"></i>
+                  </div>
+                  <div class="widget-content pull-left">
+                    <div class="title">80</div>
+                    <div class="comment">Users</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon red pull-left">
+                    <i class="fa fa-tasks"></i>
+                  </div>
+                  <div class="widget-content pull-left">
+                    <div class="title">16</div>
+                    <div class="comment">Servers</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon orange pull-left">
+                    <i class="fa fa-sitemap"></i>
+                  </div>
+                  <div class="widget-content pull-left">
+                    <div class="title">225</div>
+                    <div class="comment">Documents</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="spacer visible-xs"></div>
+            <div class="col-lg-3 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon blue pull-left">
+                    <i class="fa fa-support"></i>
+                  </div>
+                  <div class="widget-content pull-left">
+                    <div class="title">62</div>
+                    <div class="comment">Tickets</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="widget">
+                <div class="widget-title">
+                  <i class="fa fa-tasks"></i> Servers
+                  <a href="#" class="pull-right">Manage</a>
+                </div>
+                <div class="widget-body medium no-padding">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tbody>
+                        <tr><td>RDVMPC001</td><td>238.103.133.37</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                        <tr><td>RDVMPC002</td><td>68.66.63.170</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                        <tr><td>RDVMPC003</td><td>76.117.212.33</td><td><span tooltip="Server Down!" class="text-danger"><i class="fa fa-warning"></i></span></td></tr>
+                        <tr><td>RDPHPC001</td><td>91.88.224.5</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                        <tr><td>RDESX001</td><td>197.188.15.93</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                        <tr><td>RDESX002</td><td>168.85.154.251</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                        <tr><td>RDESX003</td><td>209.25.191.61</td><td><span tooltip="Server Down!" class="text-danger"><i class="fa fa-warning"></i></span></td></tr>
+                        <tr><td>RDESX004</td><td>252.37.192.235</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                        <tr><td>RDTerminal01</td><td>139.71.18.207</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                        <tr><td>RDTerminal02</td><td>136.80.122.212</td><td><span tooltip="Could not connect!" class="text-warning"><i class="fa fa-flash"></i></span></td></tr>
+                        <tr><td>RDDomainCont01</td><td>196.80.245.33</td><td><span class="text-success"><i class="fa fa-check"></i></span></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="widget">
+                <div class="widget-title">
+                  <i class="fa fa-users"></i> Users
+                  <input type="text" placeholder="Search" class="form-control input-sm pull-right" />
+                  <div class="clearfix"></div>
+                </div>
+                <div class="widget-body medium no-padding">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr><th class="text-center">ID</th><th>Username</th><th>Role</th><th>Account</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr><td class="text-center">1</td><td>Joe Bloggs</td><td>Super Admin</td><td>AZ23045</td></tr>
+                        <tr><td class="text-center">2</td><td>Timothy Hernandez</td><td>Admin</td><td>AU24783</td></tr>
+                        <tr><td class="text-center">3</td><td>Joe Bickham</td><td>User</td><td>AM23781</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="widget">
+                <div class="widget-title">
+                  <i class="fa fa-plus"></i> Extras
+                  <button class="btn btn-sm btn-info pull-right">Button</button>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="widget-body">
+
+                  <div class="message">
+                    This is a standard message which will also work the ".no-padding" class, I can also <span class="error">be an error message!</span>
+                  </div>
+
+                  <hr />
+
+                  <div class="message">
+                    <a href="http://angular-ui.github.io/bootstrap/" target="_blank">UI Bootstrap</a> is included, so you can use <a href="#" tooltip="I'm a tooltip!">tooltips</a> and all of the other native Bootstrap JS components!
+                  </div>
+
+                  <hr />
+
+                  <form class="form-horizontal" role="form">
+                    <div class="form-group has-feedback has-success">
+                      <label for="label" class="col-sm-2 control-label">Inline Form</label>
+                      <div class="col-sm-5">
+                        <input  type="text" class="form-control" />
+                          <span class="fa fa-key form-control-feedback"></span>
+                      </div>
+                      <div class="col-sm-5">
+                        <div class="input-mask">I'm an input mask!</div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-offset-2 col-sm-10">
+                          <span class="help-block form-group-inline-message">I'm a properly padded inline message!</span>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="widget">
+                <div class="widget-title">
+                  <i class="fa fa-cog fa-spin"></i> Loading Directive
+                  <a href="http://tobiasahlin.com/spinkit/" target="_blank" class="pull-right">SpinKit</a>
+                </div>
+                <div class="widget-body">
+                  <div class="loading">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <!-- End Main Content -->
+
+      </div><!-- End Page Content -->
+    </div><!-- End Content Wrapper -->
+  </div><!-- End Page Wrapper -->
+
 
 {% endblock %}
