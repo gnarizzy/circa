@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/widgets.css'%}">
     <script type="text/javascript" src="{% static 'js/app.js'%}"></script>
-    <script type="text/javascript" src="bower_components/jquery.cookie/jquery.cookie.js"></script>
 {% endblock %}
 {% block title_block %}
     Dashboard
@@ -32,13 +31,13 @@
         </li>
         <li class="sidebar-title"><span>NAVIGATION</span></li>
         <li class="sidebar-list">
-          <a href="#">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
+          <a href="#">Dashboard <span class="menu-icon glyphicon glyphicon-dashboard"></span></a>
         </li>
         <li class="sidebar-list">
-          <a href="#">Servers <span class="menu-icon fa fa-tasks"></span></a>
+          <a href="#">Servers <span class="menu-icon glyphicon glyphicon-tasks"></span></a>
         </li>
         <li class="sidebar-list">
-          <a href="#">Settings <span class="menu-icon fa fa-cogs"></span></a>
+          <a href="#">Settings <span class="menu-icon glyphicon glyphicon-cog"></span></a>
         </li>
         <li class="sidebar-title separator"><span>QUICK LINKS</span></li>
         <li class="sidebar-list">
@@ -70,8 +69,7 @@
       <div class="page-content">
 
         <!-- Header Bar -->
-
-        <div class="row header">
+      <div class="row header">
           <div class="col-xs-12">
             <div class="meta pull-left">
               <div class="page">
@@ -134,24 +132,21 @@
 
         <!-- End Header Bar -->
 
+
+        <!-- End Header Bar -->
+
         <!-- Main Content -->
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="alert alert-success">Thanks for visiting! Feel free to create pull requests to improve the dashboard!</div>
-              <div class="alert alert-danger">Found a bug? Create an issue with as many details as you can.</div>
-            </div>
-          </div>
 
           <div class="row">
             <div class="col-lg-3 col-md-6 col-xs-12">
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon green pull-left">
-                    <i class="fa fa-users"></i>
+                    <i class="glyphicon glyphicon-credit-card"></i>
                   </div>
                   <div class="widget-content pull-left">
                     <div class="title">80</div>
-                    <div class="comment">Users</div>
+                    <div class="comment">Pending Payments</div>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -164,8 +159,8 @@
                     <i class="fa fa-tasks"></i>
                   </div>
                   <div class="widget-content pull-left">
-                    <div class="title">16</div>
-                    <div class="comment">Servers</div>
+                    <div class="title">6.9</div>
+                    <div class="comment">Active Offers</div>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -190,11 +185,11 @@
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon blue pull-left">
-                    <i class="fa fa-support"></i>
+                    <i class="glyphicon glyphicon-usd"></i>
                   </div>
                   <div class="widget-content pull-left">
-                    <div class="title">62</div>
-                    <div class="comment">Tickets</div>
+                    <div class="title">$6.9</div>
+                    <div class="comment">Earnings</div>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -205,7 +200,7 @@
             <div class="col-lg-6">
               <div class="widget">
                 <div class="widget-title">
-                  <i class="fa fa-tasks"></i> Servers
+                  <i class="glyphicon glyphicon-tasks"></i> Servers
                   <a href="#" class="pull-right">Manage</a>
                 </div>
                 <div class="widget-body medium no-padding">
