@@ -395,7 +395,8 @@ class ModelTest(TestCase):
 
 #test to make sure POST cant be submitted to auction that has ended
 
-#transactional email tests-- outbid, payment complete, delivered, reminder to pay
+#transactional email tests-- outbid, payment complete, delivered, reminder to pay, seller notified when listing ends,
+#seller notified if item sells
 
 #create deliveries, delivery object
 
@@ -430,3 +431,6 @@ class ModelTest(TestCase):
 #test password reset
 
 #test force unique email addresses and usernames
+
+#dashboard tests (Correct number of items for each icon, correct links for each icon)
+
