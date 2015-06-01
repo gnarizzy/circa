@@ -81,7 +81,7 @@ def lost_listing_notification(user, listing):
     return message.mandrill_response[0]
 
 def listing_buy_now_notification(email, listing):
-    content = LISTING_BUY_NOW.format(listing.item.title, listing.current_bid)
+    content = LISTING_BUY_NOW.format(listing.item.title, listing.current_offer)
 
     recipient = list()
     recipient.append(email)
