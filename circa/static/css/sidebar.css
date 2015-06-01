@@ -9,7 +9,7 @@
 /* Sidebar title text colour */
 /*#627cb7*/
 #sidebar-wrapper {
-  background: #30426a;
+  background: #787878;
 }
 ul.sidebar .sidebar-main a,
 .sidebar-footer,
@@ -17,7 +17,7 @@ ul.sidebar .sidebar-list a:hover,
 #page-wrapper:not(.active) ul.sidebar .sidebar-title.separator {
   /* Sidebar header and footer color */
 
-  background: #2d3e63;
+  background: #606060;
 }
 ul.sidebar {
   position: absolute;
@@ -43,6 +43,7 @@ ul.sidebar .sidebar-main {
 ul.sidebar .sidebar-main a {
   font-size: 18px;
   line-height: 60px;
+  color: #E8E8E8;
 }
 ul.sidebar .sidebar-main .menu-icon {
   float: right;
@@ -63,7 +64,7 @@ ul.sidebar .sidebar-list {
 ul.sidebar .sidebar-list a {
   text-indent: 25px;
   font-size: 15px;
-  color: #b2bfdc;
+  color: #D0D0D0;
   line-height: 40px;
 }
 ul.sidebar .sidebar-list a:hover {
