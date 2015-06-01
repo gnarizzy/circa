@@ -59,7 +59,7 @@ def create_listing(request, item_id):
 
         if form.is_valid():
             listing = form.save(commit=False)
-            listing.current_offer = listing.starting_offer
+            #listing.current_offer = listing.starting_offer
             listing.save()
             item.listing = listing
             item.save()
@@ -76,9 +76,12 @@ def create_listing(request, item_id):
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
 
-    default_offer = listing.current_offer + Decimal(1.00)
-    form = OfferForm(initial={'offer': default_offer})  # pre-populate offer with $1.00 above current offer
-
+    if listing.current_offer: #false if nobody has accepted the starting offer
+        default_offer = listing.current_offer + Decimal(1.00)
+        form = OfferForm(initial={'offer': default_offer})  # pre-populate offer with $1.00 above current offer
+    else:
+        default_offer = listing.starting_offer
+        form = OfferForm(initial={'offer': default_offer}) # pre-populate with starting offer
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
         if token:  # Buy Now
