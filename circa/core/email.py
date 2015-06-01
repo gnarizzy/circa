@@ -3,7 +3,7 @@ from background_task import background
 from circa.settings import ALLOWED_HOSTS
 from django.core.mail import EmailMessage
 from core.models import User, Listing
-
+from decimal import *
 import datetime
 
 
@@ -114,7 +114,7 @@ def item_sold_notification(listing):
     if price <= 30:
         earnings = 30
     else:
-        earnings = round(price * .9, 2)
+        earnings = price * Decimal(.90)
 
     content = ITEM_SOLD.format(listing.item.seller.username, listing.item.title, earnings)
 
