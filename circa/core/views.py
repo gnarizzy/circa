@@ -10,7 +10,7 @@ from django import forms
 from decimal import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from core.tasks import *
+from core.tasks import queue_for_email_notifications
 import json
 import stripe
 import requests
@@ -133,7 +133,7 @@ def listing_detail(request, listing_id):
                     if prev_offer_user is not None:
                         offer_denied_notification(prev_offer_user, listing)
 
-                    offer_accepted_notification(request.user.id, listing.id)
+                    queue_for_email_notifications(request.user.id, listing.id)
 
                     if offer * Decimal(1.0999) > listing.buy_now_price:
                         listing.buy_now_price = offer * Decimal(1.1000000)
