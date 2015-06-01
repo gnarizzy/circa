@@ -78,7 +78,11 @@
                                            <span class = "hidden-xs"> {{ item.description|linebreaks }}</span>
                                           </div>
                                           <div class ="col-xs-5 col-md-3">
+                                           {% if item.listing.current_offer %}
                                            Current Offer: <strong>${{ item.listing.current_offer }}</strong>
+                                           {% else %}
+                                           Asking price: <strong>${{ item.listing.starting_offer }}</strong>
+                                           {% endif %}
                                            <br>
                                            Buy now for: <strong>${{ item.listing.buy_now_price }}</strong>
                                           <br>
