@@ -16,11 +16,11 @@ class ListingForm(forms.ModelForm):
     buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Buy now price')
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Pickup zipcode')
 
-    # Make sure starting offer is at least $1.00
+    # Make sure starting offer is at least $5.00
     def clean_starting_offer(self):
         starting_offer = self.cleaned_data['starting_offer']
-        if starting_offer < 1:
-            raise forms.ValidationError("The minimum starting offer is $1.00.")
+        if starting_offer < 5:
+            raise forms.ValidationError("The minimum starting offer is $5.00.")
         return starting_offer
 
     # Make sure buy now price is at least 10% greater than starting offer
