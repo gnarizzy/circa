@@ -96,6 +96,10 @@ def listing_detail(request, listing_id):
                 listing.end_date = datetime.datetime.now()
                 listing.current_offer = listing.buy_now_price
                 listing.paid_for = True
+                if listing.buy_now_price < 16.67: #TODO: PUT IN SETTINGS. SERIOUSLY. DO IT. RIGHT MEOW.
+                    listing.payout = listing.buy_now_price - Decimal(2.50)
+                else:
+                    listing.payout = Decimal(.85)*listing.buy_now_price
                 prev_offer_user = listing.current_offer_user
                 if request.user.id:  # logged in user used buy it now
                     listing.current_offer_user= request.user
@@ -199,6 +203,10 @@ def pay(request, listing_id):
                 item.buyer = request.user
                 listing.paid_for = True
                 listing.save()
+                if listing.current_offer < 16.67: #TODO: PUT IN SETTINGS. SERIOUSLY. DO IT. RIGHT MEOW.
+                    listing.payout = listing.current_offer - Decimal(2.50)
+                else:
+                    listing.payout = Decimal(.85)*listing.current_offer
                 item.save()
 
                 listing_buy_now_notification(email, listing)
@@ -254,8 +262,28 @@ def success(request):
 def help(request):
     return render(request, 'help.html')
 
+@login_required
 def dashboard(request):
-    return render(request,'dashboard.html')
+
+    now = datetime.datetime.now()
+    user = request.user
+    pending = Listing.objects.filter(current_offer_user=user).filter(paid_for=False).filter(end_date__lt=now).count()
+    offers = Listing.objects.filter(current_offer_user=user).filter(end_date__gt=now).count()
+    earnings = 0
+    active_items = 0
+    items = Item.objects.filter(seller=user)
+    for item in items:
+        if item.listing:
+            earnings+= item.listing.payout
+            if item.listing.end_date and item.listing.end_date > datetime.datetime.now():
+                active_items += 1
+    orders = []
+    bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
+    for order in bought:
+        orders.append(order.item)
+
+    context = {'pending': pending, 'offers':offers, 'earnings':earnings, 'orders':orders, 'active_items':active_items}
+    return render(request,'dashboard.html', context)
 
 # remove from production
 def todo(request):

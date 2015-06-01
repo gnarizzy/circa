@@ -14,6 +14,7 @@ class Listing(models.Model):
     buy_now_email = models.EmailField(blank=True, null=True)  # temporary field until we create users from buy now purchases
     zipcode = models.IntegerField(default=0)
     paid_for = models.BooleanField(default=False)
+    payout = models.DecimalField(max_digits = 6, decimal_places=2, default = 0.00)
 
     def __str__(self):
         return str(self.end_date)
