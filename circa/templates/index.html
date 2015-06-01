@@ -34,7 +34,9 @@
         var display;
         {% for item in items %}
             display = document.querySelector("#time_left{{ item.listing.id }}");
-            calc_time_left({{ item.listing.end_date|date:"U" }}, display);
+            {% if item.listing.end_date %}
+                calc_time_left({{ item.listing.end_date|date:"U" }}, display);
+            {% endif %}
         {% endfor %}
     };
     </script>
@@ -80,8 +82,10 @@
                                            <br>
                                            Buy now for: <strong>${{ item.listing.buy_now_price }}</strong>
                                           <br>
-                                           Time Left: <strong><span id="time_left{{ item.listing.id }}"></span></strong>
-                                           </div>
+                                            {% if item.listing.end_date %}
+                                            Time Left: <strong><span id="time_left{{ item.listing.id }}"></span></strong>
+                                            {% endif %}
+                                          </div>
 
                                     </div>
                                 </div>
