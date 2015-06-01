@@ -1,6 +1,8 @@
 # A helper module to generate emails and avoid spaghetti code
-from django.core.mail import EmailMessage
+from background_task import background
 from circa.settings import ALLOWED_HOSTS
+from django.core.mail import EmailMessage
+from core.models import User, Listing
 
 import datetime
 
@@ -17,14 +19,18 @@ LOST_LISTING = "Hey {},\n\nUnfortunately, someone has used the buy now option on
                "email with any questions or feedback." \
                "\n\nSincerely,\n\nThe Circa Team"
 
-### THIS NEEDS TO BE RE-WORKED
-OFFER_ACCEPTED = "Dear {},\n\nYour offer on {} has been accepted! Can you reply to this email with your address " \
-                 "and preferred delivery time? Your item will be delivered within 24 hours of the seller handing it off " \
-                 "to us.\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how " \
-                 "your experience with us was. We want to create the best way for students to buy and sell " \
-                 "electronics." \
+OFFER_ACCEPTED = "Dear {},\n\nYour offer on {} has been accepted!  Please navigate to " \
+                 "http://www.usecirca.com/pending/ to pay for your item.  Once paid for, the item will be delivered " \
+                 "within 24 hours of the seller handing it off to us.\n\nThanks for being awesome and using Circa!  " \
+                 "Feel free to reply with any feedback on how your experience was.  We want to create the best way " \
+                 "for students to buy and sell electronics." \
                  "\n\nSincerely,\n\nThe Circa Team"
-### READ ABOVE
+
+ITEM_SOLD = "Dear {},\n\nYour item, {}, has sold!  Your total earnings for this sale are ${}, which will be given " \
+            "to you upon pick up of the item.\n\nThank you for using Circa!  If you have any feedback on your " \
+            "experience, please reply to this email and let us know.  We want to be the best way for students to buy " \
+            "and sell electronics locally." \
+            "\n\nSincerely\n\nThe Circa Team"
 
 LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting the {}! This email is to confirm that you paid ${} for this " \
                   "item.  Can you reply with your address and preferred delivery time? Your item will be delivered " \
@@ -74,20 +80,6 @@ def lost_listing_notification(user, listing):
     message.send()
     return message.mandrill_response[0]
 
-def offer_accepted_notification(user, listing):
-    content = OFFER_ACCEPTED.format(user.username, listing.item.title)
-
-    recipient = list()
-    recipient.append(user.email)
-
-    message = EmailMessage(
-        subject="Offer accepted for {}".format(listing.item.title),
-        body=content,
-        to=recipient
-    )
-    message.send()
-    return message.mandrill_response[0]
-
 def listing_buy_now_notification(email, listing):
     content = LISTING_BUY_NOW.format(listing.item.title, listing.current_bid)
 
@@ -100,6 +92,42 @@ def listing_buy_now_notification(email, listing):
         to=recipient
     )
     message.send()
+    return message.mandrill_response[0]
+
+def offer_accepted_notification(user, listing):
+    content = OFFER_ACCEPTED.format(user.username, listing.item.title)
+
+    recipient = list()
+    recipient.append(user.email)
+
+    message = EmailMessage(
+        subject="Offer accepted for {}".format(listing.item.title),
+        body=content,
+        to=recipient
+    )
+    message.send()
+
+    return message.mandrill_response[0]
+
+def item_sold_notification(listing):
+    price = listing.current_offer
+    if price <= 30:
+        earnings = 30
+    else:
+        earnings = round(price * .9, 2)
+
+    content = ITEM_SOLD.format(listing.item.seller.username, listing.item.title, earnings)
+
+    recipient = list()
+    recipient.append(listing.item.seller.email)
+
+    message = EmailMessage(
+        subject="{} has sold".format(listing.item.title),
+        body=content,
+        to=recipient
+    )
+    message.send()
+
     return message.mandrill_response[0]
 
 def welcome_new_user_notification(user):
