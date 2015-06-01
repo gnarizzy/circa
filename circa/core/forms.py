@@ -29,7 +29,7 @@ class ListingForm(forms.ModelForm):
             starting_offer = self.cleaned_data['starting_offer']
         except KeyError:  # starting_offer doesn't exist because it was invalid
             raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, which must "
-                                        "be at least $1.00")
+                                        "be at least $5.00")
         buy_now_price = self.cleaned_data['buy_now_price']
 
         if starting_offer * Decimal(1.0999) > buy_now_price:
@@ -66,8 +66,11 @@ class OfferForm (forms.Form):
         offer = self.cleaned_data['offer']
         if self.listing:
             listing_offer = Listing.objects.get(pk=self.listing).current_offer
-            if offer <= listing_offer:
-                raise forms.ValidationError("Your offer must be greater than the current offer.")
+            if not listing_offer: #no current offer, meaning no initial offer has been made
+                pass
+            else:
+                if offer <= listing_offer:
+                    raise forms.ValidationError("Your offer must be greater than the current offer.")
         return offer
 
     # make sure shipping zip code is one we deliver to
