@@ -25,7 +25,7 @@ def queue_for_email_notifications(user_id, listing_id):
     return
 
 def offer_accepted_seller_notification(listing):
-    price = listing.current_offe
+    price = listing.current_offer
     if price <= COMMISSION_BREAKEVEN:
         earnings = price - Decimal(COMMISSION_FLAT)
     else:
