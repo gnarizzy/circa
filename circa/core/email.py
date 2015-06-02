@@ -156,10 +156,16 @@ def listing_bought_seller_notification(listing):
 
 def offer_accepted_seller_notification(listing):
     price = listing.current_offer
+    print('############')
+    print(price)
+    print('############')
     if price <= COMMISSION_BREAKEVEN:
         earnings = price - Decimal(COMMISSION_FLAT)
     else:
         earnings = price * Decimal(1 - COMMISSION_PERCENT)
+
+    print(earnings)
+    print('############')
 
     content = OFFER_OVER.format(listing.item.seller.username, listing.item.title, earnings)
 

@@ -2,7 +2,8 @@ from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from circa.settings import COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PERCENT
-from core.email import *
+from core.email import listing_bought_notification, listing_bought_seller_notification, lost_listing_notification, \
+    offer_denied_notification
 from core.models import Item, Listing, UserProfile
 from core.forms import ItemForm, ListingForm, OfferForm
 from core.keys import *
