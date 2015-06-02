@@ -61,6 +61,7 @@ WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to
                    "\n\nSincerely,\n\nAndrew\n\nCS '15"
 
 TAG_FOR_BCC = list().append("support@usecirca.com")
+getcontext().prec = 2
 
 def offer_denied_notification(user, listing):
     content = OFFER_DENIED.format(
@@ -131,13 +132,11 @@ def offer_accepted_notification(user, listing):
 
 def listing_bought_seller_notification(listing):
     price = listing.current_offer
-    print(price)
+
     if price <= COMMISSION_BREAKEVEN:
         earnings = price - Decimal(COMMISSION_FLAT)
     else:
         earnings = price * Decimal(1 - COMMISSION_PERCENT)
-
-    print(earnings)
 
     content = LISTING_BOUGHT.format(listing.item.seller.username, listing.item.title, earnings)
 
