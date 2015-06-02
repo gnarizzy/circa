@@ -61,7 +61,6 @@ WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to
                    "\n\nSincerely,\n\nAndrew\n\nCS '15"
 
 TAG_FOR_BCC = list().append("support@usecirca.com")
-getcontext().prec = 2
 
 def offer_denied_notification(user, listing):
     content = OFFER_DENIED.format(
@@ -74,7 +73,6 @@ def offer_denied_notification(user, listing):
 
     recipient = list()
     recipient.append(user.email)
-
     message = EmailMessage(
         subject="You no longer have the highest offer on {}".format(listing.item.title),
         body=content,
@@ -137,6 +135,7 @@ def listing_bought_seller_notification(listing):
         earnings = price - Decimal(COMMISSION_FLAT)
     else:
         earnings = price * Decimal(1 - COMMISSION_PERCENT)
+    earnings = earnings / Decimal(1.00)
 
     content = LISTING_BOUGHT.format(listing.item.seller.username, listing.item.title, earnings)
 
@@ -159,6 +158,7 @@ def offer_accepted_seller_notification(listing):
         earnings = price - Decimal(COMMISSION_FLAT)
     else:
         earnings = price * Decimal(1 - COMMISSION_PERCENT)
+    earnings = earnings / Decimal(1.00)
 
     content = OFFER_OVER.format(listing.item.seller.username, listing.item.title, earnings)
 
