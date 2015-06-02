@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title_block %}
+    Active Offers
+{% endblock %}
+{% block body_block %}
+    <div class = "container">
+        <h1>
+            Active offers
+        </h1>
+        {% if listings %}
+            <p>You've currently have the highest offers on these listings. When they end,
+            check your <a href="/pending/">pending payments</a> page to pay and get your stuff!</p>
+            <br>
+            <table class = "table table-striped">
+            <tr>
+                <th>Item</th>
+                <th>Your Offer</th>
+            </tr>
+            {% for listing in listings %}
+                <tr>
+                    <td><a href = "/listing/{{listing.id}}/">{{listing.item.title}}</a></td>
+                    <td>${{listing.current_offer}}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+        {% else %}
+            <p>You don't have the highest offer on any active listings. Let's <a href="/" target="_blank">
+                go home and make an offer!</a></p>
+        {% endif %}
+
+
+    </div>
+{% endblock %}

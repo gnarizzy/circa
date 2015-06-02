@@ -291,6 +291,14 @@ def dashboard(request):
     context = {'pending': pending, 'offers':offers, 'earnings':earnings, 'orders':orders, 'active_items':active_items}
     return render(request,'dashboard.html', context)
 
+@login_required
+def offers(request): #not very DRY
+    now = datetime.datetime.now()
+    user = request.user
+    listings_list = Listing.objects.filter(current_offer_user=user).filter(end_date__gt=now)
+    context = {'listings':listings_list}
+    return render(request, 'offers.html', context)
+
 # remove from production
 def todo(request):
     return render(request,'todo.html')
