@@ -1,10 +1,8 @@
 # A helper module to generate emails and avoid spaghetti code
-from background_task import background
-from circa.settings import ALLOWED_HOSTS
+from circa.settings import ALLOWED_HOSTS, COMMISSION_FLAT, COMMISSION_PERCENT, COMMISSION_BREAKEVEN
 from django.core.mail import EmailMessage
 from core.models import User, Listing
 from decimal import *
-import datetime
 
 
 OFFER_DENIED = "Hey {},\n\nUnfortunately, your offer is no longer the highest on {}. The current offer is ${} and " \
@@ -26,11 +24,19 @@ OFFER_ACCEPTED = "Dear {},\n\nYour offer on {} has been accepted!  Please naviga
                  "for students to buy and sell electronics." \
                  "\n\nSincerely,\n\nThe Circa Team"
 
-ITEM_SOLD = "Dear {},\n\nYour item, {}, has sold!  Your total earnings for this sale are ${}, which will be given " \
-            "to you upon pick up of the item.\n\nThank you for using Circa!  If you have any feedback on your " \
-            "experience, please reply to this email and let us know.  We want to be the best way for students to buy " \
-            "and sell electronics locally." \
-            "\n\nSincerely\n\nThe Circa Team"
+LISTING_BOUGHT = "Dear {},\n\nYour item, {}, has been sold!  Your total earnings are  ${}, which " \
+                 "will be given to you upon pick up of the item.  Please reply to this email with your address and " \
+                 "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
+                 "experience, please reply to this email and let us know.  We want to be the best way for students " \
+                 "to buy and sell electronics locally." \
+                 "\n\nSincerely\n\nThe Circa Team"
+
+OFFER_OVER = "Dear {},\n\nYour item, {}, has a winning offer!  Your total earnings are predicted to be ${}, which " \
+             "will be given to you upon pick up of the item.  Please reply to this email with your address and " \
+             "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
+             "experience, please reply to this email and let us know.  We want to be the best way for students to buy " \
+             "and sell electronics locally." \
+             "\n\nSincerely\n\nThe Circa Team"
 
 LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting the {}! This email is to confirm that you paid ${} for this " \
                   "item.  Can you reply with your address and preferred delivery time? Your item will be delivered " \
@@ -39,12 +45,22 @@ LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting the {}! This email is to
                   "the best way for students to buy and sell electronics." \
                   "\n\nSincerely,\n\nThe Circa Team"
 
-WELCOME_NEW_USER = "Dear {},\n\nThank you for creating an account with us!  Circa offers the ability to buy and " \
-                   "sell electronics locally.  We handle payment, shipping, returns, and fraud protection.\n\nThanks " \
-                   "for being awesome and using Circa, and feel free to reply with any feedback on how your " \
-                   "experience with us is. We want to create the best way for students to buy and sell electronics." \
-                   "\n\nSincerely,\n\nThe Circa Team"
+WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to build the easiest way for GT " \
+                   "students to buy and sell electronics, where haggling, meetups, and scams are a thing of the " \
+                   "past.\n\nHere's how it works:\n\n1) Sellers post stuff they want to sell\n\n2) Buyers " \
+                   "make an offer. If nobody beats that offer within an hour, the offer " \
+                   "is accepted and the buyer pays securely online. If you buy now, you instantly win the " \
+                   "item.\n\n3) We pick up the item from the seller, " \
+                   "deliver it to the buyer, and the seller gets paid!\n\nAnything you buy on Circa is protected by " \
+                   "our no-questions-asked 30 day refund policy. And if you have anything you'd like to sell, " \
+                   "visit https://usecirca.com/sell and start listing your stuff! One of our sellers made nearly " \
+                   "$200 in 24 hours selling on Circa!\n\nThanks again for signing up, and if you have any " \
+                   "questions, feel free to check out http://www.usecirca.com/about/ or reply to this email. You " \
+                   "can also follow us on Facebook (https://www.facebook.com/usecirca?_rdr) or visit " \
+                   "http://usecirca.com to stay updated with the latest deals." \
+                   "\n\nSincerely,\n\nAndrew\n\nCS '15"
 
+TAG_FOR_BCC = list().append("support@usecirca.com")
 
 def offer_denied_notification(user, listing):
     content = OFFER_DENIED.format(
@@ -61,7 +77,8 @@ def offer_denied_notification(user, listing):
     message = EmailMessage(
         subject="You no longer have the highest offer on {}".format(listing.item.title),
         body=content,
-        to=recipient
+        to=recipient,
+        bcc=TAG_FOR_BCC
     )
     message.send()
     return message.mandrill_response[0]
@@ -75,12 +92,13 @@ def lost_listing_notification(user, listing):
     message = EmailMessage(
         subject="Offers are no longer accepted on {}".format(listing.item.title),
         body=content,
-        to=recipient
+        to=recipient,
+        bcc=TAG_FOR_BCC
     )
     message.send()
     return message.mandrill_response[0]
 
-def listing_buy_now_notification(email, listing):
+def listing_bought_notification(email, listing):
     content = LISTING_BUY_NOW.format(listing.item.title, listing.current_offer)
 
     recipient = list()
@@ -89,7 +107,8 @@ def listing_buy_now_notification(email, listing):
     message = EmailMessage(
         subject="You've bought {}".format(listing.item.title),
         body=content,
-        to=recipient
+        to=recipient,
+        bcc=TAG_FOR_BCC
     )
     message.send()
     return message.mandrill_response[0]
@@ -103,28 +122,52 @@ def offer_accepted_notification(user, listing):
     message = EmailMessage(
         subject="Offer accepted for {}".format(listing.item.title),
         body=content,
-        to=recipient
+        to=recipient,
+        bcc=TAG_FOR_BCC
     )
     message.send()
 
     return message.mandrill_response[0]
 
-def item_sold_notification(listing):
+def listing_bought_seller_notification(listing):
     price = listing.current_offer
-    if price <= 30:
-        earnings = 30
+    if price <= COMMISSION_BREAKEVEN:
+        earnings = price - COMMISSION_FLAT
     else:
-        earnings = price * Decimal(.90)
+        earnings = price * Decimal(1 - COMMISSION_PERCENT)
 
-    content = ITEM_SOLD.format(listing.item.seller.username, listing.item.title, earnings)
+    content = LISTING_BOUGHT.format(listing.item.seller.username, listing.item.title, earnings)
 
     recipient = list()
     recipient.append(listing.item.seller.email)
 
     message = EmailMessage(
-        subject="{} has sold".format(listing.item.title),
+        subject="{} has sold!".format(listing.item.title),
         body=content,
-        to=recipient
+        to=recipient,
+        bcc=TAG_FOR_BCC
+    )
+    message.send()
+
+    return message.mandrill_response[0]
+
+def offer_accepted_seller_notification(listing):
+    price = listing.current_offer
+    if price <= COMMISSION_BREAKEVEN:
+        earnings = price - COMMISSION_FLAT
+    else:
+        earnings = price * Decimal(1 - COMMISSION_PERCENT)
+
+    content = OFFER_OVER.format(listing.item.seller.username, listing.item.title, earnings)
+
+    recipient = list()
+    recipient.append(listing.item.seller.email)
+
+    message = EmailMessage(
+        subject="{} has a winning offer!".format(listing.item.title),
+        body=content,
+        to=recipient,
+        bcc=TAG_FOR_BCC
     )
     message.send()
 
@@ -139,7 +182,9 @@ def welcome_new_user_notification(user):
     message = EmailMessage(
         subject="Welcome to Circa!",
         body=content,
-        to=recipient
+        to=recipient,
+        bcc=TAG_FOR_BCC,
+        from_email="andrew@usecirca.com"
     )
     message.send()
     return message.mandrill_response[0]

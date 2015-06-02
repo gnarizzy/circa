@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from circa.settings import COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PERCENT
 from core.email import *
 from core.models import Item, Listing, UserProfile
 from core.forms import ItemForm, ListingForm, OfferForm
@@ -76,7 +77,7 @@ def create_listing(request, item_id):
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
 
-    if listing.current_offer: #false if nobody has accepted the starting offer
+    if listing.current_offer: # false if nobody has accepted the starting offer
         default_offer = listing.current_offer + Decimal(1.00)
         form = OfferForm(initial={'offer': default_offer})  # pre-populate offer with $1.00 above current offer
     else:
@@ -99,10 +100,10 @@ def listing_detail(request, listing_id):
                 listing.end_date = datetime.datetime.now()
                 listing.current_offer = listing.buy_now_price
                 listing.paid_for = True
-                if listing.buy_now_price < 16.67: #TODO: PUT IN SETTINGS. SERIOUSLY. DO IT. RIGHT MEOW.
-                    listing.payout = listing.buy_now_price - Decimal(2.50)
+                if listing.buy_now_price < COMMISSION_BREAKEVEN:
+                    listing.payout = listing.buy_now_price - Decimal(COMMISSION_FLAT)
                 else:
-                    listing.payout = Decimal(.85)*listing.buy_now_price
+                    listing.payout = Decimal(1-COMMISSION_PERCENT) * listing.buy_now_price
                 prev_offer_user = listing.current_offer_user
                 if request.user.id:  # logged in user used buy it now
                     listing.current_offer_user= request.user
@@ -111,10 +112,11 @@ def listing_detail(request, listing_id):
                     listing.current_offer_user= None  # change when we create accounts for buy-now people
                 listing.save()
 
-                print(listing_buy_now_notification(email, listing))
+                listing_bought_notification(email, listing)
+                listing_bought_seller_notification(listing)
 
                 if prev_offer_user is not None:
-                    print(lost_listing_notification(prev_offer_user, listing))
+                    lost_listing_notification(prev_offer_user, listing)
 
                 return HttpResponseRedirect('/success/')
             except stripe.CardError:
@@ -206,13 +208,13 @@ def pay(request, listing_id):
                 item.buyer = request.user
                 listing.paid_for = True
                 listing.save()
-                if listing.current_offer < 16.67: #TODO: PUT IN SETTINGS. SERIOUSLY. DO IT. RIGHT MEOW.
-                    listing.payout = listing.current_offer - Decimal(2.50)
+                if listing.current_offer < COMMISSION_BREAKEVEN:
+                    listing.payout = listing.current_offer - Decimal(COMMISSION_FLAT)
                 else:
-                    listing.payout = Decimal(.85)*listing.current_offer
+                    listing.payout = Decimal(1-COMMISSION_PERCENT) * listing.current_offer
                 item.save()
 
-                listing_buy_now_notification(email, listing)
+                listing_bought_notification(email, listing)
 
                 return HttpResponseRedirect('/pending/')
 
