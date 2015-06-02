@@ -437,3 +437,8 @@ class ModelTest(TestCase):
 #background tasks tests
 
 #cant offer below asking price
+
+#mandrill tests for correct amount
+
+#test that preopulated amount is always $1 more than current offer, unless no offers have been made in which case it is
+#the asking price
