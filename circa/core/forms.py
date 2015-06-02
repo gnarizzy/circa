@@ -67,7 +67,8 @@ class OfferForm (forms.Form):
         if self.listing:
             listing_offer = Listing.objects.get(pk=self.listing).current_offer
             if not listing_offer: #no current offer, meaning no initial offer has been made
-                pass
+                if offer < Listing.objects.get(pk=self.listing).starting_offer:
+                    raise forms.ValidationError("Your offer cannot be less than the asking price.")
             else:
                 if offer <= listing_offer:
                     raise forms.ValidationError("Your offer must be greater than the current offer.")

@@ -434,3 +434,6 @@ class ModelTest(TestCase):
 
 #dashboard tests (Correct number of items for each icon, correct links for each icon)
 
+#background tasks tests
+
+#cant offer below asking price
