@@ -46,17 +46,17 @@ LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting {}! This email is to con
                   "\n\nSincerely,\n\nThe Circa Team"
 
 WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to build the easiest way for GT " \
-                   "students to buy and sell electronics, where haggling, meetups, and scams are a thing of the " \
+                   "students to buy and sell electronics, where haggling, meet-ups, and scams are a thing of the " \
                    "past.\n\nHere's how it works:\n\n1) Sellers post stuff they want to sell\n\n2) Buyers " \
                    "make an offer. If nobody beats that offer within an hour, the offer " \
                    "is accepted and the buyer pays securely online. If you buy now, you instantly win the " \
                    "item.\n\n3) We pick up the item from the seller, " \
                    "deliver it to the buyer, and the seller gets paid!\n\nAnything you buy on Circa is protected by " \
                    "our no-questions-asked 30 day refund policy. And if you have anything you'd like to sell, " \
-                   "visit https://usecirca.com/sell and start listing your stuff! One of our sellers made nearly " \
+                   "visit http://www.usecirca.com/sell and start listing your stuff! One of our sellers made nearly " \
                    "$200 in 24 hours selling on Circa!\n\nThanks again for signing up, and if you have any " \
                    "questions, feel free to check out http://www.usecirca.com/about/ or reply to this email. You " \
-                   "can also follow us on Facebook (https://www.facebook.com/usecirca?_rdr) or visit " \
+                   "can also follow us on Facebook (https://www.facebook.com/usecirca) or visit " \
                    "http://usecirca.com to stay updated with the latest deals." \
                    "\n\nSincerely,\n\nAndrew\n\nCS '15"
 
@@ -189,5 +189,6 @@ def welcome_new_user_notification(user):
         from_email="andrew@usecirca.com"
     )
     message.send()
+
     return message.mandrill_response[0]
 
