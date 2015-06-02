@@ -135,7 +135,7 @@ def listing_bought_seller_notification(listing):
         earnings = price - Decimal(COMMISSION_FLAT)
     else:
         earnings = price * Decimal(1 - COMMISSION_PERCENT)
-    earnings = earnings / Decimal(1.00)
+    earnings = round(earnings, 2)
 
     content = LISTING_BOUGHT.format(listing.item.seller.username, listing.item.title, earnings)
 
@@ -158,7 +158,7 @@ def offer_accepted_seller_notification(listing):
         earnings = price - Decimal(COMMISSION_FLAT)
     else:
         earnings = price * Decimal(1 - COMMISSION_PERCENT)
-    earnings = earnings / Decimal(1.00)
+    earnings = round(earnings, 2)
 
     content = OFFER_OVER.format(listing.item.seller.username, listing.item.title, earnings)
 
