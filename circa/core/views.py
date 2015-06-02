@@ -230,7 +230,7 @@ def pay(request, listing_id):
     minutes, seconds = divmod(remainder, 60)
     amount = int(listing.current_offer * 100)
     stripe_amount = json.dumps(amount)
-    context = {'days': days, 'hours': hours, 'minutes': minutes,
+    context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
                'listing': listing, 'amount': stripe_amount, 'item': item}
     return render(request, 'pay.html', context)
 
