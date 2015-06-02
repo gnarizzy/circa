@@ -5,7 +5,7 @@ from core.email import offer_accepted_notification, offer_accepted_seller_notifi
 import datetime
 
 
-@background(schedule=datetime.timedelta(hours=1))
+@background(schedule=datetime.timedelta(seconds=1))
 def queue_for_email_notifications(user_id, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     if user_id is not None and user_id is listing.current_offer_user.id:
