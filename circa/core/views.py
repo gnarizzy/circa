@@ -283,7 +283,7 @@ def dashboard(request):
             earnings+= item.listing.payout
             if item.listing.end_date and item.listing.end_date > datetime.datetime.now():
                 active_items += 1
-            elif item.listing.end_date < now and not item.listing.paid_for: #listing over but not paid for yet
+            elif item.listing.end_date and item.listing.end_date < now and not item.listing.paid_for: #listing over but not paid for yet
                 active_items +=1
     orders = []
     bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
