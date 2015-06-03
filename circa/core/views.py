@@ -299,6 +299,18 @@ def offers(request): #not very DRY
     context = {'listings':listings_list}
     return render(request, 'offers.html', context)
 
+def earnings(request): #not very DRY
+    earnings = 0
+    user = request.user
+    items = Item.objects.filter(seller=user)
+    items_list = []
+    for item in items:
+        if item.listing:
+            if item.listing.payout is not 0:
+                items_list.append(item)
+                earnings+= item.listing.payout
+    context = {'items':items_list, 'earnings':earnings}
+    return render(request, 'earnings.html', context)
 # remove from production
 def todo(request):
     return render(request,'todo.html')
