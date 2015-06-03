@@ -315,3 +315,13 @@ def earnings(request): #not very DRY
 # remove from production
 def todo(request):
     return render(request,'todo.html')
+
+#active items for seller: items where offer is accepted but not sold, and items not yet sold
+@login_required
+def active_items(request):
+    user = request.user
+    items_list = Item.objects.filter(seller=user)
+    for item in items_list:
+        if item.listing
+
+    return render(request, 'active_items.html')
