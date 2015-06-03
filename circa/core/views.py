@@ -83,7 +83,7 @@ def listing_detail(request, listing_id):
         form = OfferForm(initial={'offer': default_offer})  # pre-populate offer with $1.00 above current offer
     else:
         default_offer = listing.starting_offer
-        form = OfferForm(initial={'offer': default_offer}) # pre-populate with starting offer
+        form = OfferForm(initial={'offer': default_offer})  # pre-populate with starting offer
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
         if token:  # Buy Now
@@ -136,7 +136,7 @@ def listing_detail(request, listing_id):
                     prev_offer_user = listing.current_offer_user
                     listing.current_offer_user= request.user
 
-                    if prev_offer_user is not None:
+                    if prev_offer_user is not None and prev_offer_user is not request.user:
                         offer_denied_notification(prev_offer_user, listing)
 
                     queue_for_email_notifications(request.user.id, listing.id)
