@@ -283,6 +283,8 @@ def dashboard(request):
             earnings+= item.listing.payout
             if item.listing.end_date and item.listing.end_date > datetime.datetime.now():
                 active_items += 1
+            elif item.listing.end_date < now and not item.listing.paid_for: #listing over but not paid for yet
+                active_items +=1
     orders = []
     bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
     for order in bought:
@@ -319,18 +321,20 @@ def todo(request):
 #active items for seller: items where offer is accepted but not sold, and items not yet sold
 @login_required
 def active_items(request):
+    now = datetime.datetime.now()
     user = request.user
     items_list = Item.objects.filter(seller=user)
     active_items_list =[]
     unpaid_items_list = []
+    no_offers_items_list = []
     for item in items_list:
         if item.listing:
             if item.listing.end_date:
-                if item.listing.end_date > datetime.datetime.now(): #active listing with offers
+                if item.listing.end_date > now: #active listing with offers
                     active_items_list.append(item)
-                elif item.listing.end_date <datetime.date and not item.listing.paid_for: #offer hasn't been paid
+                elif item.listing.end_date < now and not item.listing.paid_for: #offer hasn't been paid for
                     unpaid_items_list.append(item)
-
-
-
-    return render(request, 'active_items.html')
+            else: #listed item with no end date means no offers have been made
+                no_offers_items_list.append(item)
+    context = {'active_items': active_items_list, 'unpaid_items':unpaid_items_list, 'no_offers': no_offers_items_list}
+    return render(request, 'active_items.html', context)
