@@ -281,9 +281,11 @@ def dashboard(request):
     for item in items:
         if item.listing:
             earnings+= item.listing.payout
-            if item.listing.end_date and item.listing.end_date > datetime.datetime.now():
+            if item.listing.end_date and item.listing.end_date > datetime.datetime.now(): #offer on listing, but still time left
                 active_items += 1
             if item.listing.end_date and item.listing.end_date < now and not item.listing.paid_for: #listing over but not paid for yet
+                active_items +=1
+            if not item.listing.end_date: #listed item, but no offers
                 active_items +=1
     orders = []
     bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
