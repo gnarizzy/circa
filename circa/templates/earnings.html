@@ -14,17 +14,17 @@
             </tr>
             {% for item in items %}
                 <tr>
-                    <td><a href = "/listing{{item.listing.id}}/">{{item.title}}</a></td>
+                    <td><a href = "/listing/{{item.listing.id}}/">{{item.title}}</a></td>
                     <td>${{item.listing.payout}}</td>
                 </tr>
             {% endfor %}
             <tr>
-                <td>Total:</td>
-                <td>{{earnings}}</td>
+                <td><strong>Total:</strong></td>
+                <td><strong>${{earnings}}</strong></td>
             </tr>
         </table>
         {% else %}
-            <p>You have no outstanding payments due. Let's <a href="http://cdn0.dailydot.com/uploaded/images/original/2013/1/7/cage6.jpg" target="_blank">celebrate!</a></p>
+            <p>You haven't made any money through Circa :( Why don't you <a href="/sell/">sell something?</a></p>
         {% endif %}
      </div>
 {% endblock %}
