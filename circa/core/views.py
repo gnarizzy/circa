@@ -116,7 +116,7 @@ def listing_detail(request, listing_id):
                 listing_bought_notification(email, listing)
                 listing_bought_seller_notification(listing)
 
-                if prev_offer_user is not None:
+                if prev_offer_user is not None and prev_offer_user.email is not email:
                     lost_listing_notification(prev_offer_user, listing)
 
                 return HttpResponseRedirect('/success/')
@@ -281,8 +281,12 @@ def dashboard(request):
     for item in items:
         if item.listing:
             earnings+= item.listing.payout
-            if item.listing.end_date and item.listing.end_date > datetime.datetime.now():
+            if item.listing.end_date and item.listing.end_date > datetime.datetime.now(): #offer on listing, but still time left
                 active_items += 1
+            if item.listing.end_date and item.listing.end_date < now and not item.listing.paid_for: #listing over but not paid for yet
+                active_items +=1
+            if not item.listing.end_date: #listed item, but no offers
+                active_items +=1
     orders = []
     bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
     for order in bought:
@@ -291,6 +295,48 @@ def dashboard(request):
     context = {'pending': pending, 'offers':offers, 'earnings':earnings, 'orders':orders, 'active_items':active_items}
     return render(request,'dashboard.html', context)
 
+@login_required
+def offers(request): #not very DRY
+    now = datetime.datetime.now()
+    user = request.user
+    listings_list = Listing.objects.filter(current_offer_user=user).filter(end_date__gt=now)
+    context = {'listings':listings_list}
+    return render(request, 'offers.html', context)
+
+@login_required
+def earnings(request): #not very DRY
+    earnings = 0
+    user = request.user
+    items = Item.objects.filter(seller=user)
+    items_list = []
+    for item in items:
+        if item.listing:
+            if item.listing.payout > 0:
+                items_list.append(item)
+                earnings+= item.listing.payout
+    context = {'items':items_list, 'earnings':earnings}
+    return render(request, 'earnings.html', context)
 # remove from production
 def todo(request):
     return render(request,'todo.html')
+
+#active items for seller: items where offer is accepted but not sold, and items not yet sold
+@login_required
+def active_items(request):
+    now = datetime.datetime.now()
+    user = request.user
+    items_list = Item.objects.filter(seller=user)
+    active_items_list =[]
+    unpaid_items_list = []
+    no_offers_items_list = []
+    for item in items_list:
+        if item.listing:
+            if item.listing.end_date:
+                if item.listing.end_date > now: #active listing with offers
+                    active_items_list.append(item)
+                elif item.listing.end_date < now and not item.listing.paid_for: #offer hasn't been paid for
+                    unpaid_items_list.append(item)
+            else: #listed item with no end date means no offers have been made
+                no_offers_items_list.append(item)
+    context = {'active_items': active_items_list, 'unpaid_items':unpaid_items_list, 'no_offers': no_offers_items_list}
+    return render(request, 'active_items.html', context)

@@ -33,14 +33,14 @@
           <a href="/pending/">Pending Payments <span class="menu-icon glyphicon glyphicon-dashboard"></span></a>
         </li>
         <li class="sidebar-list">
-          <a href="#">Active Offers <span class="menu-icon glyphicon glyphicon-fire"></span></a>
+          <a href="/offers/">Active Offers <span class="menu-icon glyphicon glyphicon-fire"></span></a>
+        <li class="sidebar-list">
+          <a href="/earnings/">Earnings <span class="menu-icon glyphicon glyphicon-usd"></span></a>
         </li>
         <li class="sidebar-list">
-          <a href="#" target="_blank">Active Items <span class="menu-icon glyphicon glyphicon-book"></span></a>
+          <a href="/items/">Active Items <span class="menu-icon glyphicon glyphicon-book"></span></a>
         </li>
-        <li class="sidebar-list">
-          <a href="#">Settings <span class="menu-icon glyphicon glyphicon-cog"></span></a>
-        </li>
+
 
       </ul>
 
@@ -86,7 +86,7 @@
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon red pull-left">
-                    <i class="glyphicon glyphicon-fire"></i>
+                    <a href="/offers/"><i class="glyphicon glyphicon-fire"></i></a>
                   </div>
                   <div class="widget-content pull-left">
                     <div class="title">{{offers}}</div>
@@ -100,7 +100,7 @@
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon orange pull-left">
-                    <i class="glyphicon glyphicon-usd"></i>
+                    <a href="/earnings/"><i class="glyphicon glyphicon-usd"></i></a>
                   </div>
                   <div class="widget-content pull-left">
                     <div class="title">${{earnings}}</div>
@@ -115,7 +115,7 @@
               <div class="widget">
                 <div class="widget-body">
                   <div class="widget-icon blue pull-left">
-                    <i class="glyphicon glyphicon-book"></i>
+                    <a href="/items/"><i class="glyphicon glyphicon-book"></i></a>
                   </div>
                   <div class="widget-content pull-left">
                     <div class="title">{{active_items}}</div>
