@@ -321,7 +321,16 @@ def todo(request):
 def active_items(request):
     user = request.user
     items_list = Item.objects.filter(seller=user)
+    active_items_list =[]
+    unpaid_items_list = []
     for item in items_list:
-        if item.listing
+        if item.listing:
+            if item.listing.end_date:
+                if item.listing.end_date > datetime.datetime.now(): #active listing with offers
+                    active_items_list.append(item)
+                elif item.listing.end_date <datetime.date and not item.listing.paid_for: #offer hasn't been paid
+                    unpaid_items_list.append(item)
+
+
 
     return render(request, 'active_items.html')
