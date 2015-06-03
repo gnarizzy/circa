@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title_block %}
+    Active Items
+{% endblock %}
+{% block body_block %}
+    <div class = "container">
+        <h1>
+            Active items
+        </h1>
+        {% if active_items or unpaid_items or no_offers %}
+            <p>Your have listed the following active items:</p>
+            <br>
+            <table class = "table table-striped">
+            <tr>
+                <th>Item</th>
+                <th>Status</th>
+            </tr>
+            {% if unpaid_items %}
+                {% for item in unpaid_items %}
+                <tr>
+                    <td><a href = "/listing/{{item.listing.id}}/">{{item.title}}</a></td>
+                    <td>Unpaid</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            {% if active_items %}
+                {% for item in active_items %}
+                <tr>
+                    <td><a href = "/listing/{{item.listing.id}}/">{{item.title}}</a></td>
+                    <td>Ending soon</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+            {% if no_offers %}
+                {% for item in no_offers %}
+                <tr>
+                    <td><a href = "/listing/{{item.listing.id}}/">{{item.title}}</a></td>
+                    <td>No offers</td>
+                </tr>
+                {% endfor %}
+            {% endif %}
+
+
+        </table>
+        {% else %}
+            <p>You have no active items. Why don't you <a href="/sell/">sell something?</a></p>
+        {% endif %}
+    </div>
+
+{% endblock %}

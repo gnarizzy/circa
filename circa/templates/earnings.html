@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title_block %}
+    Earnings
+{% endblock %}
+{% block body_block %}
+    <div class = "container">
+     {% if items %}
+            <p>Congratulations! You've earned a total of ${{earnings}} by selling the following items on Circa:</p>
+            <br>
+            <table class = "table table-striped">
+            <tr>
+                <th>Item</th>
+                <th>Earnings</th>
+            </tr>
+            {% for item in items %}
+                <tr>
+                    <td><a href = "/listing/{{item.listing.id}}/">{{item.title}}</a></td>
+                    <td>${{item.listing.payout}}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td><strong>Total:</strong></td>
+                <td><strong>${{earnings}}</strong></td>
+            </tr>
+        </table>
+        {% else %}
+            <p>You haven't made any money through Circa :( Why don't you <a href="/sell/">sell something?</a></p>
+        {% endif %}
+     </div>
+{% endblock %}
