@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^policies/terms', 'core.views.terms', name='terms'),  # parameterize as we get more policy info
     url(r'^dashboard','core.views.dashboard', name='terms'),
     url(r'^offers', 'core.views.offers', name='offers'), #consolidate these into dashboard
+    url(r'earnings','core.views.earnings', name='earnings'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^manage/', include(admin.site.urls)),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
