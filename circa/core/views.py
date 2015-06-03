@@ -116,7 +116,7 @@ def listing_detail(request, listing_id):
                 listing_bought_notification(email, listing)
                 listing_bought_seller_notification(listing)
 
-                if prev_offer_user is not None:
+                if prev_offer_user is not None and prev_offer_user.email is not email:
                     lost_listing_notification(prev_offer_user, listing)
 
                 return HttpResponseRedirect('/success/')

@@ -5,7 +5,7 @@
 <script type="text/javascript">
     function countdown(minutes, seconds, display) {
             m = parseInt(minutes, 10);
-            s = parseInt(seconds, 10) - 1;
+            s = parseInt(seconds, 10) - 2;
 
             if(s < 0) {
                 display.textContent = "";
@@ -81,7 +81,7 @@
                            {% else %}
                            The current offer will be accepted in
                            <br>
-                           <strong><span id="time"> {{ minutes }} minutes and {{ seconds }} seconds</span></strong>
+                           <strong><span id="time"> {{ minutes }} minutes and {{ seconds|add:"-1" }} seconds</span></strong>
                            <br>
                             unless a higher offer is made.
                            {% endif %}
