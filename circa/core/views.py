@@ -299,6 +299,7 @@ def offers(request): #not very DRY
     context = {'listings':listings_list}
     return render(request, 'offers.html', context)
 
+@login_required
 def earnings(request): #not very DRY
     earnings = 0
     user = request.user
@@ -306,7 +307,7 @@ def earnings(request): #not very DRY
     items_list = []
     for item in items:
         if item.listing:
-            if item.listing.payout is not 0:
+            if item.listing.payout > 0:
                 items_list.append(item)
                 earnings+= item.listing.payout
     context = {'items':items_list, 'earnings':earnings}
