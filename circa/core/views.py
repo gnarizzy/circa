@@ -127,7 +127,7 @@ def listing_detail(request, listing_id):
 
         else:  # Make an Offer
             # TODO update item.buyer
-            form = OfferForm(request.POST, listing=listing_id)
+            form = OfferForm(request.POST, listing=listing_id, user=request.user)
             if request.user.is_authenticated():
                 if form.is_valid():
                     offer = form.cleaned_data['offer']
