@@ -56,7 +56,8 @@ class OfferForm (forms.Form):
                                  label='Zip code')
 
     def __init__(self, *args, **kwargs):
-        self.listing = kwargs.pop('listing', None)
+        self.listing = kwargs.pop('listing', None) #Grabs current listing ID
+        self.user = kwargs.pop('user', None) #Grabs current user
         super(OfferForm, self).__init__(*args,**kwargs)
 
     # check to make sure offer isn't higher than buy it now?
@@ -65,7 +66,13 @@ class OfferForm (forms.Form):
     def clean_offer(self):
         offer = self.cleaned_data['offer']
         if self.listing:
-            listing_offer = Listing.objects.get(pk=self.listing).current_offer
+            listing_object = Listing.objects.get(pk=self.listing) #current listing
+
+            if self.user and self.user.id is listing_object.item.seller.id: #user submitted offer on their own auction
+                raise forms.ValidationError("Trying to submit an offer on your own item, eh? Seems legit.")
+
+
+            listing_offer = listing_object.current_offer
             if not listing_offer: #no current offer, meaning no initial offer has been made
                 if offer < Listing.objects.get(pk=self.listing).starting_offer:
                     raise forms.ValidationError("Your offer cannot be less than the asking price.")
