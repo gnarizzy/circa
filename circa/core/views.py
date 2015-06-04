@@ -208,11 +208,12 @@ def pay(request, listing_id):
                 )
                 item.buyer = request.user
                 listing.paid_for = True
-                listing.save()
+
                 if listing.current_offer < COMMISSION_BREAKEVEN:
                     listing.payout = listing.current_offer - Decimal(COMMISSION_FLAT)
                 else:
                     listing.payout = Decimal(1-COMMISSION_PERCENT) * listing.current_offer
+                listing.save()
                 item.save()
 
                 listing_bought_notification(email, listing)
