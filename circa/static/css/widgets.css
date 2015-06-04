@@ -59,8 +59,8 @@
   padding: 0;
 }
 .widget .widget-icon {
-  width: 175px;
-  height: 175px;
+  width: 150px;
+  height: 150px;
   text-align: center;
   vertical-align: middle;
   margin-right: 30px;
@@ -71,10 +71,17 @@
   font-size: 30px;
 }
 .widget .widget-content .title {
-  font-size: 28px;
+  font-size: 30px;
+  display: block;
+}
+.widget .widget-content .title div {
+  font-size: 16px;
   display: block;
 }
 .widget .widget-body.no-padding .error,
 .widget .widget-body.no-padding .message {
   padding: 20px;
+}
+div#get-faded:hover {
+  opacity: 0.6;
 }

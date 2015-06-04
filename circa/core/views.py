@@ -343,4 +343,8 @@ def active_items(request):
     return render(request, 'active_items.html', context)
 
 def test_index(request):
-    return render(request, 'test.html')
+    now = datetime.datetime.now()
+    item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
+        .order_by('listing__end_date')
+    context = {'items': item_list}
+    return render(request, 'test.html', context)
