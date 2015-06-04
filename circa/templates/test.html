@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_block %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/content.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/header.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/widgets.css'%}">
+    <script type="text/javascript" src="{% static 'js/app.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.cookie.js'%}"></script>
+{% endblock %}
+{% block title_block %}
+    Dashboard
+{% endblock %}
+{% block nav_block %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+{% endblock %}
+
+{% block body_block %}
+<body>
+    <div class="container">
+    <div id="content-wrapper">
+      <div class="page-content">
+
+        <!-- Header Bar -->
+      <div class="row header">
+          <div class="col-xs-12">
+            <div class="meta pull-left">
+              <div class="page">
+              </div>
+            </div>
+          </div>
+
+        <!-- End Header Bar -->
+
+
+        <!-- Main Content -->
+
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon pull-left">
+                    <img src="http://placehold.it/175x175" alt="..." class="img-rounded">
+                  </div>
+                  <div class="widget-content">
+                    <div class="title">Filler filler filler filler filler filler filler filler </div>
+                    <div class="comment">slightly smaller filler slightly smaller filler slightly smaller filler slightly smaller filler</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon pull-left">
+                    <img src="http://placehold.it/175x175" alt="..." class="img-rounded">
+                  </div>
+                  <div class="widget-content">
+                    <div class="title">Filler filler filler filler filler filler filler filler </div>
+                    <div class="comment">slightly smaller filler slightly smaller filler slightly smaller filler slightly smaller filler</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon pull-left">
+                    <img src="http://placehold.it/175x175" alt="..." class="img-rounded">
+                  </div>
+                  <div class="widget-content">
+                    <div class="title">Filler filler filler filler filler filler filler filler </div>
+                    <div class="comment">slightly smaller filler slightly smaller filler slightly smaller filler slightly smaller filler</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-xs-12">
+              <div class="widget">
+                <div class="widget-body">
+                  <div class="widget-icon pull-left">
+                    <img src="http://placehold.it/175x175" alt="..." class="img-rounded">
+                  </div>
+                  <div class="widget-content">
+                    <div class="title">Filler filler filler filler filler filler filler filler </div>
+                    <div class="comment">slightly smaller filler slightly smaller filler slightly smaller filler slightly smaller filler</div>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        <!-- End Main Content -->
+
+      </div><!-- End Page Content -->
+    </div><!-- End Content Wrapper -->
+  </div><!-- End Container -->
+
+
+{% endblock %}

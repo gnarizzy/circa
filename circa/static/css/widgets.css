@@ -59,13 +59,11 @@
   padding: 0;
 }
 .widget .widget-icon {
-  background: #30426a;
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
+  width: 175px;
+  height: 175px;
   text-align: center;
   vertical-align: middle;
-  margin-right: 15px;
+  margin-right: 30px;
 }
 .widget .widget-icon i {
   line-height: 66px;

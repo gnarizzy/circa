@@ -341,3 +341,6 @@ def active_items(request):
                 no_offers_items_list.append(item)
     context = {'active_items': active_items_list, 'unpaid_items':unpaid_items_list, 'no_offers': no_offers_items_list}
     return render(request, 'active_items.html', context)
+
+def test_index(request):
+    return render(request, 'test.html')
