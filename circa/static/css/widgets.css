@@ -23,7 +23,11 @@
   width: 25%;
 }
 .widget .widget-body {
-  padding: 20px;
+  padding: 15px;
+}
+.widget .widget-body img {
+  display: block;
+  margin: auto;
 }
 .widget .widget-body table thead {
   background: #fafafa;
@@ -71,11 +75,11 @@
   font-size: 30px;
 }
 .widget .widget-content .title {
-  font-size: 30px;
+  font-size: 20px;
   display: block;
 }
 .widget .widget-content .title div {
-  font-size: 16px;
+  font-size: 14px;
   display: block;
 }
 .widget .widget-body.no-padding .error,
