@@ -25,10 +25,6 @@
 .widget .widget-body {
   padding: 15px;
 }
-.widget .widget-body img {
-  display: block;
-  margin: auto;
-}
 .widget .widget-body table thead {
   background: #fafafa;
 }
@@ -63,22 +59,25 @@
   padding: 0;
 }
 .widget .widget-icon {
-  width: 150px;
+  width: 40%;
   height: 150px;
   text-align: center;
   vertical-align: middle;
   margin-right: 30px;
+  float: left;
 }
-.widget .widget-icon i {
-  line-height: 66px;
-  color: #ffffff;
-  font-size: 30px;
+.widget .widget-icon .centering img {
+  display: block;
+  margin: auto;
 }
 .widget .widget-content .title {
   font-size: 20px;
-  display: block;
+  display: inline-block;
+  float: left;
+  min-width: 51%;
+  max-width: 51%;
 }
-.widget .widget-content .title div {
+.widget .widget-content .title div{
   font-size: 14px;
   display: block;
 }
@@ -88,4 +87,7 @@
 }
 div#get-faded:hover {
   opacity: 0.6;
+}
+span.avoidwrap {
+  display: inline;
 }

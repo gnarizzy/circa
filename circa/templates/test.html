@@ -73,13 +73,15 @@
         {% load cropping %}
           <div class="row">
           {% for item in items %}
-            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <div class="col-lg-6 col-md-6 col-xs-12">
             <a id="no-format" href="/listing/{{item.listing.id}}">
               <div id="get-faded" class="widget">
                 <div class="widget-body">
-                  <img src="{% cropped_thumbnail item "cropping" width=150 %}" alt="..." class="img-rounded">
+                  <div class="widget-icon">
+                    <div class="centering"><img src="{% cropped_thumbnail item "cropping" width=150 %}" alt="..." class="img-rounded"></div>
+                  </div>
                   <div class="widget-content">
-                    <div class="title"><strong>{{ item.title|truncatechars:20 }}</strong>
+                    <div class="title"><p><span class="avoidwrap">{{ item.title|truncatechars:50 }}</span>
                         <br>
                         <div>
                         {% if item.listing.current_offer %}
@@ -92,10 +94,9 @@
                         <br>
                         {% if item.listing.end_date %}
                         Time Left: <strong><span id="time_left{{ item.listing.id }}"></span></strong>
-                        {% else %}
-                        &nbsp;
                         {% endif %}
                         </div>
+                        </p>
                     </div>
                   </div>
                   <div class="clearfix"></div>
