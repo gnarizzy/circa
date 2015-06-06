@@ -4,4 +4,5 @@ db.sqlite3
 media/
 .idea/
 __pycache__/
-sqlite.exe
+sqlite3.exe
+migrations/
