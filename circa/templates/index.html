@@ -65,10 +65,11 @@
                             {% if item.listing.current_offer %}
                             Time Left: <span id="time_left{{ item.listing.id }}" class="red-text">XX min</span>
                             {% endif %}
-                        <i class="activator right">more</i></p>
+                        <i class="mdi-navigation-more-vert right"></i></p>
                     </div>
                     <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">{{ item.title|truncatechars:40 }}</span>
+                        <span class="card-title grey-text text-darken-4">{{ item.title|truncatechars:40 }}
+                        <i class="mdi-navigation-close right"></i></span>
                         <p>{{ item.description }}</p>
                         <a href="/listing/{{ item.listing.id }}" class="waves-effect waves-light btn">See Listing</a>
                     </div>
