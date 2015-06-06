@@ -51,24 +51,9 @@ body {
 div.input-mask {
   padding-top: 7px;
 }
-a#no-format:link, a#no-format:visited {
-    color: #000000;
-    cursor: auto;
-    text-decoration: none;
+div.take-space {
+  margin: 40px;
 }
-a#no-format:hover {
-    color: #000000;
-    cursor: auto;
-    text-decoration: none;
-    background-color: #000000;
-    z-index: 10
-}
-hover-bg:hover {
-    background-color: #000000;
-    opacity: 0.5;
-    filter: alpha(opacity=40);
-    z-index: 9999;
-}
-a:link:active, a:visited:active {
-    color: #000000;
+div#get-faded:hover {
+  opacity: 0.6;
 }
