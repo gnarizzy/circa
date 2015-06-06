@@ -19,24 +19,26 @@
 </head>
 <body>
 {% block nav_block %}
-    <nav>
-        <div class="nav-wrapper amber darken-1">
-          <a href="#" class="brand-logo">Circa<sup>beta</sup></a>
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            {% if user.is_authenticated %}
-                            <li><a href="/dashboard/"><span class="glyphicon glyphicon-user"></span> {{user.username}}</a></li>
-                            <li><a href="/sell/"><span class= "glyphicon glyphicon-usd"></span> Sell</a></li>
-                            <li><a href="/help/"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
-                            <li><a href="{% url 'auth_logout' %}?next=/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
-            {% else %}
-                            <li><a href="/accounts/register/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                            <li><a href="/sell/"><span class= "glyphicon glyphicon-usd"></span> Sell</a></li>
-                            <li><a href="/help/"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
-                            <li><a href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-            {% endif %}
-          </ul>
-        </div>
-    </nav>
+    <div class = "navbar-fixed">
+        <nav>
+            <div class="nav-wrapper red darken-1">
+              <a href="#" class="brand-logo">Circa<sup>beta</sup></a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                {% if user.is_authenticated %}
+                                <li><a href="/dashboard/"><span class="glyphicon glyphicon-user"></span> {{user.username}}</a></li>
+                                <li><a href="/sell/"><span class= "glyphicon glyphicon-usd"></span> Sell</a></li>
+                                <li><a href="/help/"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
+                                <li><a href="{% url 'auth_logout' %}?next=/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                {% else %}
+                                <li><a href="/accounts/register/"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                                <li><a href="/sell/"><span class= "glyphicon glyphicon-usd"></span> Sell</a></li>
+                                <li><a href="/help/"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
+                                <li><a href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                {% endif %}
+              </ul>
+            </div>
+        </nav>
+    </div>
 {% endblock %}
             <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
