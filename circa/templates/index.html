@@ -37,11 +37,26 @@
     };
     </script>
     <link href="{% static 'css/jumbotron-narrow.css'%}" rel="stylesheet" media="screen">
+    <link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 
 {% endblock %}
 
 {% block body_block %}
-        <div class="container">
+       <div class="container">
+           {% if not user.id %}
+            <div class="take-space"></div>
+            <div class="jumbotron">
+                <h1>Buy and Sell at GT</h1>
+                <p class="lead">Circa makes buying and selling electronics around Georgia Tech easy. No more haggling,
+                    giving contact info to strangers, awkward meetups, or getting scammed. Scroll down to begin shopping.
+                </p>
+                <p><a class="waves-effect waves-light btn-large" href="/about/"><i class="mdi-action-info left"></i>Learn
+                    more</a>
+                </p>
+            </div>
+           {% endif %}
+
+
         {% if items %}
         {% load cropping %}
         <div class="take-space"></div>
@@ -79,7 +94,8 @@
         {% else %}
         <h2>This is awkward...there's nothing for sale! Why don't you <a href="/sell/">sell something</a>?</h2>
         {% endif %}
-    </div>
+            </div>
+       </div>
 
 
 {% endblock %}
