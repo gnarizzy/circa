@@ -12,7 +12,7 @@ class ItemForm(forms.ModelForm):
         fields = ('title', 'description', 'photo')
 
 class ListingForm(forms.ModelForm):
-    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}),)
+    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'input-control col'}),)
     buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Buy now price')
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Pickup zipcode')
 
