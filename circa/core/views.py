@@ -7,6 +7,7 @@ from core.email import listing_bought_notification, listing_bought_seller_notifi
 from core.models import Item, Listing, UserProfile
 from core.forms import ItemForm, ListingForm, OfferForm
 from core.keys import *
+from core.zipcode import zipcodes
 from django.contrib.auth.models import User
 from django import forms
 from decimal import *
@@ -261,13 +262,15 @@ def terms(request):
     return render(request, 'terms.html')
 
 def about(request):
-    return render(request, 'about.html')
+    context = {'zipcodes': zipcodes(), 'zip_len': len(zipcodes())}
+    return render(request, 'about.html', context)
 
 def success(request):
     return render(request, 'success.html')
 
 def help(request):
-    return render(request, 'help.html')
+    context = {'zipcodes': zipcodes(), 'zip_len': len(zipcodes())}
+    return render(request, 'help.html', context)
 
 @login_required
 def dashboard(request):
@@ -297,7 +300,7 @@ def dashboard(request):
     return render(request,'dashboard.html', context)
 
 @login_required
-def offers(request): #not very DRY
+def offers(request): # not very DRY
     now = datetime.datetime.now()
     user = request.user
     listings_list = Listing.objects.filter(current_offer_user=user).filter(end_date__gt=now)
@@ -305,8 +308,8 @@ def offers(request): #not very DRY
     return render(request, 'offers.html', context)
 
 @login_required
-def earnings(request): #not very DRY
-    earnings = 0
+def earnings(request): # not very DRY
+    total_earnings = 0
     user = request.user
     items = Item.objects.filter(seller=user)
     items_list = []
@@ -314,8 +317,8 @@ def earnings(request): #not very DRY
         if item.listing:
             if item.listing.payout > 0:
                 items_list.append(item)
-                earnings+= item.listing.payout
-    context = {'items':items_list, 'earnings':earnings}
+                total_earnings += item.listing.payout
+    context = {'items': items_list, 'earnings': total_earnings}
     return render(request, 'earnings.html', context)
 # remove from production
 def todo(request):

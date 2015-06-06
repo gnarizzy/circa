@@ -57,7 +57,14 @@
                 <br>
            <dt>Where is Circa available?</dt>
                 <dd>
-                    Circa is available to all the zip codes around Georgia Tech: 30308, 30309, 30313, 30318, and 30332.
+                    Circa is available to all the zip codes around Georgia Tech:
+                    {% for zip in zipcodes %}
+                        {% if forloop.counter == zip_len %}
+                            and {{ zip }}.
+                        {% else %}
+                            {{ zip }},
+                        {% endif %}
+                    {% endfor %}
                     Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!
                 </dd>
                 <br>

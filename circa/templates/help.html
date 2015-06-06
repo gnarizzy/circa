@@ -7,9 +7,16 @@
        <h1>Help</h1>
        <dl>
            <dt>Why can't I make an offer on an item?</dt>
-               <dd>In order to ensure quick delivery and returns, we only serve the zip codes around Georgia Tech: 30308,
-                   30309, 30313, 30318, and 30332. If your shipping address isn't in those zips, we can't deliver the
-                   item to you. Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!</dd>
+               <dd> In order to ensure quick delivery and returns, we only serve the zip codes around Georgia Tech:
+                    {% for zip in zipcodes %}
+                        {% if forloop.counter == zip_len %}
+                            and {{ zip }}.
+                        {% else %}
+                            {{ zip }},
+                        {% endif %}
+                    {% endfor %}
+                    If your shipping address isn't in those zips, we can't deliver the
+                    item to you. Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!</dd>
                <br>
            <dt>What do I do after my offer has been accepted?</dt>
                 <dd>
