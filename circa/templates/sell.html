@@ -1,7 +1,4 @@
 {% extends 'base.html' %}
-{% block title_block %}
-    Sell
-{% endblock %}
 {% load static %}
 {% block head_block %}
 {{ form.media }}
@@ -13,11 +10,31 @@
                 <form id ="item_form" method="post" action="/sell/"  enctype="multipart/form-data" >
                     {% csrf_token %}
                     <div class="form-group">
-                        {{ form.as_p }}
-
+                            {{ form.non_field_errors }}
+                            <p class="input-field">
+                                {{ form.title.errors }}
+                                <label for="{{ form.subject.id_for_label }}">Title</label>
+                                {{ form.title }}
+                            </p>
+                            <p class="input-field">
+                                {{ form.description.errors }}
+                                <label for="{{ form.message.id_for_label }}">Description</label>
+                                {{ form.description }}
+                            </p>
+                            <p>
+                                {{ form.description.errors }}
+                                <div class="file-field input-field">
+                                    <input class="file-path validate" type="text"/>
+                                    <div class="btn blue">
+                                        <span>Photo</span>
+                                        {{ form.photo }}
+                                    </div>
+                                </div>
+                            </p>
                     </div>
-
-                    <input type="submit" name="submit" class="btn btn-primary" value="List item" />
+                    <button class="btn-large waves-effect waves-light" type="submit" name="action">List Item
+                        <i class="mdi-content-send right"></i>
+                      </button>
                 </form>
         <br>
         <p><small>Once you list your item, you'll be able to set a price, create a listing, and schedule a pickup. By

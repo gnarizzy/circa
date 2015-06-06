@@ -4,8 +4,9 @@ from decimal import *
 from django import forms
 
 class ItemForm(forms.ModelForm):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), max_length=100)
-    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    title = forms.CharField(label="Title", widget=forms.TextInput(attrs={'class': 'validate'}), max_length=100)
+    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'class': 'materialize-textarea '
+                                                                                             'validate'}))
 
     class Meta:
         model = Item
