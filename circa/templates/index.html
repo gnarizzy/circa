@@ -1,11 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head_block %}
-    <style>
-        body {
-            padding-top: 70px;
-        }
-    </style>
+
 
     <script text="text/javascript">
         function calc_time_left(end, display) {
@@ -43,9 +39,7 @@
     <link href="{% static 'css/jumbotron-narrow.css'%}" rel="stylesheet" media="screen">
 
 {% endblock %}
-{% block nav_block %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-{% endblock %}
+
 {% block body_block %}
         <div class="container">
         {% if items %}

@@ -6,10 +6,10 @@ from image_cropping import ImageCropField, ImageRatioField
 
 class Listing(models.Model):
     starting_offer = models.DecimalField(max_digits=6, decimal_places=2, default=1.00)
-    current_offer = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    current_offer = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank = True)
     buy_now_price = models.DecimalField(max_digits=6, decimal_places=2, default=1.10)
     start_date = models.DateTimeField(auto_now_add=True)
-    end_date = models.DateTimeField(null=True)
+    end_date = models.DateTimeField(null=True, blank=True)
     current_offer_user = models.ForeignKey(User, null=True, blank=True)
     buy_now_email = models.EmailField(blank=True, null=True)  # temporary field until we create users from buy now purchases
     zipcode = models.IntegerField(default=0)
