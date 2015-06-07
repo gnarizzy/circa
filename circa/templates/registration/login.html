@@ -12,8 +12,18 @@
 
         <form method="post" action=".">
              {% csrf_token %}
-             {{ form.as_p }}
-             <input type="submit" class="btn btn-primary" value="Log in" />
+             {{ form.non_field_errors }}
+                <p class="input-field">
+                    {{ form.username.errors }}
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                </p>
+                <p class="input-field">
+                    {{ form.password.errors }}
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    {{ form.password }}
+                </p>
+             <button class="btn waves-effect waves-light" type="submit" name="action">Login</button>
              <input type="hidden" name="next" value="{{ next }}" />
         </form>
         <br>
