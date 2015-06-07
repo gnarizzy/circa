@@ -57,3 +57,87 @@ div.take-space {
 div#get-faded:hover {
   opacity: 0.6;
 }
+
+/* About */
+
+#about{
+	background: #ededed;
+	color: #626262;
+}
+
+#about h1,
+#about h2,
+#about h3,
+#about h4,
+#about h5,
+#about h6{
+	color: #626262;
+}
+
+
+.feature-box-container{
+	margin: 60px 0;
+}
+
+.feature-box-container:last-child{
+	margin-bottom: 0;
+}
+
+.feature-box {
+	text-align: center;
+	background: #e4e4e4;
+}
+
+.feature-box .icon {
+	width: 100px;
+	height: 55px;
+	color: #fff;
+	position: relative;
+	background: #bbbcbc;
+	margin: 35px auto 20px;
+}
+
+.feature-box .icon:before {
+	content: "";
+	position: absolute;
+	top: -25px;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+	border-bottom: 25px solid #bbbcbc;
+}
+
+.feature-box .icon:after {
+	content: "";
+	position: absolute;
+	bottom: -25px;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-left: 50px solid transparent;
+	border-right: 50px solid transparent;
+	border-top: 25px solid #bbbcbc;
+}
+
+.feature-box .icon i {
+	font-size: 35px;
+	padding-top: 12px;
+	display: block;
+}
+
+.feature-box .description {
+	padding: 20px 15px 10px;
+}
+
+.feature-box .description p {
+	font-size: 14px;
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+	.feature-box-container{
+		margin: 0;
+	}
+}
