@@ -4,18 +4,18 @@ from decimal import *
 from django import forms
 
 class ItemForm(forms.ModelForm):
-    title = forms.CharField(label="Title", widget=forms.TextInput(attrs={'class': 'validate'}), max_length=100)
-    description = forms.CharField(label="Description", widget=forms.Textarea(attrs={'class': 'materialize-textarea '
-                                                                                             'validate'}))
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}),label="Title", max_length=100)
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea validate'}),
+                                  label="Description")
 
     class Meta:
         model = Item
         fields = ('title', 'description', 'photo')
 
 class ListingForm(forms.ModelForm):
-    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'input-control col'}),)
-    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Buy now price')
-    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}), label='Pickup zipcode')
+    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}),)
+    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
+    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
 
     # Make sure starting offer is at least $5.00
     def clean_starting_offer(self):
