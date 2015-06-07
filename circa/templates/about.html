@@ -1,8 +1,82 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title_block %}
     About Circa
 {% endblock %}
+{% block head_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css'%}">
+{% endblock %}
 {% block body_block %}
+    <section id="about" class="section">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<h3 class="section-title">About</h3>
+						<div class="section-title-border"></div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<p class="lead">
+							<strong>Curabitur molestie</strong> libero ut enim egestas
+							placerat. Sed facilisis magna sapien, id tincidunt metus
+							adipiscing sed. Aliquam viverra sagittis quam vel sagittis.
+						</p>
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+							Mauris interdum condimentum vestibulum. Proin ullamcorper
+							lorem adipiscing elit ornare, et lobortis tortor fringilla.
+							Curabitur non volutpat justo, at posuere dolor.
+							Fusce eu tellus vel tellus porttitor aliquet. Etiam ullamcorper
+							laoreet lectus ut suscipit. Quisque luctus felis sed ante elementum condimentum.
+							Praesent sagittis odio eu ante sollicitudin, vel commodo
+							odio viverra.
+						</p>
+						<div class="row">
+							<div class="col-sm-4 feature-box-container">
+								<div class="feature-box wow fadeInDown">
+									<div class="icon">
+										<i class="glyphicon glyphicon-cog"></i>
+									</div>
+									<div class="description">
+										<h4>Phasellus lobortis</h4>
+										<p>Fusce eu tellus vel tellus porttitor aliquet.
+											Etiam ullamcorper laoreet lectus ut suscipit.
+											Felis sed ante.
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-4 feature-box-container">
+								<div class="feature-box wow fadeInDown" data-wow-delay="0.2s">
+									<div class="icon">
+										<i class="fa fa-rocket"></i>
+									</div>
+									<div class="description">
+										<h4>Donec rutrum vitae</h4>
+										<p>Quisque luctus felis sed ante elementum condimentum.
+											Praesent sagittis odio eu ante sollicitudin
+										</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-4 feature-box-container">
+								<div class="feature-box wow fadeInDown" data-wow-delay="0.4s">
+									<div class="icon">
+										<i class="fa fa-heart"></i>
+									</div>
+									<div class="description">
+										<h4>Nunc consectetur</h4>
+										<p>Sed ipsum nulla, eleifend ac consectetur ut, vehicula sed lacus.
+											Quisque lectus sem, vestibulum vel nibh.
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
     <div class = "container">
        <h1>About Circa</h1>
         <dl>
