@@ -7,21 +7,16 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/main.css'%}">
 {% endblock %}
 {% block body_block %}
+<div class = "container">
+    <h1>About</h1>
+</div>
     <section id="about" class="section">
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-12">
-						<h3 class="section-title">About</h3>
-						<div class="section-title-border"></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12">
 						<p class="lead">
-							Welcome to Circa, the easiest way to buy and sell with people around you.
-						</p>
-						<p> Circa is a service for the Georgia Tech community that takes out the hassle of buying and selling
-                            with your neighbors. We handle money, delivery, and returns so you don't have to.
+							Circa is a Georgia Tech startup that removes the hassle of buying
+                            and selling with your neighbors. We handle money, delivery, and returns so you don't have to!
 						</p>
 						<div class="row">
 							<div class="col-sm-4 feature-box-container">
@@ -31,7 +26,7 @@
 									</div>
 									<div class="description">
 										<h4>No Haggling</h4>
-										<p>Sellers list their items, buyers make offers. If an offer remains undefeated
+										<p>Sellers list their items and set an asking price. Buyers make offers. If an offer remains undefeated
                                             for an hour, it is automatically accepted.
 										</p>
 									</div>
@@ -68,69 +63,34 @@
 				</div>
 			</div>
 		</section>
-    <div class = "container">
-       <h1>About Circa</h1>
-        <dl>
-           <dt>What is Circa?</dt>
-               <dd>Circa is a service for the Georgia Tech community that allows students to buy and sell electronics
-                   with each other. We handle all the logistics including pricing, payment, shipping, and fraud protection.
-                   No more haggling over prices with multiple people, coordinating awkward meet-ups, giving contact information
-                   to strangers, or getting scammed!</dd>
-               <br>
-           <dt>How does buying on Circa work?</dt>
-                <dd>
-                    <ol>
-                        <li>Make an offer on an item (or use the Buy Now option to skip to step 3)</li>
-                        <li>If nobody beats your offer in an hour, your offer is automatically accepted!</li>
-                        <li>Pay securely online</li>
-                        <li>The item arrives at your doorstep the next day</li>
-                        <li>Profit???</li>
-                    </ol>
-                </dd>
-                <br>
-            <dt>How does selling on Circa work?</dt>
-                <dd>
-                    <ol>
-                        <li>Post your item, create a starting offer and buy now price, and share the link with others</li>
-                        <li>We pick up the item and you get paid. Circa takes a commission of $2 or 15% (whichever is greater)
-                            to help us cover payment processing, delivery costs, and hosting expenses.</li>
-                        <li>Profit!!!</li>
-                    </ol>
-                </dd>
-            `   <br>
-           <dt>How do returns on Circa work?</dt>
-                <dd>
-                    <ol>
-                        <li>Tell us you want to return the item within 30 days of purchase. No questions asked.</li>
-                        <li>We pick it up, you get your money back!</li>
-                    </ol>
-                </dd>
-                <br>
-           <dt>Is my credit card number safe on Circa?</dt>
-                <dd>
-                    Our site uses <a href = "https://en.wikipedia.org/wiki/Transport_Layer_Security">Secure Sockets Layer
-                    </a> to force <a href = "https://en.wikipedia.org/wiki/HTTPS">HTTPS </a> on every page, ensuring
-                    that data transferred between your computer and Circa is encrypted. Circa uses
-                    <a href = "https://stripe.com">Stripe</a> for payment processing, so your
-                    credit card number never touches our server. Even if we're hacked, your credit card is safe.
-                    You can learn more about <a href = "https://stripe.com/help/security">Stripe's security measures
-                    here.</a>
-                    <br>
-                    If you find a security issue or bug of any other kind, please email support@usecirca.com immediately
-                    and we'll resolve it as soon as possible.
-                </dd>
-                <br>
-           <dt>Where is Circa available?</dt>
-                <dd>
-                    Circa is available to all the zip codes around Georgia Tech: 30308, 30309, 30313, 30318, and 30332.
-                    Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!
-                </dd>
-                <br>
-           <dt>I still need help! What do I do?</dt>
-                <dd>
-                    Email us at support@usecirca.com. We'll get back to you in under 24 hours!
-                </dd>
-        </dl>
+        <div class = "container">
+               <h3>How It Works</h3>
+               <div class ="take-space"></div>
+               <h5> Buying </strong></h5>
+                    <p>
+                        Buying on Circa is easy!
+                        <ol>
+                                <li>Make an offer on an item (or use the Buy Now option to skip to step 3)</li>
+                                <li>If nobody beats your offer in an hour, your offer is automatically accepted!</li>
+                                <li>Pay securely online</li>
+                                <li>The item arrives at your doorstep the next day</li>
+                                <li>Profit???</li>
+                        </ol>
+                    </p>
+               <div class ="take-space"></div>
+               <h5> Selling </h5>
+                   <p>
+                       Sell your stuff and make money with just a few clicks!
+                       <ol>
+                                <li>Post your item, create a starting offer and buy now price, and share the link with others</li>
+                                <li>We pick up the item and you get paid. Circa takes a commission of $2 or 15% (whichever is greater)
+                                    to help us cover payment processing, delivery costs, and hosting expenses.</li>
+                                <li>Profit!!!</li>
+                       </ol>
+                   </p>
+
+
+        </div>
     </div>
 
 {% endblock %}
