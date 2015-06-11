@@ -129,5 +129,11 @@ div#get-faded:hover {
 	}
 }
 
-.collapsible .collapsible-header
+.collapsible .collapsible-header {
+
+}
+
+a.waves-effect.waves-light.btn {
+  margin: 10px;
+}
 
