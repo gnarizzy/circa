@@ -108,7 +108,7 @@ div#get-faded:hover {
 	border-top: 25px solid #bbbcbc;
 }
 
-.feature-box .icon i {
+.feature-box .icon {
 	font-size: 35px;
 	padding-top: 12px;
 	display: block;
