@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet" media="screen">
-    <link href="{% static 'css/sticky-footer.css'%}" rel="stylesheet" media="screen">
     <link href="{% static 'css/materialize.css'%}" rel="stylesheet" media="screen">
     <link rel="shortcut icon" type="image/png" href="{% static 'other/favicon.ico'%}">
     <title>{% block title_block %}Circa - Buy and Sell Electronics Locally{% endblock %}</title>
@@ -43,19 +42,44 @@
 
     {% block body_block %}{% endblock %}
 
-<footer class="page-footer">
+
+        <footer class="page-footer">
           <div class="container">
             <div class="row">
               <div class="col s12 m4">
-                <p class="grey-text text-lighten-4">Copyright 2015 Centaurii</p>
+                <p class="white-text">CIRCA</p>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="/about/">About</a></li>
+                  <li><a class="grey-text text-lighten-3" href="#!">Blog</a></li>
+                </ul>
               </div>
-              <div class="col sl2 m8">
-                  link1 link2 link3 link4
+                <div class="col s12 m4">
+                <p class="white-text">LEGAL THINGIES</p>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="/policies/terms">Terms and Conditions</a></li>
+                  <li><a class="grey-text text-lighten-3" href="/policies/privacy">Privacy</a></li>
+                </ul>
+              </div>
+                <div class="col s12 m4">
+                <p class="white-text">CONNECT</p>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="http://facebook.com/usecirca" target="_blank">Facebook</a></li>
+                  <li><a class="grey-text text-lighten-3" href="http://twitter.com/usecirca" target="_blank">Twitter</a></li>
+                  <li><p class="grey-text text-lighten-3">support@usecirca.com</p></li>
+                </ul>
               </div>
             </div>
           </div>
-
+          <div class="footer-copyright">
+            <div class="container">
+            © 2015 Centaurii, Inc.
+            <a class="grey-text text-lighten-4 right" href="http://cloudfront-assets.reason.com/assets/mc/_external/2012_02/60e4fc5369120821813e9764bb7010e1.jpg" target="_blank">
+                Beware the lizard people...
+            </a>
+            </div>
+          </div>
         </footer>
+
 
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/materialize.js' %}"></script>
