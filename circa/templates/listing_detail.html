@@ -30,18 +30,19 @@
         countdown({{ minutes }}, {{ seconds }}, display);
         };
 </script>
+<link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 {% endblock %}
 
 {% block body_block %}
 {% load cropping %}
-<div class = "container">
+<div class="take-space"></div>
+<div class="container">
     {% if user.id and user.id == item.seller.id %}
     <div class="alert alert-info" role="alert">
             <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
             This is your item. Share this link and get more offers!
     </div>
     {% endif %}
-
     {% if item.listing.current_offer_user.id and user.id == item.listing.current_offer_user.id %}
         <div class="alert alert-success" role="alert">
             <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
@@ -54,70 +55,84 @@
             {{error_message}}
         </div>
     {% endif %}
+        <div class="row">
+            <div class="card">
+                <div class="card-content">
+                    <div class="col l4 m4 s12">
+                        <img src="{% cropped_thumbnail item "cropping" width=200 %}">
+                        <br>
+                        <br>
+                        <em>Ships from zipcode {{ item.listing.zipcode }}</em>
+                        <br>
+                        <br>
+                        {% if status == 2 %}
+                        The first offer will be accepted within <span class="red-text">one hour</span> unless a higher offer is made
+                        {% elif status == 1 %}
+                        <span class="red-text">This item has been claimed</span>
+                        {% else %}
+                        The current offer will be accepted in
+                        <br>
+                        <strong><span class="red-text" id="time"> {{ minutes }} minutes and {{ seconds|add:"-1" }} seconds</span></strong>
+                        <br>
+                        unless a higher offer is made.
+                        {% endif %}
+                        <br>
+                    </div>
 
-    <div class="panel panel-info">
-        <div class = "panel-heading"><h1 class = "panel-title">{{ item.title }}</h1></div>
-        <div class = "panel-body">
-            <div class = "panel-info">
-                  <div class="row">
-                       <div class="col-xs-12 col-md-3">
-                           <span class = "hidden-xs">
-
-                               <a href="#" class="thumbnail"><img src="{% cropped_thumbnail item "cropping" scale=1.0 %}" alt="..."></a>
-                           </span>
-                           <span class = "hidden-sm hidden-md hidden-lg">
-                               <a href="#" class="thumbnail"><img src="{% cropped_thumbnail item "cropping" scale=0.78 %}" alt="..."></a>
-                           </span>
-                       </div>
-                       <div class="col-xs-12 col-md-4">
-                           {{ item.description|linebreaks }}
-                           <br>
-                           <br>
-                           <em>Ships from zipcode {{ item.listing.zipcode }}</em>
-                           <br>
-                           <br>
-                           {% if status == 2 %}
-                           The first offer will be accepted within <strong>one hour</strong> unless a higher offer is made
-                           {% elif status == 1 %}
-                           <strong>This item has been claimed</strong>
-                           {% else %}
-                           The current offer will be accepted in
-                           <br>
-                           <strong><span id="time"> {{ minutes }} minutes and {{ seconds|add:"-1" }} seconds</span></strong>
-                           <br>
-                            unless a higher offer is made.
-                           {% endif %}
-                            <br>
-                       </div>
-
-                       <div class ="col-xs-12 col-md-5">
+                    <div class="col l4 m4 s12">
+                        <span class="card-title black-text">{{ item.title }}</span>
+                        <p>{{ item.description|linebreaks }}</p>
+                    </div>
+                    <div class="col l4 m4 s12">
+                        <div>
+                            <div class="card-title black-text">
                             {% if status == 2 %}
-                                Asking price: <strong>${{ item.listing.starting_offer }}</strong>
+                                Asking price: ${{ item.listing.starting_offer }}
                             {% else %}
-                                Current Offer: <strong>${{ item.listing.current_offer }}</strong>
+                                Current Offer: ${{ item.listing.current_offer }}
                             {% endif %}
-                            <br>
+                            </div>
                             <br>
                             <form class="form-inline" action = "/listing/{{ listing.id }}/" method = "post">
                                 <div class = "form-group">
                                     {% csrf_token %}
-                                    {{ form.as_p }}
+                                    {{ form.non_field_errors }}
+                                        <p class="input-field">
+                                            {{ form.offer.errors }}
+                                            <label for="{{ form.offer.id_for_label }}">Your Offer</label>
+                                            {{ form.offer }}
+                                        </p>
+                                        <p class="input-field">
+                                            {{ form.zipcode.errors }}
+                                            <label for="{{ form.zipcode.id_for_label }}">Shipping Zipcode</label>
+                                            {{ form.zipcode }}
+                                        </p>
                                     {% if user.id and user.id == item.seller.id or status == 1%}
-                                    <input type = "submit" class ="btn btn-primary disabled" value = "Make Offer"/>
+                                    <button class="btn green waves-effect waves-light disabled" type="submit" name="action">Make Offer
+                                        <i class="mdi-content-send right"></i>
+                                    </button>
                                     {% else %}
-                                    <input type = "submit" class ="btn btn-primary" value = "Make Offer"/>
+                                    <button class="btn green waves-effect waves-light" type="submit">Make Offer
+                                        <i class="mdi-content-send right"></i>
+                                    </button>
                                     {% endif %}
                                  </div>
                             </form>
                             <br>
                             <div class="form-group">
-                                <p>Buy now for: <strong>${{ item.listing.buy_now_price }}</strong></p>
+                                <span class="card-title black-text">Buy now for: ${{ item.listing.buy_now_price }}</span>
+                                <br><br>
                                 {% if user.id and user.id == item.seller.id or status == 1%}
-                                <input type = "submit" class ="btn btn-success disabled" value = "Buy Now"/>
+                                <input type="submit" class="btn blue btn-success disabled" value = "Buy Now"/>
+                                <button class="btn blue waves-effect waves-light disabled" type="submit" name="action">Buy Now
+                                        <i class="mdi-editor-attach-money right"></i>
+                                </button>
                                 {% else %}
                                 <script src="https://checkout.stripe.com/checkout.js"></script>
 
-                                <input type = "submit" id="buyNow" class ="btn btn-success" value = "Buy Now"/>
+                                <button id="buyNow" class="btn blue waves-effect waves-light" type="submit" name="action">Buy Now
+                                        <i class="mdi-editor-attach-money right"></i>
+                                </button>
 
                                 <script type = "text/javascript">
                                       var stripe_amount = "{{amount}}"
@@ -149,16 +164,17 @@
                                 </script>
                                 {% endif %}
                             </div>
-                       </div>
-                  </div>
+                            <br>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
     <form action="{{request.path}}" method="POST">
         {% csrf_token %}
     </form>
    <h4><small>Circa guarantees one day shipping and no-questions-asked returns for 30 days.</small></h4>
+</div>
 </div>
 
 {% endblock %}
