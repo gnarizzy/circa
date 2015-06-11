@@ -61,11 +61,11 @@
         <div class="take-space"></div>
         <div class="row">
             {% for item in items %}
-            <div class="col s12 m6 l4">
-                <div class="card medium">
+            <div class="col s12 m4 l3">
+                <div class="card">
                     <a href="/listing/{{ item.listing.id }}">
                         <div id="get-faded" class="card-image">
-                            <img src="{% cropped_thumbnail item "cropping" width=150 %}">
+                            <img src="{% cropped_thumbnail item "cropping" width=200 %}">
                         </div>
                     </a>
                     <div class="card-content activator">
@@ -78,13 +78,16 @@
                             Buy Now: ${{ item.listing.buy_now_price }}<br>
                             {% if item.listing.current_offer %}
                             Time Left: <span id="time_left{{ item.listing.id }}" class="red-text">XX min</span>
+                            {% else %}
+                            &nbsp;
                             {% endif %}
-                        <i class="mdi-navigation-more-vert right"></i></p>
+                            <i class="mdi-navigation-more-vert right"></i></p>
+
                     </div>
                     <div class="card-reveal">
                         <span class="card-title grey-text text-darken-4">{{ item.title|truncatechars:40 }}
                         <i class="mdi-navigation-close right"></i></span>
-                        <p>{{ item.description }}</p>
+                        <p>{{ item.description|linebreaks }}</p>
                         <a href="/listing/{{ item.listing.id }}" class="waves-effect waves-light btn">See Listing</a>
                     </div>
                 </div>

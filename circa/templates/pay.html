@@ -4,41 +4,38 @@
 {% endblock %}
 {% block body_block %}
 {% load cropping %}
+    <div class="take-space"></div>
     <div class = "container">
-        <div class="panel panel-info">
-        <div class = "panel-heading"><h1 class = "panel-title">{{ listing.item.title }}</h1></div>
-        <div class = "panel-body">
-            <div class = "panel-info">
-                  <div class="row">
-                       <div class="col-xs-12 col-md-3">
-                           <span class = "hidden-xs">
+        <div class="row">
+            <div class="card">
+                <div class="card-content">
+                    <div class="center-align col l4 m6 s12">
+                        <img src="{% cropped_thumbnail item "cropping" width=150 %}">
+                        <br>
+                        <br>
+                        <em>Ships from zipcode {{ item.listing.zipcode }}</em>
+                        <br>
+                        <br>
+                        This listing ended {{ days }} days, {{ hours }} hours, and {{ minutes }}
+                            minutes ago.
+                        <br><br>
+                    </div>
 
-                               <a href="#" class="thumbnail"><img src="{% cropped_thumbnail item "cropping" scale=1.0 %}" alt="..."></a>
-                           </span>
-                           <span class = "hidden-sm hidden-md hidden-lg">
-                               <a href="#" class="thumbnail"><img src="{% cropped_thumbnail item "cropping" scale=0.78 %}" alt="..."></a>
-                           </span>
-                       </div>
-                       <div class="col-xs-12 col-md-4">
-                           {{ listing.item.description }}
-                           <br>
-                           <br>
-                           <em>Ships from zipcode {{ listing.zipcode }}</em>
-                           <br>
-                           <br>
-                           This listing ended <strong>{{ days }} days, {{ hours }} hours, and {{ minutes }}
-                            minutes </strong>ago.
-                            <br>
-                       </div>
-
-                       <div class ="col-xs-12 col-md-5">
-                           <div class="form-group">
-                                <p>Your Winning Offer: <strong>${{ listing.current_offer}}</strong></p>
+                    <div class="col l4 m6 s12">
+                        <span class="card-title black-text">{{ item.title }}</span>
+                        <p>{{ item.description|linebreaks }}</p>
+                        <br><br>
+                    </div>
+                    <div class="col l4 m6 s12">
+                                <div class="form-group">
+                                <p class="card-title black-text">Winning Offer: ${{ listing.current_offer}}</p>
                                 <script src="https://checkout.stripe.com/checkout.js"></script>
 
-                                <form action = "/pay/{{ listing.id }}/" method = "post">
+                                <form action="/pay/{{ listing.id }}/" method="post">
                                      {% csrf_token %}
-                                <input type = "submit" id="buyNow" class ="btn btn-success" value = "Pay Now"/>
+                                <button id="buyNow" class="btn green waves-effect waves-light" type="submit" name="action">Pay Now
+                                        <i class="mdi-editor-attach-money right"></i>
+                                </button>
 
                                 <script type = "text/javascript">
                                       var stripe_amount = "{{amount}}"
@@ -68,12 +65,18 @@
                                         handler.close();
                                       });
                                 </script>
-                                </form>
+                            </form>
+                            <br>
                             </div>
-                       </div>
-                  </div>
+                        <br>
+                    </div>
+                </div>
             </div>
         </div>
-        </div>
+
+        <form action="{{request.path}}" method="POST">
+            {% csrf_token %}
+        </form>
+       <p class="grey-text text-darken-1">Circa guarantees one day shipping and no-questions-asked returns for 30 days.</p>
     </div>
 {% endblock %}
