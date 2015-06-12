@@ -181,8 +181,10 @@ def pending(request):
     items = []
     listings = Listing.objects.filter(current_offer_user=user).filter(paid_for=False).filter(end_date__lt=now)
     for listing in listings:
-        if listing.item:
+        try:
             items.append(listing.item)
+        except ObjectDoesNotExist: #listing has no related item
+            pass
     return render(request, 'pending.html', {'items': items})
 
 # uses stripe checkout for user to pay for listing once offer has been accepted
