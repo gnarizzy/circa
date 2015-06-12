@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django import forms
 from decimal import *
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist, RelatedObjectDoesNotExist
 from core.tasks import queue_for_email_notifications
 import json
 import stripe
@@ -183,7 +183,7 @@ def pending(request):
     for listing in listings:
         try:
             items.append(listing.item)
-        except ObjectDoesNotExist: #listing has no related item
+        except RelatedObjectDoesNotExist: #listing has no related item
             pass
     return render(request, 'pending.html', {'items': items})
 
