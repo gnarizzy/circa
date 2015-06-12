@@ -54,7 +54,7 @@ div.input-mask {
 div.take-space {
   margin: 20px;
 }
-div#get-faded:hover {
+div.get-faded:hover {
   opacity: 0.6;
 }
 
