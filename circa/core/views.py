@@ -183,7 +183,7 @@ def pending(request):
     for listing in listings:
         try:
             items.append(listing.item)
-        except RelatedObjectDoesNotExist: #listing has no related item
+        except ObjectDoesNotExist: #listing has no related item
             pass
     return render(request, 'pending.html', {'items': items})
 
