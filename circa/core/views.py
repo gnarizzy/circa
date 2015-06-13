@@ -347,10 +347,3 @@ def active_items(request):
                 no_offers_items_list.append(item)
     context = {'active_items': active_items_list, 'unpaid_items':unpaid_items_list, 'no_offers': no_offers_items_list}
     return render(request, 'active_items.html', context)
-
-def test_index(request):
-    now = datetime.datetime.now()
-    item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
-        .order_by('listing__end_date')
-    context = {'items': item_list}
-    return render(request, 'test.html', context)

@@ -36,7 +36,6 @@ urlpatterns = patterns('',
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
     (r'^accounts/', include('registration.backends.simple.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
-    url(r'^test/', 'core.views.test_index', name='test_index')
 )
 if settings.DEBUG:
     urlpatterns += patterns(
