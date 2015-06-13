@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block head_block %}
+    <style text="text/css">
+        a.no-underline:hover {
+            text-decoration: none;
+        }
+    </style>
 
 
     <script text="text/javascript">
@@ -49,7 +54,7 @@
                 <h1>Buy and Sell at GT</h1>
                 <p class="lead"> Circa makes it easy. No haggling, no meetups, no scams. Scroll down and start shopping.
                 </p>
-                <p><a class="waves-effect waves-light btn-large" href="/about/"><i class="mdi-action-info left"></i>Learn
+                <p><a class="waves-effect waves-light btn-large no-underline" href="/about/"><i class="mdi-action-info left"></i>Learn
                     more</a>
                 </p>
             </div>
