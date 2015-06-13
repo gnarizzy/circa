@@ -1,17 +1,38 @@
 {% extends 'base.html' %}
 {% load static %}
+{% block head_block %}
+    <link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
+{% endblock %}
 {% block title_block %}
     Create a Listing
 {% endblock %}
 {% block body_block %}
     <div class = "container">
         <h1>Create a listing</h1><br>
-        <div class ="col-xs-12 col-md-3">
-         <form id ="listing_form" method="post" action="/createlisting/{{ item.id }}/">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" name="submit" class="btn btn-success" value="Create Listing" />
+        <form id ="listing_form" method="post" action="/createlisting/{{ item.id }}/">
+                 {% csrf_token %}
+            <div class="form-group col-lg-6">
+                {{ form.non_field_errors }}
+                <p class="input-field">
+                    {{ form.starting_offer.errors }}
+                    <label for="{{ form.starting_offer.id_for_label }}">Starting Offer ($)</label>
+                    {{ form.starting_offer }}
+                </p>
+                <p class="input-field">
+                    {{ form.buy_now_price.errors }}
+                    <label for="{{ form.buy_now_price.id_for_label }}">Buy Now Price ($)</label>
+                    {{ form.buy_now_price }}
+                </p>
+                <p class="input-field">
+                    {{ form.zipcode.errors }}
+                    <label for="{{ form.zipcode.id_for_label }}">Zip Code</label>
+                    {{ form.zipcode }}
+                </p>
+                <button class="btn-large waves-effect waves-light" type="submit" name="action">Create Listing
+                        <i class="mdi-content-send right"></i>
+                </button>
+            </div>
          </form>
-         </div>
     </div>
+    <div class="take-space"></div>
 {% endblock %}

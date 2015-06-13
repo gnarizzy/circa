@@ -5,41 +5,71 @@
 {% block body_block %}
     <div class = "container">
        <h1>Help</h1>
-       <dl>
-           <dt>Why can't I make an offer on an item?</dt>
-               <dd> In order to ensure quick delivery and returns, we only serve the zip codes around Georgia Tech:
-                    {% for zip in zipcodes %}
-                        {% if forloop.counter == zip_len %}
-                            and {{ zip }}.
-                        {% else %}
-                            {{ zip }},
-                        {% endif %}
-                    {% endfor %}
-                    If your shipping address isn't in those zips, we can't deliver the
-                    item to you. Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!</dd>
-               <br>
-           <dt>What do I do after my offer has been accepted?</dt>
-                <dd>
-                    Visit <a href = "/pending"> your pending payments page </a> to pay for your item so you can get your stuff!
-                    We'll remind you via email as well.
-                </dd>
-                <br>
-            <dt>How long until I receive my stuff?</dt>
-                <dd>
-                    You'll receive it no later than 24 hours after the seller hands it off to us. Most of the time you'll
+       <ul class="collapsible" data-collapsible="accordion">
+           <li>
+               <div class="collapsible-header active"><i class="mdi-navigation-expand-more left"></i>What is Circa?</div>
+               <div class="collapsible-body">
+                   <p>Circa is a service for the Georgia Tech community that allows students to buy and sell electronics
+                   with each other. We handle all the logistics including pricing, payment, shipping, and fraud protection.
+                   No more haggling over prices with multiple people, coordinating awkward meet-ups, giving contact information
+                   to strangers, or getting scammed!</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>How does selling on Circa work?</div>
+               <div class="collapsible-body">
+                   <p><ol>
+                        <li>Post your item, create a starting offer and buy now price, and share the link with others</li>
+                        <li>We pick up the item and you get paid. Circa takes a commission of $2 or 15% (whichever is greater)
+                            to help us cover payment processing, delivery costs, and hosting expenses.</li>
+                    </ol></p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>How does buying on Circa work?</div>
+               <div class="collapsible-body">
+                   <p><ol>
+                        <li>Make an offer on an item (or use the Buy Now option to skip to step 3)</li>
+                        <li>If nobody beats your offer in an hour, your offer is automatically accepted!</li>
+                        <li>Pay securely online</li>
+                        <li>The item arrives at your doorstep the next day</li>
+                    </ol></p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>Why can't I make an offer on an item?</div>
+               <div class="collapsible-body">
+                   <p>In order to ensure quick delivery and returns, we only serve the zip codes around Georgia Tech: 30308,
+                   30309, 30313, 30318, 30332, and 30363. If your shipping address isn't in those zips, we can't deliver the
+                   item to you. Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>What do I do after my offer has been accepted?</div>
+               <div class="collapsible-body">
+                   <p>Visit <a href = "/pending"> your pending payments page </a> to pay for your item so you can get your stuff!
+                    We'll remind you via email as well.</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>How long until I receive my stuff?</div>
+               <div class="collapsible-body">
+                   <p>You'll receive it no later than 24 hours after the seller hands it off to us. Most of the time you'll
                     get it the same day!  You should receive an email from us asking for your address after you have paid
-                    for your item.
-                </dd>
-                <br>
-           <dt>Somebody bought my item. How do I schedule a pickup?</dt>
-                <dd>
-                    When your item is purchased, we'll contact you via email to schedule a pickup. The sooner you schedule it,
-                    the faster you get paid!
-                </dd>
-                <br>
-           <dt>Is my credit card number safe on Circa?</dt>
-                <dd>
-                    Our site uses <a href = "https://en.wikipedia.org/wiki/Transport_Layer_Security">Secure Sockets Layer
+                    for your item.</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>Somebody bought my item. How do I schedule a pickup?</div>
+               <div class="collapsible-body">
+                   <p>When your item is purchased, we'll contact you via email to schedule a pickup. The sooner you schedule it,
+                    the faster you get paid!</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>Is my credit card number safe on Circa?</div>
+               <div class="collapsible-body">
+                   <p>Our site uses <a href = "https://en.wikipedia.org/wiki/Transport_Layer_Security">Secure Sockets Layer
                     </a> to force <a href = "https://en.wikipedia.org/wiki/HTTPS">HTTPS </a> on every page, ensuring
                     that data transferred between your computer and Circa is encrypted. Circa uses
                     <a href = "https://stripe.com">Stripe</a> for payment processing, so your
@@ -48,16 +78,28 @@
                     here.</a>
                     <br>
                     If you find a security issue or bug of any other kind, please email support@usecirca.com immediately
-                    and we'll resolve it as soon as possible.
-                </dd>
-                <br>
-           <dt>I still need help! What do I do?</dt>
-                <dd>
-                    Email us at support@usecirca.com. We'll get back to you in under 24 hours!
-                </dd>
-                <br>
-           <dt>Is it just me, or do you guys have an unhealthy obsession with Nicolas Cage?</dt>
-                <dd><a href="http://i.imgur.com/RrYhTGq.gif" target="_blank">Obsession?</a></dd>
-        </dl>
+                    and we'll resolve it as soon as possible.</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>How do returns work?</div>
+               <div class="collapsible-body">
+                   <p>Tell us you want to return the item within 30 days of purchase.  No questions asked.  We pick
+                   it up, you get your money back!</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>I still need help! What do I do?</div>
+               <div class="collapsible-body">
+                   <p>Email us at support@usecirca.com. We'll get back to you in under 24 hours!</p>
+               </div>
+           </li>
+           <li>
+               <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>Is it just me, or do you guys have an unhealthy obsession with Nicolas Cage?</div>
+               <div class="collapsible-body">
+                   <p><a href="http://i.imgur.com/RrYhTGq.gif" target="_blank">Obsession?</a></p>
+               </div>
+           </li>
+        </ul>
     </div>
 {% endblock %}
