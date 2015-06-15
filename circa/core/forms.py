@@ -1,4 +1,4 @@
-from core.models import Item, Listing
+from core.models import Item, Listing, PromoCode
 from core.zipcode import zipcodes
 from decimal import *
 from django import forms
@@ -90,3 +90,8 @@ class OfferForm (forms.Form):
                                         "help page to see which zipcodes are available.")
         return zip
 
+class PromoForm (forms.Form):
+    code = forms.CharField()
+
+    def clean_code(self): 
+        code = self.cleaned_data['promo_code']
