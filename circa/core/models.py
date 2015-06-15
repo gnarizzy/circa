@@ -48,5 +48,5 @@ class UserProfile(models.Model):
 class PromoCode(models.Model):
     user = models.OneToOneField(User, blank=True)
     code = models.CharField(max_length=50, unique=True)
-    value = models.DecimalField(decimal_places=2, default= 0.0)
+    value = models.DecimalField(max_digits=5, decimal_places=2, default= 0.0)
     redeemed = models.BooleanField(default = False)
