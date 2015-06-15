@@ -130,7 +130,7 @@ div.get-faded:hover {
 }
 
 .collapsible .collapsible-header {
-
+  height: inherit;
 }
 
 a.waves-effect.waves-light.btn {
