@@ -44,3 +44,9 @@ class UserProfile(models.Model):
     num_reviews = models.IntegerField(default=0)
     address = models.TextField(null=True, blank=True)
     zipcode = models.IntegerField(default=0)
+
+class PromoCode(models.model):
+    user = models.OneToOneField(User, blank=True)
+    code = models.CharField(max_length=50, unique=True)
+    value = models.IntegerField(decimal_places=2, default= 0.0)
+    redeemed = models.BooleanField(default = False)
