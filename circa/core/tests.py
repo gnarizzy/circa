@@ -251,6 +251,12 @@ class ModelTest(TestCase):
         else:
             self.fail('The seller can also be the buyer')
 
+    # TODO: Promocode test
+    #test that it is actually created with correct values, associated with correct user
+    #test that it actually reduces amount, that it can't be used on multiple items
+    #test for proper error message for expired code
+    #test no charge for $.31 cents or less.
+
 
     # TODO revisit when alt_id is established
     # def test_userprofile_is_unique_to_user(self):
