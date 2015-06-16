@@ -104,15 +104,10 @@ class PromoForm (forms.Form):
         codes = PromoCode.objects.all()
         print("PREFORLOOP")
         for promotional_code in codes:
-            print("FOR LOOP")
-            print("PROMO_CODE is "+ promo_code)
-            print("promotional_code is"+ promotional_code.code)
-            print(promotional_code.code == promo_code)
+
             if promotional_code.code == promo_code:
-                print("IF STATMENT")
-                found = True
+                pass #add discount
             else:
-                print("ELSE STATEMENT")
                 raise forms.ValidationError("Either that code has been redeemed, isn't valid, or isn't associated with your"
                                         " account. If this is a mistake, please email support@usecirca.com")
         return promo_code
