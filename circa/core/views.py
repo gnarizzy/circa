@@ -204,7 +204,7 @@ def pay(request, listing_id):
             email = request.POST['stripeEmail']
             stripe.api_key = secret_key()
             # email = request.POST['stripeEmail']
-            amount_in_cents = int(listing.current_offer * 100)
+            amount_in_cents = int((listing.current_offer - listing.discount) * 100)
             try:
                 charge = stripe.Charge.create(
                     amount=amount_in_cents,
@@ -232,7 +232,14 @@ def pay(request, listing_id):
                 # return HttpResponseRedirect(request.path)
         else: #submit promocode form
             if form.is_valid():
-                return HttpResponseRedirect('/todo/')
+                promo = PromoCode.objects.filter(code=form.cleaned_data['code'])[0]
+                listing.discount = promo.value
+                promo.redeemed = True
+                promo.save()
+                print("LISTING DISCOUNT = " + str(listing.discount))
+                print("NET PRICE" + str(listing.current_offer-listing.discount))
+                listing.save()
+                return HttpResponseRedirect(request.path)
     else:
         form = PromoForm()
 
@@ -240,10 +247,16 @@ def pay(request, listing_id):
     days = elapsed.days
     hours, remainder = divmod(elapsed.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    amount = int(listing.current_offer * 100)
+    if listing.discount > 0:
+        amount = int((listing.current_offer - listing.discount)*100)
+        discounted_price = listing.current_offer - listing.discount
+    else:
+        amount = int(listing.current_offer * 100)
+        discounted_price = None
+
     stripe_amount = json.dumps(amount)
     context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
-               'listing': listing, 'amount': stripe_amount, 'item': item, 'form':form}
+               'listing': listing, 'amount': stripe_amount, 'discounted_price':discounted_price, 'item': item, 'form':form}
     return render(request, 'pay.html', context)
 
 # Allows users to connect their Stripe accounts to Circa
