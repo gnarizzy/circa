@@ -101,7 +101,11 @@ class PromoForm (forms.Form):
         found = False
         promo_code = self.cleaned_data['code']
 
+        if PromoCode.objects.all().count() == 0:
+            raise forms.ValidationError("Sorry, that code is not valid.")
+        
         codes = PromoCode.objects.all()
+
         print("PREFORLOOP")
         for promotional_code in codes:
 
