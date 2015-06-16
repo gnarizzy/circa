@@ -93,5 +93,18 @@ class OfferForm (forms.Form):
 class PromoForm (forms.Form):
     code = forms.CharField()
 
-    def clean_code(self): 
-        code = self.cleaned_data['promo_code']
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None) #Grabs current user
+        super(PromoForm, self).__init__(*args,**kwargs)
+
+    def clean_code(self):
+        found = False
+        promo_code = self.cleaned_data['promo_code']
+        codes = PromoCode.objects.filter(user=self.user).filter(redeemed=False)
+        for code in codes:
+            if code.code is promo_code:
+                found = True
+        if not found:
+            return forms.ValidationError("Either that code has been redeemed, isn't valid, or isn't associated with your"
+                                         "account. If you think this is a mistake, please email support@usecirca.com")
+
