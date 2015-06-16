@@ -30,7 +30,12 @@
                     </div>
                     <div class="col l4 m6 s12">
                                 <div class="form-group">
-                                <p class="card-title black-text">Winning Offer: ${{ listing.current_offer}}</p>
+                                {% if not discounted_price %}
+                                    <p class="card-title black-text">Winning Offer: ${{ listing.current_offer}}</p>
+                                {% else %}
+                                    <p class="card-title black-text">Discounted price: ${{ discounted_price}}</p>
+                                    <small>Discount: ${{listing.discount}}</small>
+                                {% endif %}
                                 <script src="https://checkout.stripe.com/checkout.js"></script>
 
                                 <form action="/pay/{{ listing.id }}/" method="post">
