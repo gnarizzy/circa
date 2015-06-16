@@ -99,12 +99,20 @@ class PromoForm (forms.Form):
 
     def clean_code(self):
         found = False
-        promo_code = self.cleaned_data['promo_code']
-        codes = PromoCode.objects.filter(user=self.user).filter(redeemed=False)
-        for code in codes:
-            if code.code is promo_code:
-                found = True
-        if not found:
-            return forms.ValidationError("Either that code has been redeemed, isn't valid, or isn't associated with your"
-                                         "account. If you think this is a mistake, please email support@usecirca.com")
+        promo_code = self.cleaned_data['code']
 
+        codes = PromoCode.objects.all()
+        print("PREFORLOOP")
+        for promotional_code in codes:
+            print("FOR LOOP")
+            print("PROMO_CODE is "+ promo_code)
+            print("promotional_code is"+ promotional_code.code)
+            print(promotional_code.code == promo_code)
+            if promotional_code.code == promo_code:
+                print("IF STATMENT")
+                found = True
+            else:
+                print("ELSE STATEMENT")
+                raise forms.ValidationError("Either that code has been redeemed, isn't valid, or isn't associated with your"
+                                        " account. If this is a mistake, please email support@usecirca.com")
+        return promo_code
