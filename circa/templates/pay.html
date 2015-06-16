@@ -68,22 +68,23 @@
                                       });
                                 </script>
                             </form>
-                            <br>
                             </div>
                         <br>
+                        <form class="form-inline" action = "/pay/{{item.listing.id}}/" method = "post">
+             {{form.as_p}}
+             {% csrf_token %}
+             <button type="submit" class="btn blue waves-effect waves-light"name="action">Apply promo</button>
+        </form>
                     </div>
                 </div>
             </div>
+
         </div>
 
         <form action="{{request.path}}" method="POST">
             {% csrf_token %}
         </form>
-        <form class="form-inline" action = "/pay/{{item.listing.id}}/" method = "post">
-             {{form.as_p}}
-             {% csrf_token %}
-             <input type="submit" value="Apply promo code" />
-        </form>
+
        <p class="grey-text text-darken-1">Circa guarantees one day shipping and no-questions-asked returns for 30 days.</p>
     </div>
 {% endblock %}
