@@ -106,7 +106,13 @@ class PromoForm (forms.Form):
         for promotional_code in codes:
 
             if promotional_code.code == promo_code:
-                pass #add discount
+                print("PREREDEEMED")
+                if promotional_code.redeemed:
+                    print("REDEEMED")
+                    raise forms.ValidationError("Sorry, promo code already used.")
+                elif promotional_code.user != self.user:
+                    print("PROMOTIONAL_CODE.USER IS " + str(promotional_code.user) + "SELF.USER IS " + str(self.user))
+                    raise forms.ValidationError("Sorry, that's not your code!")
             else:
                 raise forms.ValidationError("Sorry, that code is not valid.")
         return promo_code
