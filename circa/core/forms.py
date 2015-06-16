@@ -108,6 +108,5 @@ class PromoForm (forms.Form):
             if promotional_code.code == promo_code:
                 pass #add discount
             else:
-                raise forms.ValidationError("Either that code has been redeemed, isn't valid, or isn't associated with your"
-                                        " account. If this is a mistake, please email support@usecirca.com")
+                raise forms.ValidationError("Sorry, that code is not valid.")
         return promo_code
