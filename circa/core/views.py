@@ -4,8 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidde
 from circa.settings import COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PERCENT
 from core.email import listing_bought_notification, listing_bought_seller_notification, lost_listing_notification, \
     offer_denied_notification
-from core.models import Item, Listing, UserProfile
-from core.forms import ItemForm, ListingForm, OfferForm
+from core.models import Item, Listing, UserProfile, PromoCode
+from core.forms import ItemForm, ListingForm, OfferForm, PromoForm
 from core.keys import *
 from core.zipcode import zipcodes
 from django.contrib.auth.models import User
@@ -190,6 +190,7 @@ def pending(request):
 # uses stripe checkout for user to pay for listing once offer has been accepted
 @login_required
 def pay(request, listing_id):
+
     listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
     if request.user.id is not listing.current_offer_user.id:  # user is trying to pay for someone else's listing
@@ -197,9 +198,10 @@ def pay(request, listing_id):
     if listing.paid_for:  # user already paid for item
         return render(request, 'expired.html')
     if request.method == 'POST':
+        form = PromoForm(request.POST, user=request.user)
         token = request.POST.get('stripeToken', False)
-        email = request.POST['stripeEmail']
         if token:  # Successfully submitted Stripe
+            email = request.POST['stripeEmail']
             stripe.api_key = secret_key()
             # email = request.POST['stripeEmail']
             amount_in_cents = int(listing.current_offer * 100)
@@ -228,8 +230,12 @@ def pay(request, listing_id):
                 raise Exception
                 # context = {'error_message':"Your credit card was declined."}
                 # return HttpResponseRedirect(request.path)
-        else:
-            return HttpResponseRedirect('/todo/')
+        else: #submit promocode form
+            if form.is_valid():
+                return HttpResponseRedirect('/todo/')
+    else:
+        form = PromoForm()
+
     elapsed = datetime.datetime.now() - listing.end_date
     days = elapsed.days
     hours, remainder = divmod(elapsed.seconds, 3600)
@@ -237,7 +243,7 @@ def pay(request, listing_id):
     amount = int(listing.current_offer * 100)
     stripe_amount = json.dumps(amount)
     context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
-               'listing': listing, 'amount': stripe_amount, 'item': item}
+               'listing': listing, 'amount': stripe_amount, 'item': item, 'form':form}
     return render(request, 'pay.html', context)
 
 # Allows users to connect their Stripe accounts to Circa
