@@ -1,5 +1,5 @@
 from django.contrib import admin
-from core.models import Item, Listing, UserProfile
+from core.models import Item, Listing, UserProfile, PromoCode
 from image_cropping import ImageCroppingMixin
 
 class ItemAdmin(ImageCroppingMixin, admin.ModelAdmin):
@@ -8,3 +8,4 @@ class ItemAdmin(ImageCroppingMixin, admin.ModelAdmin):
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Listing)
 admin.site.register(UserProfile)
+admin.site.register(PromoCode)
