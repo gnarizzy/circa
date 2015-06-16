@@ -5,9 +5,9 @@ from image_cropping import ImageCropField, ImageRatioField
 # Create your models here.
 
 class Listing(models.Model):
-    starting_offer = models.DecimalField(max_digits=6, decimal_places=2, default=1.00)
+    starting_offer = models.DecimalField(max_digits=6, decimal_places=2, default=5.00)
     current_offer = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank = True)
-    buy_now_price = models.DecimalField(max_digits=6, decimal_places=2, default=1.10)
+    buy_now_price = models.DecimalField(max_digits=6, decimal_places=2, default=5.50)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
     current_offer_user = models.ForeignKey(User, null=True, blank=True)
@@ -15,6 +15,7 @@ class Listing(models.Model):
     zipcode = models.IntegerField(default=0)
     paid_for = models.BooleanField(default=False)
     payout = models.DecimalField(max_digits = 6, decimal_places=2, default = 0.00)
+    discount = models.DecimalField(max_digits = 6, decimal_places =2, default=0.00)
 
     def __str__(self):
         return str(self.end_date)
