@@ -21,39 +21,39 @@ OFFER_ACCEPTED = "Dear {},\n\nYour offer on {} has been accepted!  Please naviga
                  "http://www.usecirca.com/pending/ to pay for your item.  Once paid for, the item will be delivered " \
                  "within 24 hours of the seller handing it off to us.\n\nThanks for being awesome and using Circa!  " \
                  "Feel free to reply with any feedback on how your experience was.  We want to create the best way " \
-                 "for students to buy and sell electronics." \
+                 "for students to buy and sell locally." \
                  "\n\nSincerely,\n\nThe Circa Team"
 
 LISTING_BOUGHT = "Dear {},\n\nYour item, {}, has been sold!  Your total earnings are  ${}, which " \
                  "will be given to you upon pick up of the item.  Please reply to this email with your address and " \
                  "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
                  "experience, please reply to this email and let us know.  We want to be the best way for students " \
-                 "to buy and sell electronics locally." \
+                 "to buy and sell locally." \
                  "\n\nSincerely\n\nThe Circa Team"
 
 OFFER_OVER = "Dear {},\n\nYour item, {}, has a winning offer!  Your total earnings are predicted to be ${}, which " \
              "will be given to you upon pick up of the item.  Please reply to this email with your address and " \
              "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
              "experience, please reply to this email and let us know.  We want to be the best way for students to buy " \
-             "and sell electronics locally." \
+             "and sell locally locally." \
              "\n\nSincerely\n\nThe Circa Team"
 
 LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting {}! This email is to confirm that you paid ${} for this " \
                   "item.  Can you reply with your address and any special delivery instructions? Your item will " \
                   "be delivered within 24 hours of the seller handing it off to us.\n\nThanks for being " \
                   "awesome and using Circa, and feel free to reply with any feedback on how your experience " \
-                  "with us was. We want to create the best way for students to buy and sell electronics." \
+                  "with us was. We want to create the best way for students to buy and sell locally." \
                   "\n\nSincerely,\n\nThe Circa Team"
 
 LISTING_FREE_CONFIRMATION = "Hello,\n\nCongratulations on getting {}! This email is to confirm that you ordered " \
                   "this item for FREE!  Can you reply with your address and any special delivery instructions? Your item will " \
                   "be delivered within 24 hours of the seller handing it off to us.\n\nThanks for being " \
                   "awesome and using Circa, and feel free to reply with any feedback on how your experience " \
-                  "with us was. We want to create the best way for students to buy and sell electronics." \
+                  "with us was. We want to create the best way for students to buy and sell locally." \
                   "\n\nSincerely,\n\nThe Circa Team"
 
 WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to build the easiest way for GT " \
-                   "students to buy and sell electronics, where haggling, meet-ups, and scams are a thing of the " \
+                   "students to buy and sell locally, where haggling, meet-ups, and scams are a thing of the " \
                    "past.\n\nHere's how it works:\n\n1) Sellers post stuff they want to sell\n\n2) Buyers " \
                    "make an offer. If nobody beats that offer within an hour, the offer " \
                    "is accepted and the buyer pays securely online. If you buy now, you instantly win the " \
