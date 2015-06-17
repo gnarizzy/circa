@@ -229,3 +229,20 @@ def welcome_new_user_notification(user):
 
     return message.mandrill_response[0]
 
+def welcome_new_user_fb_notification(username, email):
+    content = WELCOME_NEW_USER.format(username)
+
+    recipient = list()
+    recipient.append(email)
+
+    message = EmailMessage(
+        subject="Welcome to Circa!",
+        body=content,
+        to=recipient,
+        bcc=TAG_FOR_BCC,
+        from_email="andrew@usecirca.com"
+    )
+    message.send()
+
+    return message.mandrill_response[0]
+
