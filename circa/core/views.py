@@ -227,7 +227,7 @@ def pay(request, listing_id):
                 item.save()
 
                 if listing.discount > Decimal(0.00):
-                    listing_bought_discount_notification(email, listing.title, listing.current_offer - listing.discount)
+                    listing_bought_discount_notification(email, listing.item.title, listing.current_offer - listing.discount)
                 else:
                     listing_bought_notification(email, listing)
 
