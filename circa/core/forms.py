@@ -103,7 +103,7 @@ class PromoForm (forms.Form):
 
         if PromoCode.objects.all().count() == 0:
             raise forms.ValidationError("Sorry, that code is not valid.")
-        
+
         codes = PromoCode.objects.all()
 
         print("PREFORLOOP")
