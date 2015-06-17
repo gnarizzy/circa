@@ -119,6 +119,21 @@ def listing_bought_notification(email, listing):
     message.send()
     return message.mandrill_response[0]
 
+def listing_bought_discount_notification(email, listing_title, listing_discounted_price):
+    content = LISTING_BUY_NOW.format(listing_title, listing_discounted_price)
+
+    recipient = list()
+    recipient.append(email)
+
+    message = EmailMessage(
+        subject="You've bought {}".format(listing_title),
+        body=content,
+        to=recipient,
+        bcc=TAG_FOR_BCC
+    )
+    message.send()
+    return message.mandrill_response[0]
+
 def listing_free_confirm_notification(email, listing):
     content = LISTING_FREE_CONFIRMATION.format(listing.item.title)
 
