@@ -190,13 +190,17 @@ def pending(request):
 # uses stripe checkout for user to pay for listing once offer has been accepted
 @login_required
 def pay(request, listing_id):
-
+    free = 0
     listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
     if request.user.id is not listing.current_offer_user.id:  # user is trying to pay for someone else's listing
         raise PermissionDenied
     if listing.paid_for:  # user already paid for item
         return render(request, 'expired.html')
+    #amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
+    if listing.current_offer - listing.discount < Decimal(0.50):
+        free = 1
+
     if request.method == 'POST':
         form = PromoForm(request.POST, user=request.user)
         token = request.POST.get('stripeToken', False)
@@ -224,20 +228,32 @@ def pay(request, listing_id):
 
                 listing_bought_notification(email, listing)
 
-                return HttpResponseRedirect('/pending/')
+                return HttpResponseRedirect('/success/')
 
             except stripe.CardError:
                 raise Exception
                 # context = {'error_message':"Your credit card was declined."}
                 # return HttpResponseRedirect(request.path)
         else: #submit promocode form
+            if 'confirm_' in request.POST: #confirm button
+                listing.paid_for = True
+
+                if listing.current_offer < COMMISSION_BREAKEVEN:
+                    listing.payout = listing.current_offer - Decimal(COMMISSION_FLAT)
+                else:
+                    listing.payout = Decimal(1-COMMISSION_PERCENT) * listing.current_offer
+                listing.save()
+                item.save()
+
+                listing_bought_notification(listing.current_offer_user.email, listing)
+
+                return HttpResponseRedirect('/success/')
+
             if form.is_valid():
                 promo = PromoCode.objects.filter(code=form.cleaned_data['code'])[0]
                 listing.discount = promo.value
                 promo.redeemed = True
                 promo.save()
-                print("LISTING DISCOUNT = " + str(listing.discount))
-                print("NET PRICE" + str(listing.current_offer-listing.discount))
                 listing.save()
                 return HttpResponseRedirect(request.path)
     else:
@@ -256,7 +272,8 @@ def pay(request, listing_id):
 
     stripe_amount = json.dumps(amount)
     context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
-               'listing': listing, 'amount': stripe_amount, 'discounted_price':discounted_price, 'item': item, 'form':form}
+               'listing': listing, 'amount': stripe_amount, 'discounted_price':discounted_price, 'item': item, 'form':form,
+               'free':free}
     return render(request, 'pay.html', context)
 
 # Allows users to connect their Stripe accounts to Circa
