@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from circa.settings import COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PERCENT
 from core.email import listing_bought_notification, listing_bought_seller_notification, lost_listing_notification, \
-    offer_denied_notification
+    offer_denied_notification, listing_free_confirm_notification
 from core.models import Item, Listing, UserProfile, PromoCode
 from core.forms import ItemForm, ListingForm, OfferForm, PromoForm
 from core.keys import *
@@ -245,7 +245,7 @@ def pay(request, listing_id):
                 listing.save()
                 item.save()
 
-                listing_bought_notification(listing.current_offer_user.email, listing)
+                listing_free_confirm_notification(listing.current_offer_user.email, listing)
 
                 return HttpResponseRedirect('/success/')
 
