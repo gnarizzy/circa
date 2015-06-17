@@ -47,7 +47,7 @@ class UserProfile(models.Model):
     zipcode = models.IntegerField(default=0)
 
 class PromoCode(models.Model):
-    user = models.ForeignKey(User, blank=True)
+    user = models.ForeignKey(User, blank=True, null = True)
     code = models.CharField(max_length=50, unique=True)
     value = models.DecimalField(max_digits=5, decimal_places=2, default= 0.0)
     redeemed = models.BooleanField(default = False)
