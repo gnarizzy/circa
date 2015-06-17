@@ -31,9 +31,9 @@
                     <div class="col l4 m6 s12">
                                 <div class="form-group">
                                 {% if not discounted_price %}
-                                    <p class="card-title black-text">Winning Offer: ${{ listing.current_offer}}</p>
+                                    <p class="card-title black-text">Winning Offer: ${{listing.current_offer}}</p>
                                 {% else %}
-                                    <p class="card-title black-text">Discounted price: ${{ discounted_price}}</p>
+                                    <p class="card-title black-text">Discounted price: ${{discounted_price}}</p>
                                     <small>Discount: ${{listing.discount}}</small>
                                     <br>
                                     
@@ -93,7 +93,11 @@
                         <br>
                         {% endif %}
                         <form class="form-inline" action = "/pay/{{item.listing.id}}/" method = "post">
-             {{form.as_p}}
+                <p class="input-field">
+                    {{ form.code.errors }}
+                    <label for="{{ form.code.id_for_label }}">Code</label>
+                    {{ form.code }}
+                </p>
              {% csrf_token %}
              <button type="submit" class="btn blue waves-effect waves-light"name="action">Apply promo</button>
              <br><br>
