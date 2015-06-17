@@ -113,6 +113,10 @@ class PromoForm (forms.Form):
                     raise forms.ValidationError("Sorry, promo code already used.")
                 elif promotional_code.user != self.user:
                     raise forms.ValidationError("Sorry, that's not your code!")
-            else:
-                raise forms.ValidationError("Sorry, that code is not valid.")
+                else:
+                    found = True
+
+        if not found:
+            raise forms.ValidationError("Sorry, that code is not valid.")
+
         return promo_code
