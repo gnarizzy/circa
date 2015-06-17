@@ -102,7 +102,7 @@ class PromoForm (forms.Form):
         promo_code = self.cleaned_data['code']
 
         if PromoCode.objects.all().count() == 0:
-            raise forms.ValidationError("Sorry, that code is not valid.")
+            raise forms.ValidationError("Sorry, that code isn't valid.")
 
         codes = PromoCode.objects.all()
 
