@@ -45,6 +45,13 @@ LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting {}! This email is to con
                   "with us was. We want to create the best way for students to buy and sell electronics." \
                   "\n\nSincerely,\n\nThe Circa Team"
 
+LISTING_FREE_CONFIRMATION = "Hello,\n\nCongratulations on getting {}! This email is to confirm that you ordered " \
+                  "this item for FREE!  Can you reply with your address and any special delivery instructions? Your item will " \
+                  "be delivered within 24 hours of the seller handing it off to us.\n\nThanks for being " \
+                  "awesome and using Circa, and feel free to reply with any feedback on how your experience " \
+                  "with us was. We want to create the best way for students to buy and sell electronics." \
+                  "\n\nSincerely,\n\nThe Circa Team"
+
 WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to build the easiest way for GT " \
                    "students to buy and sell electronics, where haggling, meet-ups, and scams are a thing of the " \
                    "past.\n\nHere's how it works:\n\n1) Sellers post stuff they want to sell\n\n2) Buyers " \
@@ -105,6 +112,21 @@ def listing_bought_notification(email, listing):
 
     message = EmailMessage(
         subject="You've bought {}".format(listing.item.title),
+        body=content,
+        to=recipient,
+        bcc=TAG_FOR_BCC
+    )
+    message.send()
+    return message.mandrill_response[0]
+
+def listing_free_confirm_notification(email, listing):
+    content = LISTING_FREE_CONFIRMATION.format(listing.item.title)
+
+    recipient = list()
+    recipient.append(email)
+
+    message = EmailMessage(
+        subject="You've ordered {}".format(listing.item.title),
         body=content,
         to=recipient,
         bcc=TAG_FOR_BCC
