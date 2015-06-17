@@ -18,7 +18,7 @@ class Listing(models.Model):
     discount = models.DecimalField(max_digits = 6, decimal_places =2, default=0.00)
 
     def __str__(self):
-        return str(self.end_date)
+        return str(self.id)
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
