@@ -35,7 +35,7 @@ OFFER_OVER = "Dear {},\n\nYour item, {}, has a winning offer!  Your total earnin
              "will be given to you upon pick up of the item.  Please reply to this email with your address and " \
              "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
              "experience, please reply to this email and let us know.  We want to be the best way for students to buy " \
-             "and sell locally locally." \
+             "and sell locally." \
              "\n\nSincerely\n\nThe Circa Team"
 
 LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting {}! This email is to confirm that you paid ${} for this " \
