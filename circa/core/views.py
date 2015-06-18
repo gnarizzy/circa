@@ -24,7 +24,7 @@ import datetime
 def index(request):
     now = datetime.datetime.now()
     item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
-        .order_by('listing__end_date')
+        .order_by('-pk')
     context = {'items': item_list}
     return render(request, 'index.html', context)
 
