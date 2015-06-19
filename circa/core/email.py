@@ -39,16 +39,16 @@ OFFER_OVER = "Dear {},\n\nYour item, {}, has a winning offer!  Your total earnin
              "\n\nSincerely\n\nThe Circa Team"
 
 LISTING_BUY_NOW = "Hello,\n\nCongratulations on getting {}! This email is to confirm that you paid ${} for this " \
-                  "item.  Can you reply with your address and any special delivery instructions? Your item will " \
-                  "be delivered within 24 hours of the seller handing it off to us.\n\nThanks for being " \
-                  "awesome and using Circa, and feel free to reply with any feedback on how your experience " \
+                  "item.  Can you reply with your address (no PO box--we can't deliver to those!) and any special delivery" \
+                  " instructions? Your item will be delivered within 24 hours of the seller handing it off to us.\n\nThanks " \
+                  "for being awesome and using Circa, and feel free to reply with any feedback on how your experience " \
                   "with us was. We want to create the best way for students to buy and sell locally." \
                   "\n\nSincerely,\n\nThe Circa Team"
 
 LISTING_FREE_CONFIRMATION = "Hello,\n\nCongratulations on getting {}! This email is to confirm that you ordered " \
-                  "this item for FREE!  Can you reply with your address and any special delivery instructions? Your item will " \
-                  "be delivered within 24 hours of the seller handing it off to us.\n\nThanks for being " \
-                  "awesome and using Circa, and feel free to reply with any feedback on how your experience " \
+                  "this item for FREE!  Can you reply with your address (no PO box--we can't deliver to those!) and any special " \
+                  "delivery instructions? Your item will be delivered within 24 hours of the seller handing it off to us." \
+                  "\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how your experience " \
                   "with us was. We want to create the best way for students to buy and sell locally." \
                   "\n\nSincerely,\n\nThe Circa Team"
 
