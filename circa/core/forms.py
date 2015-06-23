@@ -121,7 +121,7 @@ class PromoForm (forms.Form):
 
         return promo_code
 
-#For for editing listing, as well as item
+#For editing listing, as well as item
 class EditListingForm(forms.Form):
     #information for Item
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}),label="Title", max_length=100)
@@ -140,9 +140,10 @@ class EditListingForm(forms.Form):
 
     # Make sure starting offer is at least $5.00, and that no offers have yet been made
     def clean_starting_offer(self):
-        if self.listing.current_offer_user:
-            raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
         starting_offer = self.cleaned_data['starting_offer']
+        if self.listing.current_offer and starting_offer != self.listing.starting_offer:
+            raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
+
         if starting_offer < 5:
             raise forms.ValidationError("The minimum starting offer is $5.00.")
         return starting_offer
