@@ -450,14 +450,18 @@ class ModelTest(TestCase):
 #the asking price
 
 #edit listing tests:
+#expired once listing has been paid for
+#Cant edit once item has been claimed
+#navigating directly to edit page when wrong user results in 403
+
 #Edit page has prepopulated text
 #Cant change offer price once offer has been made
-#Cant edit once item has been claimed
+
 #Edit button only shows up for correct logged in user
 #Edits available from dashboard
-#navigating directly to edit page when wrong user results in 403
+
 #able to delete listing if no offers have been made
-#expired once listing has been paid for
+
 
 
 
