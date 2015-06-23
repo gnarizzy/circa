@@ -120,3 +120,50 @@ class PromoForm (forms.Form):
             raise forms.ValidationError("Sorry, that code is not valid.")
 
         return promo_code
+
+#For for editing listing, as well as item
+class EditListingForm(forms.Form):
+    #information for Item
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}),label="Title", max_length=100)
+    description = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea validate'}),
+                                  label="Description")
+
+    #Information for Listing
+    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}),)
+    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
+    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
+
+    def __init__(self, *args, **kwargs):
+        self.listing = kwargs.pop('listing', None) #Grabs current listing ID
+        super(EditListingForm, self).__init__(*args,**kwargs)
+
+
+    # Make sure starting offer is at least $5.00, and that no offers have yet been made
+    def clean_starting_offer(self):
+        if self.listing.current_offer_user:
+            raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
+        starting_offer = self.cleaned_data['starting_offer']
+        if starting_offer < 5:
+            raise forms.ValidationError("The minimum starting offer is $5.00.")
+        return starting_offer
+
+    # Make sure buy now price is at least 10% greater than starting offer
+    def clean_buy_now_price(self):
+        try:
+            starting_offer = self.cleaned_data['starting_offer']
+        except KeyError:  # starting_offer doesn't exist because it was invalid
+            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, which must "
+                                        "be at least $5.00")
+        buy_now_price = self.cleaned_data['buy_now_price']
+
+        if starting_offer * Decimal(1.0999) > buy_now_price:
+            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer.")
+
+        return buy_now_price
+
+    # make sure shipping zip code is one we deliver to
+    def clean_zipcode(self):
+        zip_code = self.cleaned_data['zipcode']
+        if zip_code not in zipcodes():
+            raise forms.ValidationError("Unfortunately, Circa is not yet available in that zip code.")
+        return zip_code
