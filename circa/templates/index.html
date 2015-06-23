@@ -67,7 +67,7 @@
         <div class="row">
             {% for item in items %}
             <div class="col s12 m4 l3">
-                <div class="card">
+                <div class="card medium">
                     <a href="/listing/{{ item.listing.id }}">
                         <div class="card-image get-faded">
                             <img src="{% cropped_thumbnail item "cropping" width=200 %}">
