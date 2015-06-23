@@ -74,6 +74,33 @@ def create_listing(request, item_id):
     context = {'item': item, 'form': form}
     return render(request, 'create_listing.html', context)
 
+@login_required
+def edit_listing(request, listing_id):
+    listing = get_object_or_404(Listing,pk=listing_id)
+    item = listing.item
+
+    #listing already ended
+    if listing.end_date:
+        if listing.end_date < datetime.datetime.now():
+           return render(request, 'expired.html')
+
+    if item.seller.id is not request.user.id:  # some bro wants to edit a listing that is not his!
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        form = EditListingForm(request.POST)
+
+        if form.is_valid():
+
+
+            return HttpResponseRedirect('/listing/'+str(listing.id))
+
+    else:
+        form = EditListingForm()
+
+    context = {'item': item, 'form': form}
+    return render(request, 'edit_listing.html', context)
+
 # Displays the requested listing along with info about listing item, or 404 page
 # TODO use keys.py file to send public key to template
 def listing_detail(request, listing_id):
