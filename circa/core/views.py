@@ -5,7 +5,7 @@ from circa.settings import COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PER
 from core.email import listing_bought_notification, listing_bought_seller_notification, lost_listing_notification, \
     offer_denied_notification, listing_free_confirm_notification, listing_bought_discount_notification
 from core.models import Item, Listing, UserProfile, PromoCode
-from core.forms import ItemForm, ListingForm, OfferForm, PromoForm
+from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm
 from core.keys import *
 from core.zipcode import zipcodes
 from django.contrib.auth.models import User
@@ -92,13 +92,19 @@ def edit_listing(request, listing_id):
 
         if form.is_valid():
 
-
             return HttpResponseRedirect('/listing/'+str(listing.id))
 
     else:
-        form = EditListingForm()
+        title = item.title
+        description = item.description
+        starting_offer = listing.starting_offer
+        buy_now_price = listing.buy_now_price
+        zipcode = listing.zipcode
+        form = EditListingForm(initial={'title': item.title,'description':item.description,
+                                        'starting_offer':listing.starting_offer, 'buy_now_price':listing.buy_now_price,
+                                        'zipcode': listing.zipcode})
 
-    context = {'item': item, 'form': form}
+    context = {'item': item, 'listing':listing, 'form': form}
     return render(request, 'edit_listing.html', context)
 
 # Displays the requested listing along with info about listing item, or 404 page
