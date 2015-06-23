@@ -91,15 +91,17 @@ def edit_listing(request, listing_id):
         form = EditListingForm(request.POST)
 
         if form.is_valid():
+            item.title = form.cleaned_data['title']
+            item.description = form.cleaned_data['description']
+            listing.starting_offer = form.cleaned_data['starting_offer']
+            listing.buy_now_price = form.cleaned_data['buy_now_price']
+            listing.zipcode = form.cleaned_data['zipcode']
 
+            item.save()
+            listing.save()
             return HttpResponseRedirect('/listing/'+str(listing.id))
 
     else:
-        title = item.title
-        description = item.description
-        starting_offer = listing.starting_offer
-        buy_now_price = listing.buy_now_price
-        zipcode = listing.zipcode
         form = EditListingForm(initial={'title': item.title,'description':item.description,
                                         'starting_offer':listing.starting_offer, 'buy_now_price':listing.buy_now_price,
                                         'zipcode': listing.zipcode})
