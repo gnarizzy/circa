@@ -88,7 +88,7 @@ def edit_listing(request, listing_id):
         raise PermissionDenied
 
     if request.method == 'POST':
-        form = EditListingForm(request.POST)
+        form = EditListingForm(request.POST, listing=listing_id)
 
         if form.is_valid():
             item.title = form.cleaned_data['title']
