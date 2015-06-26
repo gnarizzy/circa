@@ -152,7 +152,7 @@ class EditListingForm(forms.Form):
     def clean_buy_now_price(self):
         try:
             starting_offer = self.cleaned_data['starting_offer']
-        except KeyError:  # starting_offer doesn't exist because it was invalid
+        except KeyError:  # starting_offer doesn't exist because the form submission starting offer was invalid. May want to remove this
             raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, which must "
                                         "be at least $5.00")
         buy_now_price = self.cleaned_data['buy_now_price']
