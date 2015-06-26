@@ -72,7 +72,6 @@ class OfferForm (forms.Form):
             if self.user and self.user.id is listing_object.item.seller.id: #user submitted offer on their own auction
                 raise forms.ValidationError("Trying to submit an offer on your own item, eh? Seems legit.")
 
-
             listing_offer = listing_object.current_offer
             if not listing_offer: #no current offer, meaning no initial offer has been made
                 if offer < Listing.objects.get(pk=self.listing).starting_offer:
@@ -140,8 +139,9 @@ class EditListingForm(forms.Form):
 
     # Make sure starting offer is at least $5.00, and that no offers have yet been made
     def clean_starting_offer(self):
-        starting_offer = self.cleaned_data['starting_offer']
-        if self.listing.current_offer and starting_offer != self.listing.starting_offer:
+        starting_offer = Decimal(self.cleaned_data['starting_offer'])
+        listing = Listing.objects.get(pk=self.listing) #current listing
+        if listing.current_offer and starting_offer != listing.starting_offer:
             raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
 
         if starting_offer < 5:
