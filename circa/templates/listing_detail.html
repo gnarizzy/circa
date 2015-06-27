@@ -74,7 +74,9 @@
             <div class="card">
                 <div class="card-content">
                     <div class="center-align col l4 m6 s12">
-                        <span class = "badge white-text">Edit</span>
+                        {% if user.id and user.id == item.seller.id %}
+                        <a href="/edit/{{listing.id}}"><span class = "badge white-text">Edit</span></a>
+                        {% endif %}
                         <span class="card-title black-text hide-on-med-and-up">{{ item.title }}</span>
 
                         <br>
@@ -100,7 +102,9 @@
 
                     <div class="col l4 m6 s12">
                         <span class="card-title black-text hide-on-small-only">{{ item.title }}</span>
-                        <span class = "badge white-text hide-on-small-only">Edit</span>
+                        {% if user.id and user.id == item.seller.id %}
+                        <a href="/edit/{{listing.id}}"><span class = "badge white-text hide-on-small-only">Edit</span></a>
+                        {% endif %}
                         <br>
                         <p>{{ item.description|linebreaks }}</p>
                         <br><br>
