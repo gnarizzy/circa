@@ -84,6 +84,9 @@ def edit_listing(request, listing_id):
         if listing.end_date < datetime.datetime.now():
            return render(request, 'expired.html')
 
+    if listing.paid_for: #listing is already paid for...shouldn't ever get here since end date should've passed, but just in case
+        return render(request, 'expired.html')
+
     if item.seller.id is not request.user.id:  # some bro wants to edit a listing that is not his!
         raise PermissionDenied
 
