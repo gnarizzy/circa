@@ -271,11 +271,22 @@ def pay(request, listing_id):
 
                 return HttpResponseRedirect('/success/')
 
-            except stripe.CardError:
-                raise Exception
-                # context = {'error_message':"Your credit card was declined."}
-                # return HttpResponseRedirect(request.path)
-        else: #submit promocode form
+            except stripe.error.CardError as e:
+                body = e.json_body
+                err = body['error']
+
+                # Useful debug messages
+                # print("Status is: %s" % e.http_status)
+                # print("Type is: %s" % err['type'])
+                # print("Code is: %s" % err['code'])
+                # print("Message is: %s" % err['message'])
+
+                messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
+                                        'the problem may be with our payment processing system.  Wait an hour or '
+                                        'so and try again.  If the problem persists, please contact us at '
+                                        'support@usecirca.com so we can help sort out the issue.')
+                return HttpResponseRedirect(request.path)
+        else: # submit promocode form
             if 'confirm_' in request.POST: #confirm button
                 listing.paid_for = True
 
