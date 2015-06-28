@@ -21,6 +21,8 @@
                                 <label for="{{ form.description.id_for_label }}">Description</label>
                                 {{ form.description }}
                             </p>
+                                {{ form.category.errors }}
+                                {{ form.category }}
                             <p>
                                 {{ form.photo.errors }}
                                 <div class="file-field input-field">

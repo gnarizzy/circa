@@ -4,13 +4,21 @@ from decimal import *
 from django import forms
 
 class ItemForm(forms.ModelForm):
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}),label="Title", max_length=100)
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), label="Title", max_length=100)
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea validate'}),
                                   label="Description")
+    category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Item.CATEGORY_CHOICES)
+
+    # Make sure a category is chosen
+    def clean_category(self):
+        category = self.cleaned_data['category']
+        if category is '0':
+            raise forms.ValidationError("You must choose a category for your item.")
+        return category
 
     class Meta:
         model = Item
-        fields = ('title', 'description', 'photo')
+        fields = ('title', 'description', 'category', 'photo')
 
 class ListingForm(forms.ModelForm):
     starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}),)
@@ -120,27 +128,27 @@ class PromoForm (forms.Form):
 
         return promo_code
 
-#For editing listing, as well as item
+# For editing listing, as well as item
 class EditListingForm(forms.Form):
-    #information for Item
-    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}),label="Title", max_length=100)
+    # Information for Item
+    title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), label="Title", max_length=100)
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea validate'}),
                                   label="Description")
+    category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Item.CATEGORY_CHOICES)
 
-    #Information for Listing
+    # Information for Listing
     starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}),)
     buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
 
     def __init__(self, *args, **kwargs):
-        self.listing = kwargs.pop('listing', None) #Grabs current listing ID
+        self.listing = kwargs.pop('listing', None)  # Grabs current listing ID
         super(EditListingForm, self).__init__(*args,**kwargs)
-
 
     # Make sure starting offer is at least $5.00, and that no offers have yet been made
     def clean_starting_offer(self):
         starting_offer = Decimal(self.cleaned_data['starting_offer'])
-        listing = Listing.objects.get(pk=self.listing) #current listing
+        listing = Listing.objects.get(pk=self.listing)  # current listing
         if listing.current_offer and starting_offer != listing.starting_offer:
             raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
 
@@ -161,6 +169,13 @@ class EditListingForm(forms.Form):
             raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer.")
 
         return buy_now_price
+
+    # Make sure a category is chosen
+    def clean_category(self):
+        category = self.cleaned_data['category']
+        if category is '0':
+            raise forms.ValidationError("You must choose a category for your item.")
+        return category
 
     # make sure shipping zip code is one we deliver to
     def clean_zipcode(self):

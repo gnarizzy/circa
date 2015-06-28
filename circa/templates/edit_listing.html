@@ -17,6 +17,8 @@ Edit {{item.title}}
             <label for="{{ form.description.id_for_label }}">Description</label>
             {{ form.description }}
         </p>
+            {{ form.category.errors }}
+            {{ form.category }}
         <p class="input-field">
             {{ form.starting_offer.errors }}
             <label for="{{ form.starting_offer.id_for_label }}">Starting Offer</label>
