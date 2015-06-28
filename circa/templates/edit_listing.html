@@ -4,10 +4,34 @@ Edit {{item.title}}
 {% endblock %}
 {% block body_block %}
 <div class = "container">
-
+    <div class="take-space"></div>
     <form id ="edit_form" method="post" action="/edit/{{listing.id }}/">
         {% csrf_token %}
-        {{form.as_p}}
+        <p class="input-field">
+            {{ form.title.errors }}
+            <label for="{{ form.title.id_for_label }}">Title</label>
+            {{ form.title }}
+        </p>
+        <p class="input-field">
+            {{ form.description.errors }}
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+        </p>
+        <p class="input-field">
+            {{ form.starting_offer.errors }}
+            <label for="{{ form.starting_offer.id_for_label }}">Starting Offer</label>
+            {{ form.starting_offer }}
+        </p>
+        <p class="input-field">
+            {{ form.buy_now_price.errors }}
+            <label for="{{ form.buy_now_price.id_for_label }}">Buy Now Price</label>
+            {{ form.buy_now_price }}
+        </p>
+        <p class="input-field">
+            {{ form.zipcode.errors }}
+            <label for="{{ form.zipcode.id_for_label }}">Zipcode</label>
+            {{ form.zipcode }}
+        </p>
         <button class="btn-large waves-effect waves-light" type="submit" name="action">Update Listing
             <i class="mdi-content-send right"></i>
         </button>
