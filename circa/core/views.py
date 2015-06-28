@@ -7,6 +7,7 @@ from core.email import listing_bought_notification, listing_bought_seller_notifi
 from core.models import Item, Listing, UserProfile, PromoCode
 from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm
 from core.keys import *
+from core.payout import calc_payout
 from core.zipcode import zipcodes
 from django.contrib.auth.models import User
 from django import forms
@@ -140,10 +141,7 @@ def listing_detail(request, listing_id):
                 listing.end_date = datetime.datetime.now()
                 listing.current_offer = listing.buy_now_price
                 listing.paid_for = True
-                if listing.buy_now_price < COMMISSION_BREAKEVEN:
-                    listing.payout = listing.buy_now_price - Decimal(COMMISSION_FLAT)
-                else:
-                    listing.payout = Decimal(1-COMMISSION_PERCENT) * listing.buy_now_price
+                listing.payout = calc_payout(listing.buy_now_price)
                 prev_offer_user = listing.current_offer_user
                 if request.user.id:  # logged in user used buy it now
                     listing.current_offer_user= request.user
@@ -221,7 +219,7 @@ def pending(request):
     for listing in listings:
         try:
             items.append(listing.item)
-        except ObjectDoesNotExist: #listing has no related item
+        except ObjectDoesNotExist:  # listing has no related item
             pass
     return render(request, 'pending.html', {'items': items})
 
@@ -235,7 +233,7 @@ def pay(request, listing_id):
         raise PermissionDenied
     if listing.paid_for:  # user already paid for item
         return render(request, 'expired.html')
-    #amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
+    # amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
     if listing.current_offer - listing.discount < Decimal(0.50):
         free = 1
 
@@ -256,11 +254,7 @@ def pay(request, listing_id):
                 )
                 item.buyer = request.user
                 listing.paid_for = True
-
-                if listing.current_offer < COMMISSION_BREAKEVEN:
-                    listing.payout = listing.current_offer - Decimal(COMMISSION_FLAT)
-                else:
-                    listing.payout = Decimal(1-COMMISSION_PERCENT) * listing.current_offer
+                listing.payout = calc_payout(listing.current_offer)
                 listing.save()
                 item.save()
 
@@ -287,13 +281,9 @@ def pay(request, listing_id):
                                         'support@usecirca.com so we can help sort out the issue.')
                 return HttpResponseRedirect(request.path)
         else: # submit promocode form
-            if 'confirm_' in request.POST: #confirm button
+            if 'confirm_' in request.POST:  # confirm button
                 listing.paid_for = True
-
-                if listing.current_offer < COMMISSION_BREAKEVEN:
-                    listing.payout = listing.current_offer - Decimal(COMMISSION_FLAT)
-                else:
-                    listing.payout = Decimal(1-COMMISSION_PERCENT) * listing.current_offer
+                listing.payout = calc_payout(listing.current_offer)
                 listing.save()
                 item.save()
 
@@ -375,19 +365,20 @@ def dashboard(request):
     items = Item.objects.filter(seller=user)
     for item in items:
         if item.listing:
-            earnings+= item.listing.payout
-            if item.listing.end_date and item.listing.end_date > datetime.datetime.now(): #offer on listing, but still time left
+            earnings += item.listing.payout
+            if item.listing.end_date and item.listing.end_date > datetime.datetime.now():  # offer on listing, but still time left
                 active_items += 1
-            if item.listing.end_date and item.listing.end_date < now and not item.listing.paid_for: #listing over but not paid for yet
-                active_items +=1
-            if not item.listing.end_date: #listed item, but no offers
-                active_items +=1
+            if item.listing.end_date and item.listing.end_date < now and not item.listing.paid_for:  # listing over but not paid for yet
+                active_items += 1
+            if not item.listing.end_date:  # listed item, but no offers
+                active_items += 1
     orders = []
     bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
     for order in bought:
         orders.append(order.item)
 
-    context = {'pending': pending, 'offers':offers, 'earnings':earnings, 'orders':orders, 'active_items':active_items}
+    context = {'pending': pending, 'offers': offers, 'earnings': earnings,
+               'orders': orders, 'active_items': active_items}
     return render(request,'dashboard.html', context)
 
 @login_required
@@ -399,7 +390,7 @@ def offers(request): # not very DRY
     return render(request, 'offers.html', context)
 
 @login_required
-def earnings(request): # not very DRY
+def earnings(request):  # not very DRY
     total_earnings = 0
     user = request.user
     items = Item.objects.filter(seller=user)

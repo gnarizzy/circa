@@ -1,7 +1,8 @@
 # A helper module to generate emails and avoid spaghetti code
-from circa.settings import ALLOWED_HOSTS, COMMISSION_FLAT, COMMISSION_PERCENT, COMMISSION_BREAKEVEN
+from circa.settings import ALLOWED_HOSTS
 from django.core.mail import EmailMessage
 from core.models import User, Listing
+from core.payout import calc_payout
 from decimal import *
 
 
@@ -186,13 +187,8 @@ def offer_accepted_notification(user, listing):
     return message.mandrill_response[0]
 
 def listing_bought_seller_notification(listing):
-    price = listing.current_offer
-
-    if price <= COMMISSION_BREAKEVEN:
-        earnings = price - Decimal(COMMISSION_FLAT)
-    else:
-        earnings = price * Decimal(1 - COMMISSION_PERCENT)
-    earnings = round(earnings, 2)
+    price = calc_payout(listing.current_offer)
+    earnings = round(price, 2)
 
     content = LISTING_BOUGHT.format(listing.item.seller.username, listing.item.title, earnings)
 
@@ -209,12 +205,8 @@ def listing_bought_seller_notification(listing):
     return message.mandrill_response[0]
 
 def offer_accepted_seller_notification(listing):
-    price = listing.current_offer
-    if price <= COMMISSION_BREAKEVEN:
-        earnings = price - Decimal(COMMISSION_FLAT)
-    else:
-        earnings = price * Decimal(1 - COMMISSION_PERCENT)
-    earnings = round(earnings, 2)
+    price = calc_payout(listing.current_offer)
+    earnings = round(price, 2)
 
     content = OFFER_OVER.format(listing.item.seller.username, listing.item.title, earnings)
 
