@@ -15,21 +15,22 @@ class MyRegistrationView(RegistrationView):
 
 urlpatterns = patterns('',
     # Examples:
+    url(r'^$', 'core.views.index', name='index'),
     url(r'^todo/','core.views.todo', name='todo'),
     url(r'^sell/','core.views.sell', name='sell'),
     url(r'^createlisting/(?P<item_id>\d+)/$', 'core.views.create_listing', name='create_listing'),
     url(r'^edit/(?P<listing_id>\d+)/$', 'core.views.edit_listing', name='edit_listing'),
     url(r'^listing/(?P<listing_id>\d+)/$', 'core.views.listing_detail', name='listing_detail'),
-    url(r'^$', 'core.views.index', name='index'),
     url(r'^success/', 'core.views.success', name='success'),
     url(r'^help/', 'core.views.help', name='help'),
     url(r'^pending/', 'core.views.pending', name='pending'),
     url(r'^pay/(?P<listing_id>\d+)/$', 'core.views.pay', name='pay'),
     url(r'^connect/', 'core.views.connect', name='connect'),
+    url(r'^category/(?P<category_name>[a-z]+)', 'core.views.category', name='category'),
     url(r'^about/', 'core.views.about', name='about'),
     url(r'^policies/terms', 'core.views.terms', name='terms'),  # parameterize as we get more policy info
     url(r'^dashboard','core.views.dashboard', name='terms'),
-    url(r'^offers', 'core.views.offers', name='offers'), #consolidate these into dashboard
+    url(r'^offers', 'core.views.offers', name='offers'), # consolidate these into dashboard
     url(r'^earnings','core.views.earnings', name='earnings'),
     url(r'^items','core.views.active_items', name='active_items'),
     # url(r'^blog/', include('blog.urls')),

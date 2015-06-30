@@ -29,6 +29,16 @@ def index(request):
     context = {'items': item_list}
     return render(request, 'index.html', context)
 
+def category(request, category_name):
+    if category_name in Item.CATEGORY_NAMES.keys():
+        now = datetime.datetime.now()
+        item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
+            .filter(category=Item.CATEGORY_NAMES[category_name]).order_by('-pk')
+        context = {'items': item_list}
+        return render(request, 'index.html', context)
+    else:
+        return HttpResponseRedirect('/')
+
 # posting an item
 @login_required
 def sell(request):
