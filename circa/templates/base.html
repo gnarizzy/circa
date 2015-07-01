@@ -27,7 +27,7 @@
         color: inherit;
         }
 
-        a.no-style:hover {
+        a.no-style:hover, a.no-style:active, a.no-style:visited {
         text-decoration: none;
         }
 
@@ -45,6 +45,10 @@
 
         .side-nav li.no-padding li.unique-dropdown:hover, .side-nav li.no-padding li.unique-dropdown-active {
         background-color: #ddd;
+        }
+
+        ul.errorlist {
+        color: #ff5252;
         }
     </style>
 
@@ -65,7 +69,7 @@
                         class="mdi-navigation-menu"></i></a>
 
                 <div class="right hide-on-med-and-down">
-                    <a href="/sell" class="waves-effect waves-light btn green accent-3"><span
+                    <a href="/sell" class="waves-effect waves-light btn teal accent-3"><span
                             class="glyphicon glyphicon-usd"></span> Sell</a>
                 </div>
 
@@ -143,7 +147,7 @@
                         Help</a></li>
                     {% endif %}
 
-                    <a href="/sell/" class="waves-effect waves-light btn white-text"><span
+                    <a href="/sell/" class="waves-effect waves-light btn teal accent-3 white-text"><span
                             class="glyphicon glyphicon-usd"></span> Sell</a>
                 </ul>
             </div>
