@@ -35,12 +35,14 @@ class Item(models.Model):
     BOOKS = 3
     SHOES = 4
     OTHER = 5
+    VIDEO_GAMES = 6
     CATEGORY_CHOICES = (
         (UNCLASSIFIED, '-- Please Pick a Category --'),
         (BOOKS, 'Books'),
         (ELECTRONICS, 'Electronics'),
         (FURNITURE, 'Furniture'),
         (SHOES, 'Shoes'),
+        (VIDEO_GAMES, 'Video Games'),
         (OTHER, 'Other')
     )
     CATEGORY_NAMES = {
@@ -48,6 +50,7 @@ class Item(models.Model):
         'furniture': FURNITURE,
         'books': BOOKS,
         'shoes': SHOES,
+        'videogames': VIDEO_GAMES,
         'other': OTHER
     }
     category = models.IntegerField(choices=CATEGORY_CHOICES, default=UNCLASSIFIED)
