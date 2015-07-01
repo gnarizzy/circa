@@ -2,8 +2,17 @@
 {% load static %}
 {% block head_block %}
     <style text="text/css">
-        a.no-underline:hover {
-            text-decoration: none;
+        a.collection-item.category {
+              color: #009ee1;
+        }
+
+        a.collection-item.category.active {
+              background-color: #009ee1;
+              color: #eafaf9;
+        }
+
+        .categories-wrapper.pinned {
+            width: inherit;
         }
     </style>
 
@@ -48,36 +57,40 @@
 
 {% block body_block %}
            {% if not user.id %}
+            <div class="for-measurments">
             <div class="take-space"></div>
             <div class="jumbotron">
                 <h1>Buy and Sell at GT</h1>
                 <p class="lead"> Circa makes it easy. No haggling, no meetups, no scams. Scroll down and start shopping.
                 </p>
-                <p><a class="waves-effect waves-light btn-large no-underline" href="/about/"><i class="mdi-action-info left"></i>Learn
+                <p><a class="waves-effect waves-light btn-large green accent-3 no-underline" href="/about/"><i class="mdi-action-info left"></i>Learn
                     more</a>
                 </p>
+            </div>
             </div>
            {% endif %}
 
            <div class="take-space"></div>
             <div class="row">
-                <div class="col m2 l2 hide-on-small-only">
-                    <div class="collection">
-                        <a href="/" class="collection-item active">All</a>
-                        <a href="/category/electronics" class="collection-item">Electronics</a>
-                        <a href="/category/furniture" class="collection-item">Furniture</a>
-                        <a href="/category/shoes" class="collection-item">Shoes</a>
-                        <a href="/category/books" class="collection-item">Books</a>
-                        <a href="/category/other" class="collection-item">Other</a>
+                <div class="col hide-on-small-only m3 l2">
+                    <div class="categories-wrapper">
+                        <div class="collection">
+                            <a href="/" class="collection-item category {% if not category %}active{% endif %} no-underline">All</a>
+                            <a href="/category/books" class="collection-item category {% if category == 3 %}active{% endif %} no-underline">Books</a>
+                            <a href="/category/electronics " class="collection-item category {% if category == 1 %}active{% endif %} no-underline">Electronics</a>
+                            <a href="/category/furniture" class="collection-item category {% if category == 2 %}active{% endif %} no-underline">Furniture</a>
+                            <a href="/category/shoes" class="collection-item category {% if category == 4 %}active{% endif %} no-underline">Shoes</a>
+                            <a href="/category/other" class="collection-item category {% if category == 5 %}active{% endif %} no-underline">Other</a>
+                        </div>
                     </div>
                 </div>
-                <div class="col s12 m10 l10">
+                <div class="col s12 m9 l10">
                 {% if items %}
                 {% load cropping %}
                 <div class="row">
 
                     {% for item in items %}
-                    <div class="col s12 m4 l3">
+                    <div class="col s12 m6 l3">
                         <div class="card medium">
                             <a href="/listing/{{ item.listing.id }}">
                                 <div class="card-image get-faded">
@@ -116,5 +129,15 @@
                     {% endif %}
            </div>
 
+<script>
+     $(document).ready(function(){
+       // Have the menu carry along with the page
+       {% if user.id %}
+       $(".categories-wrapper").pushpin({offset: 64, top: 74, bottom: ($(document).height() - 210)});
+       {% else %}
+       $(".categories-wrapper").pushpin({offset: 64, top: 399, bottom: ($(document).height() - 210)});
+       {% endif %}
+      });
+</script>
 
 {% endblock %}

@@ -34,7 +34,7 @@ def category(request, category_name):
         now = datetime.datetime.now()
         item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
             .filter(category=Item.CATEGORY_NAMES[category_name]).order_by('-pk')
-        context = {'items': item_list}
+        context = {'items': item_list, 'category': Item.CATEGORY_NAMES[category_name]}
         return render(request, 'index.html', context)
     else:
         return HttpResponseRedirect('/')
