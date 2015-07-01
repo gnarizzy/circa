@@ -37,9 +37,9 @@ class Item(models.Model):
     OTHER = 5
     CATEGORY_CHOICES = (
         (UNCLASSIFIED, '-- Please Pick a Category --'),
-        (ELECTRONICS, 'Electronic'),
-        (FURNITURE, 'Furniture'),
         (BOOKS, 'Books'),
+        (ELECTRONICS, 'Electronics'),
+        (FURNITURE, 'Furniture'),
         (SHOES, 'Shoes'),
         (OTHER, 'Other')
     )
