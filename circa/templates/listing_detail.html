@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title_block %}
-    {{ item.title }} | Circa
+{{ item.title }} | Circa
 {% endblock %}
 {% block head_block %}
 <script type="text/javascript">
@@ -29,6 +29,7 @@
         var display = document.querySelector('#time');
         countdown({{ minutes }}, {{ seconds }}, display);
         };
+
 </script>
 <link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 {% endblock %}
@@ -39,127 +40,138 @@
 <div class="container">
     {% if user.id and user.id == item.seller.id %}
     <div class="row">
-      <div class="col s12">
-        <div class="card-panel blue lighten-5">
+        <div class="col s12">
+            <div class="card-panel blue lighten-5">
           <span class="blue-text text-darken-3"><i class="mdi-action-info-outline"></i>
             This is your item. Share this link to get more offers!
           </span>
+            </div>
         </div>
-      </div>
     </div>
     {% endif %}
     {% if item.listing.current_offer_user.id and user.id == item.listing.current_offer_user.id %}
     <div class="row">
-      <div class="col s12">
-        <div class="card-panel green lighten-5">
+        <div class="col s12">
+            <div class="card-panel green lighten-5">
           <span class="green-text text-darken-3"><i class="mdi-action-stars"></i>
             You currently have the highest offer!
           </span>
+            </div>
         </div>
-      </div>
     </div>
     {% endif %}
     {% if error_message %}
     <div class="row">
-      <div class="col s12">
-        <div class="card-panel red lighten-5">
+        <div class="col s12">
+            <div class="card-panel red lighten-5">
           <span class="red-text text-darken-3"><i class="mdi-alert-warning"></i>
             {{ error_message }}
           </span>
+            </div>
         </div>
-      </div>
     </div>
     {% endif %}
-        <div class="row">
-            <div class="card">
-                <div class="card-content">
-                    <div class="center-align col l4 m6 s12">
-                        {% if user.id and user.id == item.seller.id %}
-                        <a href="/edit/{{listing.id}}"><span class = "badge white-text hide-on-med-and-up">Edit</span></a>
-                        {% endif %}
-                        <span class="card-title black-text hide-on-med-and-up">{{ item.title }}</span>
+    <div class="row">
+        <div class="card">
+            <div class="card-content">
+                <div class="center-align col l4 m6 s12">
+                    {% if user.id and user.id == item.seller.id %}
+                    <a href="/edit/{{listing.id}}"><span class="badge white-text hide-on-med-and-up">Edit</span></a>
+                    {% endif %}
+                    <span class="card-title black-text hide-on-med-and-up">{{ item.title }}</span>
+                    <br>
+                    <img class="hide-on-med-and-up" src="{% cropped_thumbnail item "cropping" width=150 %}">
+                    <img class="hide-on-small-only hide-on-large-only" src="{% cropped_thumbnail item "cropping"
+                    width=200 %}">
+                    <img class="hide-on-med-and-down" src="{% cropped_thumbnail item "cropping" width=250 %}">
+                    <br>
+                    <br>
+                    <em>Ships from zipcode {{ item.listing.zipcode }}</em>
+                    <br>
+                    <br>
+                    {% if status == 2 %}
+                    The first offer will be accepted within <span class="red-text">one hour</span> unless a higher offer
+                    is made
+                    {% elif status == 1 %}
+                    <span class="red-text">This item has been claimed</span>
+                    {% else %}
+                    The current offer will be accepted in
+                    <br>
+                    <strong><span class="red-text"
+                                  id="time"> {{ minutes }} minutes and {{ seconds|add:"-1" }} seconds</span></strong>
+                    <br>
+                    unless a higher offer is made.
+                    {% endif %}
+                    <br>
+                </div>
 
-                        <br>
-                        <img src="{% cropped_thumbnail item "cropping" width=150 %}">
-                        <br>
-                        <br>
-                        <em>Ships from zipcode {{ item.listing.zipcode }}</em>
-                        <br>
-                        <br>
-                        {% if status == 2 %}
-                        The first offer will be accepted within <span class="red-text">one hour</span> unless a higher offer is made
-                        {% elif status == 1 %}
-                        <span class="red-text">This item has been claimed</span>
-                        {% else %}
-                        The current offer will be accepted in
-                        <br>
-                        <strong><span class="red-text" id="time"> {{ minutes }} minutes and {{ seconds|add:"-1" }} seconds</span></strong>
-                        <br>
-                        unless a higher offer is made.
-                        {% endif %}
-                        <br>
-                    </div>
+                <div class="col l4 m6 s12">
+                    <span class="card-title black-text hide-on-small-only">{{ item.title }}</span>
+                    {% if user.id and user.id == item.seller.id %}
+                    <a href="/edit/{{listing.id}}"><span class="badge white-text hide-on-small-only">Edit</span></a>
+                    {% endif %}
+                    <br>
 
-                    <div class="col l4 m6 s12">
-                        <span class="card-title black-text hide-on-small-only">{{ item.title }}</span>
-                        {% if user.id and user.id == item.seller.id %}
-                        <a href="/edit/{{listing.id}}"><span class = "badge white-text hide-on-small-only">Edit</span></a>
-                        {% endif %}
-                        <br>
-                        <p>{{ item.description|linebreaks }}</p>
-                        <br><br>
-                    </div>
-                    <div class="col l4 m6 s12">
-                        <div>
-                            <div class="card-title black-text">
+                    <p>{{ item.description|linebreaks }}</p>
+                    <br><br>
+                </div>
+                <div class="col l4 m6 s12">
+                    <div>
+                        <div class="card-title black-text">
                             {% if status == 2 %}
-                                Asking price: ${{ item.listing.starting_offer }}
+                            Asking price: ${{ item.listing.starting_offer }}
                             {% else %}
-                                Current Offer: ${{ item.listing.current_offer }}
+                            Current Offer: ${{ item.listing.current_offer }}
                             {% endif %}
-                            </div>
-                            <br>
-                            <form class="form-inline" action = "/listing/{{ listing.id }}/" method = "post">
-                                <div class = "form-group">
-                                    {% csrf_token %}
-                                    {{ form.non_field_errors }}
-                                        <p class="input-field">
-                                            {{ form.offer.errors }}
-                                            <label for="{{ form.offer.id_for_label }}">Your Offer</label>
-                                            {{ form.offer }}
-                                        </p>
-                                        <p class="input-field">
-                                            {{ form.zipcode.errors }}
-                                            <label for="{{ form.zipcode.id_for_label }}">Zipcode</label>
-                                            {{ form.zipcode }}
-                                        </p>
-                                    {% if user.id and user.id == item.seller.id or status == 1%}
-                                    <button class="btn teal accent-4 waves-effect waves-light disabled" type="submit" name="action">Make Offer
-                                        <i class="mdi-content-send right"></i>
-                                    </button>
-                                    {% else %}
-                                    <button class="btn teal accent-4 waves-effect waves-light" type="submit">Make Offer
-                                        <i class="mdi-content-send right"></i>
-                                    </button>
-                                    {% endif %}
-                                 </div>
-                            </form>
-                            <br>
+                        </div>
+                        <br>
+
+                        <form class="form-inline" action="/listing/{{ listing.id }}/" method="post">
                             <div class="form-group">
-                                <span class="card-title black-text">Buy now for: ${{ item.listing.buy_now_price }}</span>
-                                <br><br>
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <p class="input-field">
+                                    {{ form.offer.errors }}
+                                    <label for="{{ form.offer.id_for_label }}">Your Offer</label>
+                                    {{ form.offer }}
+                                </p>
+
+                                <p class="input-field">
+                                    {{ form.zipcode.errors }}
+                                    <label for="{{ form.zipcode.id_for_label }}">Zipcode</label>
+                                    {{ form.zipcode }}
+                                </p>
                                 {% if user.id and user.id == item.seller.id or status == 1%}
-                                <button class="btn light-blue accent-4 waves-effect waves-light disabled" type="submit" name="action">Buy Now
-                                        <i class="mdi-editor-attach-money right"></i>
+                                <button class="btn teal accent-4 waves-effect waves-light disabled" type="submit"
+                                        name="action">Make Offer
+                                    <i class="mdi-content-send right"></i>
                                 </button>
                                 {% else %}
-                                <script src="https://checkout.stripe.com/checkout.js"></script>
-
-                                <button id="buyNow" class="btn light-blue accent-4 waves-effect waves-light" type="submit" name="action">Buy Now
-                                        <i class="mdi-editor-attach-money right"></i>
+                                <button class="btn teal accent-4 waves-effect waves-light" type="submit">Make Offer
+                                    <i class="mdi-content-send right"></i>
                                 </button>
+                                {% endif %}
+                            </div>
+                        </form>
+                        <br>
 
-                                <script type = "text/javascript">
+                        <div class="form-group">
+                            <span class="card-title black-text">Buy now for: ${{ item.listing.buy_now_price }}</span>
+                            <br><br>
+                            {% if user.id and user.id == item.seller.id or status == 1%}
+                            <button class="btn light-blue accent-4 waves-effect waves-light disabled" type="submit"
+                                    name="action">Buy Now
+                                <i class="mdi-editor-attach-money right"></i>
+                            </button>
+                            {% else %}
+                            <script src="https://checkout.stripe.com/checkout.js"></script>
+
+                            <button id="buyNow" class="btn light-blue accent-4 waves-effect waves-light" type="submit"
+                                    name="action">Buy Now
+                                <i class="mdi-editor-attach-money right"></i>
+                            </button>
+
+                            <script type="text/javascript">
                                       var stripe_amount = "{{amount}}"
                                       var item = "{{item.title}}"
                                       var handler = StripeCheckout.configure({
@@ -186,10 +198,11 @@
                                       $(window).on('popstate', function() {
                                         handler.close();
                                       });
-                                </script>
-                                {% endif %}
-                            </div>
-                            <br>
+
+                            </script>
+                            {% endif %}
+                        </div>
+                        <br>
                     </div>
                 </div>
             </div>
@@ -198,7 +211,8 @@
         <form action="{{request.path}}" method="POST">
             {% csrf_token %}
         </form>
-       <p class="grey-text text-darken-1">Circa guarantees one day shipping and no-questions-asked returns for 30 days.</p>
+        <p class="grey-text text-darken-1">Circa guarantees one day shipping and no-questions-asked returns for 30
+            days.</p>
     </div>
 </div>
 
