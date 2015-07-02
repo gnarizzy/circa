@@ -143,16 +143,4 @@
     {% endif %}
 </div>
 
-<script>
-     $(document).ready(function(){
-       // Have the menu carry along with the page
-       {% if user.id %}
-       $(".categories-wrapper").pushpin({offset: 64, top: 74, bottom: ($(document).height() - 210)});
-       {% else %}
-       $(".categories-wrapper").pushpin({offset: 64, top: 399, bottom: ($(document).height() - 210)});
-       {% endif %}
-      });
-
-</script>
-
 {% endblock %}
