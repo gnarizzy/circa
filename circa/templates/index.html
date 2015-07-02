@@ -57,90 +57,91 @@
 {% endblock %}
 
 {% block body_block %}
-{% if not user.id and not category%}
-<div class="for-measurments">
-    <div class="take-space"></div>
-    <div class="jumbotron">
-        <h1>Buy and Sell in Atlanta</h1>
+<div class="container">
+    {% if not user.id and not category%}
+    <div class="for-measurments">
+        <div class="take-space"></div>
+        <div class="jumbotron">
+            <h1>Buy and Sell in Atlanta</h1>
 
-        <p class="lead"> Circa makes it easy. No haggling, no meetups, no scams. Scroll down and start shopping.
-        </p>
+            <p class="lead"> Circa makes it easy. No haggling, no meetups, no scams. Scroll down and start shopping.
+            </p>
 
-        <p><a class="waves-effect waves-light btn-large green accent-3 no-underline" href="/about/"><i
-                class="mdi-action-info left"></i>Learn
-            more</a>
-        </p>
-    </div>
-</div>
-{% endif %}
-
-<div class="take-space"></div>
-<div class="row">
-    <div class="col hide-on-small-only m3 l2">
-        <div class="categories-wrapper">
-            <div class="collection">
-                <a href="/" class="collection-item category {% if not category %}active{% endif %} no-underline">All</a>
-                <a href="/category/books"
-                   class="collection-item category {% if category == 3 %}active{% endif %} no-underline">Books</a>
-                <a href="/category/electronics "
-                   class="collection-item category {% if category == 1 %}active{% endif %} no-underline">Electronics</a>
-                <a href="/category/furniture"
-                   class="collection-item category {% if category == 2 %}active{% endif %} no-underline">Furniture</a>
-                <a href="/category/shoes"
-                   class="collection-item category {% if category == 4 %}active{% endif %} no-underline">Shoes</a>
-                <a href="/category/videogames"
-                   class="collection-item category {% if category == 6 %}active{% endif %} no-underline">Video Games</a>
-                <a href="/category/other"
-                   class="collection-item category {% if category == 5 %}active{% endif %} no-underline">Other</a>
-            </div>
+            <p><a class="waves-effect waves-light btn-large green accent-3 no-underline" href="/about/"><i
+                    class="mdi-action-info left"></i>Learn
+                more</a>
+            </p>
         </div>
     </div>
-    <div class="col s12 m9 l10">
-        {% if items %}
-        {% load cropping %}
-        <div class="row">
+    {% endif %}
 
-            {% for item in items %}
-            <div class="col s12 m6 l3">
-                <div class="card medium">
-                    <a href="/listing/{{ item.listing.id }}">
-                        <div class="card-image get-faded">
-                            <img src="{% cropped_thumbnail item "cropping" width=200 %}">
-                        </div>
-                    </a>
-
-                    <div class="card-content activator">
-                        <h5 class="black-text truncate">{{ item.title }}</h5>
-
-                        <p> {% if item.listing.current_offer %}
-                            Current Offer: <strong>${{ item.listing.current_offer }}</strong>
-                            {% else %}
-                            Asking price: <strong>${{ item.listing.starting_offer }}</strong>
-                            {% endif %}<br>
-                            Buy Now: ${{ item.listing.buy_now_price }}<br>
-                            {% if item.listing.current_offer %}
-                            Time Left: <span id="time_left{{ item.listing.id }}" class="red-text">XX min</span>
-                            {% else %}
-                            &nbsp;
-                            {% endif %}
-                            <i class="mdi-navigation-more-vert right"></i></p>
-
-                    </div>
-                    <div class="card-reveal">
-                                <span class="card-title grey-text text-darken-4">{{ item.title|truncatechars:40 }}
-                                <i class="mdi-navigation-close right"></i></span>
-
-                        <p>{{ item.description|linebreaks }}</p>
-                        <a href="/listing/{{ item.listing.id }}" class="waves-effect waves-light btn teal accent-4">See Listing</a>
-                    </div>
+    <div class="take-space"></div>
+    <div class="row">
+        <div class="col hide-on-small-only m4 l3">
+            <div class="categories-wrapper">
+                <div class="collection">
+                    <a href="/" class="collection-item category {% if not category %}active{% endif %} no-underline">All</a>
+                    <a href="/category/books"
+                       class="collection-item category {% if category == 3 %}active{% endif %} no-underline">Books</a>
+                    <a href="/category/electronics "
+                       class="collection-item category {% if category == 1 %}active{% endif %} no-underline">Electronics</a>
+                    <a href="/category/furniture"
+                       class="collection-item category {% if category == 2 %}active{% endif %} no-underline">Furniture</a>
+                    <a href="/category/shoes"
+                       class="collection-item category {% if category == 4 %}active{% endif %} no-underline">Shoes</a>
+                    <a href="/category/videogames"
+                       class="collection-item category {% if category == 6 %}active{% endif %} no-underline">Video Games</a>
+                    <a href="/category/other"
+                       class="collection-item category {% if category == 5 %}active{% endif %} no-underline">Other</a>
                 </div>
             </div>
-            {% endfor %}
         </div>
-    </div>
-    {% else %}
-    <h2>This is awkward...there's nothing for sale! Why don't you <a href="/sell/">sell something</a>?</h2>
-    {% endif %}
-</div>
+        <div class="col s12 m8 l9">
+            {% if items %}
+            {% load cropping %}
+            <div class="row">
 
+                {% for item in items %}
+                <div class="col s12 m6 l4">
+                    <div class="card medium">
+                        <a href="/listing/{{ item.listing.id }}">
+                            <div class="card-image get-faded">
+                                <img src="{% cropped_thumbnail item "cropping" width=200 %}">
+                            </div>
+                        </a>
+
+                        <div class="card-content activator">
+                            <h5 class="black-text truncate">{{ item.title }}</h5>
+
+                            <p> {% if item.listing.current_offer %}
+                                Current Offer: <strong>${{ item.listing.current_offer }}</strong>
+                                {% else %}
+                                Asking price: <strong>${{ item.listing.starting_offer }}</strong>
+                                {% endif %}<br>
+                                Buy Now: ${{ item.listing.buy_now_price }}<br>
+                                {% if item.listing.current_offer %}
+                                Time Left: <span id="time_left{{ item.listing.id }}" class="red-text">XX min</span>
+                                {% else %}
+                                &nbsp;
+                                {% endif %}
+                                <i class="mdi-navigation-more-vert right"></i></p>
+
+                        </div>
+                        <div class="card-reveal">
+                                    <span class="card-title grey-text text-darken-4">{{ item.title|truncatechars:40 }}
+                                    <i class="mdi-navigation-close right"></i></span>
+
+                            <p>{{ item.description|linebreaks }}</p>
+                            <a href="/listing/{{ item.listing.id }}" class="waves-effect waves-light btn teal accent-4">See Listing</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <h2>This is awkward...there's nothing for sale! Why don't you <a href="/sell/">sell something</a>?</h2>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
