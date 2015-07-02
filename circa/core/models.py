@@ -31,7 +31,6 @@ class Item(models.Model):
 
     UNCLASSIFIED = 0
     ELECTRONICS = 1
-    FURNITURE = 2
     BOOKS = 3
     SHOES = 4
     OTHER = 5
@@ -40,14 +39,12 @@ class Item(models.Model):
         (UNCLASSIFIED, '-- Please Pick a Category --'),
         (BOOKS, 'Books'),
         (ELECTRONICS, 'Electronics'),
-        (FURNITURE, 'Furniture'),
         (SHOES, 'Shoes'),
         (VIDEO_GAMES, 'Video Games'),
         (OTHER, 'Other')
     )
     CATEGORY_NAMES = {
         'electronics': ELECTRONICS,
-        'furniture': FURNITURE,
         'books': BOOKS,
         'shoes': SHOES,
         'videogames': VIDEO_GAMES,
