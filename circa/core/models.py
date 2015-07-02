@@ -29,6 +29,33 @@ class Item(models.Model):
     seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # many items per one seller
     buyer = models.ForeignKey(User, related_name='buyer_profile', null=True, blank=True)
 
+    UNCLASSIFIED = 0
+    ELECTRONICS = 1
+    FURNITURE = 2
+    BOOKS = 3
+    SHOES = 4
+    OTHER = 5
+    VIDEO_GAMES = 6
+    CATEGORY_CHOICES = (
+        (UNCLASSIFIED, '-- Please Pick a Category --'),
+        (BOOKS, 'Books'),
+        (ELECTRONICS, 'Electronics'),
+        (FURNITURE, 'Furniture'),
+        (SHOES, 'Shoes'),
+        (VIDEO_GAMES, 'Video Games'),
+        (OTHER, 'Other')
+    )
+    CATEGORY_NAMES = {
+        'electronics': ELECTRONICS,
+        'furniture': FURNITURE,
+        'books': BOOKS,
+        'shoes': SHOES,
+        'videogames': VIDEO_GAMES,
+        'other': OTHER
+    }
+    category = models.IntegerField(choices=CATEGORY_CHOICES, default=UNCLASSIFIED)
+
+
     def save(self, *args, **kwargs):
         if self.seller is not None and self.buyer is not None and self.seller == self.buyer:
             raise IntegrityError('seller cannot also be the buyer')

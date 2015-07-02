@@ -21,6 +21,8 @@
                                 <label for="{{ form.description.id_for_label }}">Description</label>
                                 {{ form.description }}
                             </p>
+                                {{ form.category.errors }}
+                                {{ form.category }}
                             <p>
                                 {{ form.photo.errors }}
                                 <div class="file-field input-field">
@@ -32,7 +34,7 @@
                                 </div>
                             </p>
                     </div>
-                    <button class="btn-large waves-effect waves-light" type="submit" name="action">List Item
+                    <button class="btn-large waves-effect waves-light teal accent-4" type="submit" name="action">List Item
                         <i class="mdi-content-send right"></i>
                     </button>
                 </form>

@@ -29,6 +29,16 @@ def index(request):
     context = {'items': item_list}
     return render(request, 'index.html', context)
 
+def category(request, category_name):
+    if category_name in Item.CATEGORY_NAMES.keys():
+        now = datetime.datetime.now()
+        item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
+            .filter(category=Item.CATEGORY_NAMES[category_name]).order_by('-pk')
+        context = {'items': item_list, 'category': Item.CATEGORY_NAMES[category_name]}
+        return render(request, 'index.html', context)
+    else:
+        return HttpResponseRedirect('/')
+
 # posting an item
 @login_required
 def sell(request):
@@ -80,12 +90,12 @@ def edit_listing(request, listing_id):
     listing = get_object_or_404(Listing,pk=listing_id)
     item = listing.item
 
-    #listing already ended
+    # listing already ended
     if listing.end_date:
         if listing.end_date < datetime.datetime.now():
            return render(request, 'expired.html')
 
-    if listing.paid_for: #listing is already paid for...shouldn't ever get here since end date should've passed, but just in case
+    if listing.paid_for:  # listing is already paid for...shouldn't ever get here since end date should've passed, but just in case
         return render(request, 'expired.html')
 
     if item.seller.id is not request.user.id:  # some bro wants to edit a listing that is not his!
@@ -97,6 +107,7 @@ def edit_listing(request, listing_id):
         if form.is_valid():
             item.title = form.cleaned_data['title']
             item.description = form.cleaned_data['description']
+            item.category = form.cleaned_data['category']
             listing.starting_offer = form.cleaned_data['starting_offer']
             listing.buy_now_price = form.cleaned_data['buy_now_price']
             listing.zipcode = form.cleaned_data['zipcode']
@@ -106,9 +117,10 @@ def edit_listing(request, listing_id):
             return HttpResponseRedirect('/listing/'+str(listing.id))
 
     else:
-        form = EditListingForm(initial={'title': item.title,'description':item.description,
-                                        'starting_offer':listing.starting_offer, 'buy_now_price':listing.buy_now_price,
-                                        'zipcode': listing.zipcode})
+        form = EditListingForm(initial={'title': item.title, 'description': item.description,
+                                        'category': item.category,
+                                        'starting_offer': listing.starting_offer,
+                                        'buy_now_price': listing.buy_now_price, 'zipcode': listing.zipcode})
 
     context = {'item': item, 'listing':listing, 'form': form}
     return render(request, 'edit_listing.html', context)
