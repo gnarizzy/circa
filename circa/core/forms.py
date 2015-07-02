@@ -16,6 +16,16 @@ class ItemForm(forms.ModelForm):
             raise forms.ValidationError("You must choose a category for your item.")
         return category
 
+    def __init__(self, *args, **kwargs):
+        self.seller = kwargs.pop('seller')
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        item = super().save(commit=False)
+        item.seller = self.seller
+        item.save()
+        return item
+
     class Meta:
         model = Item
         fields = ('title', 'description', 'category', 'photo')
