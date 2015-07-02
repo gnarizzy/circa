@@ -21,7 +21,7 @@ import requests
 
 import datetime
 
-# home page that shows items with associated listings that haven't already ended
+# Home page that shows items with associated listings that haven't already ended
 def index(request):
     now = datetime.datetime.now()
     item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now)\
@@ -29,6 +29,7 @@ def index(request):
     context = {'items': item_list}
     return render(request, 'index.html', context)
 
+# Displays home page, but with specific category items only
 def category(request, category_name):
     if category_name in Item.CATEGORY_NAMES.keys():
         now = datetime.datetime.now()
@@ -42,7 +43,6 @@ def category(request, category_name):
 # posting an item
 @login_required
 def sell(request):
-
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES)
 
@@ -87,15 +87,14 @@ def create_listing(request, item_id):
 
 @login_required
 def edit_listing(request, listing_id):
-    listing = get_object_or_404(Listing,pk=listing_id)
+    listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
 
     # listing already ended
-    if listing.end_date:
-        if listing.end_date < datetime.datetime.now():
-           return render(request, 'expired.html')
+    if listing.end_date and listing.end_date < datetime.datetime.now():
+            return render(request, 'expired.html')
 
-    if listing.paid_for:  # listing is already paid for...shouldn't ever get here since end date should've passed, but just in case
+    if listing.paid_for:  # listing is already paid for... shouldn't ever get here since end date should've passed, but just in case
         return render(request, 'expired.html')
 
     if item.seller.id is not request.user.id:  # some bro wants to edit a listing that is not his!
