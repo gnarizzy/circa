@@ -76,7 +76,8 @@
             <div class="card-content">
                 <div class="center-align col l4 m6 s12">
                     {% if user.id and user.id == item.seller.id %}
-                    <a href="/edit/{{listing.id}}"><span class="badge white-text hide-on-med-and-up">Edit</span></a>
+                    <a id="edit-small" href="/edit/{{listing.id}}"><span class="badge white-text hide-on-med-and-up">
+                        Edit</span></a>
                     {% endif %}
                     <span id="title-small" class="card-title black-text hide-on-med-and-up">{{ item.title }}</span>
                     <br>
@@ -108,7 +109,8 @@
                 <div class="col l4 m6 s12">
                     <span id="title-large" class="card-title black-text hide-on-small-only">{{ item.title }}</span>
                     {% if user.id and user.id == item.seller.id %}
-                    <a href="/edit/{{listing.id}}"><span class="badge white-text hide-on-small-only">Edit</span></a>
+                    <a id="edit-large" href="/edit/{{listing.id}}"><span class="badge white-text hide-on-small-only">
+                        Edit</span></a>
                     {% endif %}
                     <br>
 

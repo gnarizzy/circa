@@ -61,10 +61,10 @@ class NewVisitorTest(LiveServerTestCase):
 
         # After searching through his old knick-knacks, Jeremy finds the perfect item to sell
         title_field = self.browser.find_element_by_id('id_title')
-        title_field.send_keys('Dragon Dildo')
+        title_field.send_keys('Dragon Slaying Sword')
         description_field = self.browser.find_element_by_id('id_description')
-        description_field.send_keys('Lightly used, originally bought at a garage sale.  Can\'t confirm if a dragon\'s '
-                                    'penis actually looks like this.')
+        description_field.send_keys('Lightly used, originally bought at a garage sale.  Can\'t confirm if it actually '
+                                    'offers protection from a dragan.')
         category_field = Select(self.browser.find_element_by_id('id_category'))
         category_field.select_by_value('5')
         photo_field = self.browser.find_element_by_id('id_photo')
@@ -85,7 +85,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Alas, all his hard work paid off and Jeremy beheld his post in all its glory
         listing_title_text = self.browser.find_element_by_id('title-large').text
-        self.assertIn('Dragon Dildo', listing_title_text)
+        self.assertIn('Dragon Slaying Sword', listing_title_text)
 
         # Having had adequate time to behold his handy work, Jeremy heads back to the home page
         logo_button = self.browser.find_element_by_id('logo')
@@ -93,7 +93,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # From the home page, Jeremy can clearly see his new post and is hopeful that somebody buys it soon
         page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn("Dragon Dildo", page_text)
+        self.assertIn('Dragon Slaying Sword', page_text)
 
         # Satisfied that he now has an account and has posted his item, Jeremy logs out of Circa and sprints
         # to the door, anxious to tell his friends of his new find
@@ -103,3 +103,47 @@ class NewVisitorTest(LiveServerTestCase):
         logout_button.click()
         jumbotron_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('Buy and Sell in Atlanta', jumbotron_text)
+
+        # A while later, Jeremy returns to see how his item postage is going.  He clicks on his post.
+        listing_card = self.browser.find_element_by_id('1')
+        listing_card.click()
+
+        # When redirected, he notices he made a typo!  Quickly, Jeremy logs in to rectify his mistake
+        login_in_button = self.browser.find_element_by_id('login-large')
+        login_in_button.click()
+
+        username_field = self.browser.find_element_by_id('id_username')
+        username_field.send_keys('jeremyizkewl')
+        password_field = self.browser.find_element_by_id('id_password')
+        password_field.send_keys('pooploop')
+        password_field.send_keys(Keys.ENTER)
+
+        # After logging in, Jeremy navigates to the listing page and then clicks to edit the page
+        listing_card = self.browser.find_element_by_id('1')
+        listing_card.click()
+
+        edit_button = self.browser.find_element_by_id('edit-large')
+        edit_button.click()
+
+        edit_description = self.browser.find_element_by_id('id_description')
+        edit_description.send_keys(Keys.BACKSPACE)
+        edit_description.send_keys(Keys.BACKSPACE)
+        edit_description.send_keys(Keys.BACKSPACE)
+        edit_description.send_keys('on.')
+
+        update_listing_button = self.browser.find_element_by_id('update-listing')
+        update_listing_button.click()
+
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('from a dragon.', page_text)
+
+        # Now satisfied that his mistake has been resolved, Jeremy again logs out and goes on to do whatever
+        # it is that Jeremy does in his spare time
+        user_button = self.browser.find_element_by_id('username-large')
+        user_button.click()
+        logout_button = self.browser.find_element_by_id('logout-large')
+        logout_button.click()
+        jumbotron_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Buy and Sell in Atlanta', jumbotron_text)
+
+        time.sleep(10)

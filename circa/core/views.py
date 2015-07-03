@@ -28,7 +28,6 @@ def index(request):
     context = {'items': item_list}
     return render(request, 'index.html', context)
 
-
 # Displays home page, but with specific category items only
 def category(request, category_name):
     if category_name in Item.CATEGORY_NAMES.keys():
@@ -39,7 +38,6 @@ def category(request, category_name):
         return render(request, 'index.html', context)
     else:
         return HttpResponseRedirect('/')
-
 
 # Posting an item
 @login_required
@@ -53,7 +51,6 @@ def sell(request):
     else:
         form = ItemForm(seller=request.user)
     return render(request, 'sell.html', {'form': form})
-
 
 # creating an listing for previously posted item
 @login_required
@@ -78,7 +75,6 @@ def create_listing(request, item_id):
 
     context = {'item': item, 'form': form}
     return render(request, 'create_listing.html', context)
-
 
 @login_required
 def edit_listing(request, listing_id):
