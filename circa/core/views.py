@@ -67,18 +67,14 @@ def create_listing(request, item_id):
         raise PermissionDenied
 
     if request.method == 'POST':
-        form = ListingForm(request.POST)
+        form = ListingForm(request.POST, item=item)
 
         if form.is_valid():
-            listing = form.save(commit=False)
-            # listing.current_offer = listing.starting_offer
-            listing.save()
-            item.listing = listing
-            item.save()
+            listing = form.save()
             return HttpResponseRedirect('/listing/' + str(listing.id))
 
     else:
-        form = ListingForm()
+        form = ListingForm(item=item)
 
     context = {'item': item, 'form': form}
     return render(request, 'create_listing.html', context)

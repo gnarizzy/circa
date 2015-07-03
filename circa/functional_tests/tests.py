@@ -15,7 +15,6 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.implicitly_wait(3)
 
     def tearDown(self):
-        time.sleep(3)
         self.browser.quit()
 
     def test_new_visitor_to_site_non_mobile(self):
