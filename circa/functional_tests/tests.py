@@ -2,8 +2,9 @@ from django.test import LiveServerTestCase
 from django.test.utils import override_settings
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 
-import unittest
+import os
 import time
 
 @override_settings(DEBUG=True, EMAIL_BACKEND="djrill.mail.backends.djrill.DjrillBackend")
@@ -53,9 +54,53 @@ class NewVisitorTest(LiveServerTestCase):
         user_text = user_button.text
         self.assertIn('jeremyizkewl', user_text)
 
-        # Satisfied that he now has an account in the most important application ever, Jeremy logs out
-        # and leaves to go tell his friends about Circa
+        # Now that he has an account, Jeremy wanted to post something and see if he could make a quick buck
+        sell_button = self.browser.find_element_by_id('sell-large')
+        sell_button.click()
+        sell_header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('List an item for sale', sell_header_text)
+
+        # After searching through his old knick-knacks, Jeremy finds the perfect item to sell
+        title_field = self.browser.find_element_by_id('id_title')
+        title_field.send_keys('Dragon Dildo')
+        description_field = self.browser.find_element_by_id('id_description')
+        description_field.send_keys('Lightly used, originally bought at a garage sale.  Can\'t confirm if a dragon\'s '
+                                    'penis actually looks like this.')
+        category_field = Select(self.browser.find_element_by_id('id_category'))
+        category_field.select_by_value('5')
+        photo_field = self.browser.find_element_by_id('id_photo')
+        photo_field.send_keys(os.getcwd() + '\\functional_tests\\func_test_image.jpg')
+        self.browser.find_element_by_id('list-item-button').click()
+
+        # Titillating from the excitement of posting an item, Jeremy swiftly punches in his price and
+        # a valid zip code
+        listing_header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Create a listing', listing_header_text)
+        starting_offer_field = self.browser.find_element_by_id('id_starting_offer')
+        starting_offer_field.send_keys('100')
+        buy_now_field = self.browser.find_element_by_id('id_buy_now_price')
+        buy_now_field.send_keys('140')
+        zipcode_field = self.browser.find_element_by_id('id_zipcode')
+        zipcode_field.send_keys('30313')
+        zipcode_field.send_keys(Keys.ENTER)
+
+        # Alas, all his hard work paid off and Jeremy beheld his post in all its glory
+        listing_title_text = self.browser.find_element_by_id('title-large').text
+        self.assertIn('Dragon Dildo', listing_title_text)
+
+        # Having had adequate time to behold his handy work, Jeremy heads back to the home page
+        logo_button = self.browser.find_element_by_id('logo')
+        logo_button.click()
+
+        # From the home page, Jeremy can clearly see his new post and is hopeful that somebody buys it soon
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn("Dragon Dildo", page_text)
+
+        # Satisfied that he now has an account and has posted his item, Jeremy logs out of Circa and sprints
+        # to the door, anxious to tell his friends of his new find
+        user_button = self.browser.find_element_by_id('username-large')
         user_button.click()
         logout_button = self.browser.find_element_by_id('logout-large')
         logout_button.click()
-
+        jumbotron_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Buy and Sell in Atlanta', jumbotron_text)

@@ -63,13 +63,13 @@
     <nav>
         <div class="nav-wrapper fb-blue">
             <div class="col s12">
-                <a href="/" class="no-style brand-logo"><img class="logo-spacer"
+                <a href="/" class="no-style brand-logo"><img class="logo-spacer" id="logo"
                                                              src="{% static 'other/Circa_Logo.png'%}"/></a>
                 <a href="#" data-activates="mobile-nav" class="no-style button-collapse"><i
                         class="mdi-navigation-menu"></i></a>
 
                 <div class="right hide-on-med-and-down">
-                    <a href="/sell" class="waves-effect waves-light btn green lighten-2"><span
+                    <a id="sell-large" href="/sell/" class="waves-effect waves-light btn green lighten-2"><span
                             class="glyphicon glyphicon-usd"></span> Sell</a>
                 </div>
 
@@ -147,8 +147,8 @@
                         Help</a></li>
                     {% endif %}
 
-                    <a href="/sell/" class="waves-effect waves-light btn green lighten-2 white-text"><span
-                            class="glyphicon glyphicon-usd"></span> Sell</a>
+                    <a href="/sell/" class="waves-effect waves-light btn green lighten-2 white-text">
+                        <span class="glyphicon glyphicon-usd"></span> Sell</a>
                 </ul>
             </div>
         </div>
