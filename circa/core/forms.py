@@ -77,7 +77,6 @@ class ListingForm(forms.ModelForm):
         model = Listing
         fields = ('starting_offer', 'buy_now_price', 'zipcode')
 
-
 class OfferForm (forms.Form):
     offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                label='Your offer', decimal_places=2)

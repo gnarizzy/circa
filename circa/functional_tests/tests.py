@@ -146,4 +146,35 @@ class NewVisitorTest(LiveServerTestCase):
         jumbotron_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('Buy and Sell in Atlanta', jumbotron_text)
 
-        time.sleep(10)
+        # Later, a new person visits the site and makes an account
+        sign_up_button = self.browser.find_element_by_id("sign-up-large")
+        sign_up_button.click()
+
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Sign up for Circa', header_text)
+
+        # She inputs her information and then proceeds to login
+        username_field = self.browser.find_element_by_id('id_username')
+        username_field.send_keys('samiam')
+        email_field = self.browser.find_element_by_id('id_email')
+        email_field.send_keys('samantha@example.com')
+        password_field = self.browser.find_element_by_id('id_password1')
+        password_field.send_keys('zoopzoopzoop')
+        password_confirm_field = self.browser.find_element_by_id('id_password2')
+        password_confirm_field.send_keys('zoopzoopzoop')
+        password_confirm_field.send_keys(Keys.ENTER)
+
+        # The first thing she notices is a neat sword on the front page.  She immediately clicks it.
+        listing_card = self.browser.find_element_by_id('1')
+        listing_card.click()
+
+        # This is just what she's been looking for in her collection.  She decides to make an offer.
+        zipcode_field = self.browser.find_element_by_id('id_zipcode')
+        zipcode_field.send_keys('30313')
+        zipcode_field.send_keys(Keys.ENTER)
+
+        # She excitedly sees that she is now the top offer!
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertIn('You currently have the highest offer!', page_text)
+
+        # She now happily awaits for her offer to be accepted
