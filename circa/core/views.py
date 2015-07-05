@@ -92,25 +92,23 @@ def edit_listing(request, listing_id):
         raise PermissionDenied
 
     if request.method == 'POST':
-        form = EditListingForm(request.POST, listing=listing_id)
+        form = EditListingForm(request.POST, listing=listing)
 
         if form.is_valid():
-            item.title = form.cleaned_data['title']
-            item.description = form.cleaned_data['description']
-            item.category = form.cleaned_data['category']
-            listing.starting_offer = form.cleaned_data['starting_offer']
-            listing.buy_now_price = form.cleaned_data['buy_now_price']
-            listing.zipcode = form.cleaned_data['zipcode']
+            form.save()
 
-            item.save()
-            listing.save()
             return HttpResponseRedirect('/listing/' + str(listing.id))
 
     else:
-        form = EditListingForm(initial={'title': item.title, 'description': item.description,
-                                        'category': item.category,
-                                        'starting_offer': listing.starting_offer,
-                                        'buy_now_price': listing.buy_now_price, 'zipcode': listing.zipcode})
+        form = EditListingForm(
+            initial={
+                'title': item.title,
+                'description': item.description,
+                'category': item.category,
+                'starting_offer': listing.starting_offer,
+                'buy_now_price': listing.buy_now_price,
+                'zipcode': listing.zipcode
+            }, listing=listing)
 
     context = {'item': item, 'listing': listing, 'form': form}
     return render(request, 'edit_listing.html', context)

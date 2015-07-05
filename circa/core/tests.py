@@ -16,6 +16,9 @@ from core.forms import ItemForm
 from core.models import Listing
 from core.forms import ListingForm
 
+# EditListingTest imports
+from core.forms import EditListingForm
+
 class PayoutTest(TestCase):
 
     def test_below_break_even(self):
@@ -182,4 +185,127 @@ class ListingTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors, {
             'zipcode': ['Unfortunately, Circa is not yet available in your zip code.']
+        })
+
+class EditListingTest(TestCase):
+
+    def create_item(self, title="Object Name", description="Object Description"):
+        return Item.objects.create(title=title, description=description)
+
+    def create_full_listing(self):
+        item = self.create_item()
+        form = ListingForm({
+            'starting_offer': 100,
+            'buy_now_price': 200,
+            'zipcode': 30313,
+        }, item=item)
+        if form.is_valid():
+            listing = form.save()
+            return listing
+
+    def test_init_with_listing(self):
+        listing = self.create_full_listing()
+        EditListingForm(listing=listing)
+
+    def test_init_without_listing(self):
+        with self.assertRaises(KeyError):
+            EditListingForm()
+
+    def test_valid_data(self):
+        listing = self.create_full_listing()
+        form = EditListingForm({
+            'title': 'Different Name',
+            'description': 'Different Description',
+            'category': '4',
+            'starting_offer': 105,
+            'buy_now_price': 205,
+            'zipcode': 30309,
+        }, listing=listing)
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(listing.item.title, 'Different Name')
+        self.assertEqual(listing.item.description, 'Different Description')
+        self.assertEqual(listing.item.category, '4')
+        self.assertEqual(listing.starting_offer, 105)
+        self.assertEqual(listing.buy_now_price, 205)
+        self.assertEqual(listing.zipcode, 30309)
+
+    def test_invalid_after_first_offer(self):
+        listing = self.create_full_listing()
+        listing.current_offer = 106
+        form = EditListingForm({
+            'title': 'Different Name',
+            'description': 'Different Description',
+            'category': '4',
+            'starting_offer': 105,
+            'buy_now_price': 205,
+            'zipcode': 30309,
+        }, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'buy_now_price': ['Buy now price must be at least 10% higher than starting offer, which must be at least '
+                              '$5.00'],
+            'starting_offer': ['You can\'t edit the starting offer after an offer has been made.']
+        })
+
+    def test_invalid_after_first_offer(self):
+        listing = self.create_full_listing()
+        form = EditListingForm({
+            'title': 'Different Name',
+            'description': 'Different Description',
+            'category': '4',
+            'starting_offer': 4,
+            'buy_now_price': 205,
+            'zipcode': 30309,
+        }, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'buy_now_price': ['Buy now price must be at least 10% higher than starting offer, which must be at least '
+                              '$5.00'],
+            'starting_offer': ['The minimum starting offer is $5.00.']
+        })
+
+    def test_invalid_category(self):
+        listing = self.create_full_listing()
+        form = EditListingForm({
+            'title': 'Different Name',
+            'description': 'Different Description',
+            'category': '0',
+            'starting_offer': 105,
+            'buy_now_price': 205,
+            'zipcode': 30309,
+        }, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'category': ['You must choose a category for your item.']
+        })
+
+    def test_invalid_buy_now_price(self):
+        listing = self.create_full_listing()
+        form = EditListingForm({
+            'title': 'Different Name',
+            'description': 'Different Description',
+            'category': '3',
+            'starting_offer': 105,
+            'buy_now_price': 105,
+            'zipcode': 30309,
+        }, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'buy_now_price': ['Buy now price must be at least 10% higher than starting offer.']
+        })
+
+    def test_invalid_zip_code(self):
+        listing = self.create_full_listing()
+        form = EditListingForm({
+            'title': 'Different Name',
+            'description': 'Different Description',
+            'category': '3',
+            'starting_offer': 105,
+            'buy_now_price': 205,
+            'zipcode': 90210,
+        }, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'zipcode': ['Unfortunately, Circa is not yet available in that zip code.']
         })

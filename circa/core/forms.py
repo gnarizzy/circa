@@ -162,14 +162,13 @@ class EditListingForm(forms.Form):
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
 
     def __init__(self, *args, **kwargs):
-        self.listing = kwargs.pop('listing', None)  # Grabs current listing ID
+        self.listing = kwargs.pop('listing')  # Grabs current listing
         super(EditListingForm, self).__init__(*args,**kwargs)
 
     # Make sure starting offer is at least $5.00, and that no offers have yet been made
     def clean_starting_offer(self):
         starting_offer = Decimal(self.cleaned_data['starting_offer'])
-        listing = Listing.objects.get(pk=self.listing)  # current listing
-        if listing.current_offer and starting_offer != listing.starting_offer:
+        if self.listing.current_offer and starting_offer != self.listing.starting_offer:
             raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
 
         if starting_offer < 5:
@@ -180,9 +179,10 @@ class EditListingForm(forms.Form):
     def clean_buy_now_price(self):
         try:
             starting_offer = self.cleaned_data['starting_offer']
-        except KeyError:  # starting_offer doesn't exist because the form submission starting offer was invalid. May want to remove this
-            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, which must "
-                                        "be at least $5.00")
+        # starting_offer doesn't exist because the form submission starting offer was invalid. May want to remove this
+        except KeyError:
+            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, "
+                                        "which must be at least $5.00")
         buy_now_price = self.cleaned_data['buy_now_price']
 
         if starting_offer * Decimal(1.0999) > buy_now_price:
@@ -203,3 +203,15 @@ class EditListingForm(forms.Form):
         if zip_code not in zipcodes():
             raise forms.ValidationError("Unfortunately, Circa is not yet available in that zip code.")
         return zip_code
+
+    def save(self):
+        self.listing.item.title = self.cleaned_data['title']
+        self.listing.item.description = self.cleaned_data['description']
+        self.listing.item.category = self.cleaned_data['category']
+        self.listing.starting_offer = self.cleaned_data['starting_offer']
+        self.listing.buy_now_price = self.cleaned_data['buy_now_price']
+        self.listing.zipcode = self.cleaned_data['zipcode']
+
+        self.listing.item.save()
+        self.listing.save()
+        return None
