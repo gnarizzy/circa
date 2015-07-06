@@ -81,14 +81,16 @@ def edit_listing(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
 
-    # listing already ended
+    # Listing already ended
     if listing.end_date and listing.end_date < datetime.datetime.now():
         return render(request, 'expired.html')
 
-    if listing.paid_for:  # listing is already paid for... shouldn't ever get here since end date should've passed, but just in case
+    # Listing is already paid for... shouldn't ever get here since end date should've passed, but just in case
+    if listing.paid_for:
         return render(request, 'expired.html')
 
-    if item.seller.id is not request.user.id:  # some bro wants to edit a listing that is not his!
+    # Some bro wants to edit a listing that is not his!
+    if item.seller.id is not request.user.id:
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -96,7 +98,6 @@ def edit_listing(request, listing_id):
 
         if form.is_valid():
             form.save()
-
             return HttpResponseRedirect('/listing/' + str(listing.id))
 
     else:
@@ -118,37 +119,27 @@ def edit_listing(request, listing_id):
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
 
-    if listing.current_offer:  # false if nobody has accepted the starting offer
-        default_offer = listing.current_offer + Decimal(1.00)
-        form = OfferForm(initial={'offer': default_offer})  # Pre-populate offer with $1.00 above current offer
-    else:
-        default_offer = listing.starting_offer
-        form = OfferForm(initial={'offer': default_offer})  # Pre-populate with starting offer
+    default_offer = listing.current_offer + Decimal(1.00) if listing.current_offer else listing.starting_offer
+    # Pre-populate offer with $1.00 above current offer or starting offer
+    form = OfferForm(initial={'offer': default_offer}, listing=listing, user=request.user)
+
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
-        if token:  # Buy Now
+
+        # Buy Now
+        if token:
             stripe.api_key = secret_key()
             email = request.POST['stripeEmail']
             amount_in_cents = int(listing.buy_now_price * 100)
             try:
+                prev_offer_user = listing.current_offer_user
                 charge = stripe.Charge.create(
                     amount=amount_in_cents,
                     currency="usd",
                     source=token,
                     description="Circa Buy Now " + str(listing_id) + ": " + str(listing.item.title)
                 )
-                listing.buy_now_email = email
-                listing.end_date = datetime.datetime.now()
-                listing.current_offer = listing.buy_now_price
-                listing.paid_for = True
-                listing.payout = calc_payout(listing.buy_now_price)
-                prev_offer_user = listing.current_offer_user
-                if request.user.id:  # logged in user used buy it now
-                    listing.current_offer_user = request.user
-                    # TODO update item.buyer
-                else:
-                    listing.current_offer_user = None  # change when we create accounts for buy-now people
-                listing.save()
+                update_listing(listing, request, email)
 
                 listing_bought_notification(email, listing)
                 listing_bought_seller_notification(listing)
@@ -157,50 +148,48 @@ def listing_detail(request, listing_id):
                     lost_listing_notification(prev_offer_user, listing)
 
                 return HttpResponseRedirect('/success/')
-            except stripe.CardError:
-                # context = {'error_message': "Your credit card was declined."}
-                # return HttpResponseRedirect('/listing/'+str(listing.id))
-                return HttpResponseRedirect('/')
+            except stripe.error.CardError as e:
 
-        else:  # Make an Offer
+                # Useful debug messages
+                # body = e.json_body
+                # err = body['error']
+                # print("Status is: %s" % e.http_status)
+                # print("Type is: %s" % err['type'])
+                # print("Code is: %s" % err['code'])
+                # print("Message is: %s" % err['message'])
+
+                messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
+                                        'the problem may be with our payment processing system.  Wait an hour or '
+                                        'so and try again.  If the problem persists, please contact us at '
+                                        'support@usecirca.com so we can help sort out the issue.')
+                return HttpResponseRedirect(request.path)
+
+        # Make an Offer
+        else:
             # TODO update item.buyer
-            form = OfferForm(request.POST, listing=listing_id, user=request.user)
+            form = OfferForm(request.POST, listing=listing, user=request.user)
             if request.user.is_authenticated():
+
                 if form.is_valid():
-                    offer = form.cleaned_data['offer']
-                    listing.current_offer = offer
-                    listing.end_date = datetime.datetime.now() + datetime.timedelta(hours=1)
                     prev_offer_user = listing.current_offer_user
-                    listing.current_offer_user = request.user
+                    form.save()
 
                     if prev_offer_user is not None and prev_offer_user is not request.user:
                         offer_denied_notification(prev_offer_user, listing)
 
                     queue_for_email_notifications(request.user.id, listing.id)
 
-                    if offer * Decimal(1.0999) > listing.buy_now_price:
-                        listing.buy_now_price = offer * Decimal(1.1000000)
-                    listing.save()
                     return HttpResponseRedirect(request.path)
-            else:  # unauthenticated user. Redirect to login page, then bring 'em back here.
+
+            # Unauthenticated user. Redirect to login page, then bring 'em back here.
+            else:
                 # TODO Figure out how to set next variable in context so manual url isn't needed
                 # TODO If they sign up through this chain of events, bring them back here
-                # TODO Save the offer they entered and prepopulate form with it when they are brought back here
+                # TODO Save the offer they entered and pre-populate form with it when they are brought back here
                 return HttpResponseRedirect('/accounts/login/?next=/listing/' + str(listing.id))
 
     item = listing.item
-    minutes = 0
-    seconds = 0
-    if listing.end_date is None:
-        status = 2
-        # form.fields['offer'].widget = forms.HiddenInput()
-    elif listing.end_date < datetime.datetime.now():
-        status = 1
-    else:
-        status = 0
-        minutes, seconds = divmod((listing.end_date - datetime.datetime.now()).total_seconds(), 60)
-        minutes = round(minutes)
-        seconds = round(seconds)
+    status, minutes, seconds = get_status(listing)
     amount = int(listing.buy_now_price * 100)
     stripe_amount = json.dumps(amount)
     item_json = json.dumps(item.title)
@@ -208,6 +197,33 @@ def listing_detail(request, listing_id):
                'minutes': minutes, 'seconds': seconds, 'stripe_key': public_key()}
     return render(request, 'listing_detail.html', context)
 
+def update_listing(listing, request, email):
+    listing.buy_now_email = email
+    listing.end_date = datetime.datetime.now()
+    listing.current_offer = listing.buy_now_price
+    listing.paid_for = True
+    listing.payout = calc_payout(listing.buy_now_price)
+    if request.user.id:  # logged in user used buy it now
+        listing.current_offer_user = request.user
+        listing.item.buyer = request.user
+    else:
+        listing.current_offer_user = None  # change when we create accounts for buy-now people
+    listing.save()
+
+def get_status(listing):
+    minutes = 0
+    seconds = 0
+    if listing.end_date is None:
+        status = 2
+    elif listing.end_date < datetime.datetime.now():
+        status = 1
+    else:
+        status = 0
+        minutes, seconds = divmod((listing.end_date - datetime.datetime.now()).total_seconds(), 60)
+        minutes = round(minutes)
+        seconds = round(seconds)
+
+    return status, minutes, seconds
 
 # Shows all outstanding, unpaid listings for user
 @login_required
@@ -269,10 +285,10 @@ def pay(request, listing_id):
                 return HttpResponseRedirect('/success/')
 
             except stripe.error.CardError as e:
-                body = e.json_body
-                err = body['error']
 
                 # Useful debug messages
+                # body = e.json_body
+                # err = body['error']
                 # print("Status is: %s" % e.http_status)
                 # print("Type is: %s" % err['type'])
                 # print("Code is: %s" % err['code'])
@@ -283,7 +299,8 @@ def pay(request, listing_id):
                                         'so and try again.  If the problem persists, please contact us at '
                                         'support@usecirca.com so we can help sort out the issue.')
                 return HttpResponseRedirect(request.path)
-        else:  # submit promocode form
+        else:
+            # submit promocode form
             if 'confirm_' in request.POST:  # confirm button
                 listing.paid_for = True
                 listing.payout = calc_payout(listing.current_offer)
@@ -318,8 +335,7 @@ def pay(request, listing_id):
     stripe_amount = json.dumps(amount)
     context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
                'listing': listing, 'amount': stripe_amount, 'discounted_price': discounted_price, 'item': item,
-               'form': form,
-               'free': free}
+               'form': form, 'free': free}
     return render(request, 'pay.html', context)
 
 

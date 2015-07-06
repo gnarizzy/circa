@@ -2,7 +2,6 @@
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
-from django.test.utils import override_settings
 from decimal import *
 
 # PayoutTest imports
@@ -18,6 +17,9 @@ from core.forms import ListingForm
 
 # EditListingTest imports
 from core.forms import EditListingForm
+
+# OfferTest imports
+from core.forms import OfferForm
 
 class PayoutTest(TestCase):
 
@@ -308,4 +310,93 @@ class EditListingTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors, {
             'zipcode': ['Unfortunately, Circa is not yet available in that zip code.']
+        })
+
+class OfferTest(TestCase):
+
+    def create_user(self):
+        return User.objects.create_user(username='Juan', password='Pablo')
+
+    def create_item(self, title="Object Name", description="Object Description"):
+        seller = User.objects.create_user(username='Circa', password='Seller')
+        return Item.objects.create(title=title, description=description, seller=seller)
+
+    def create_full_listing(self):
+        item = self.create_item()
+        form = ListingForm({
+            'starting_offer': 100,
+            'buy_now_price': 200,
+            'zipcode': 30313,
+        }, item=item)
+        if form.is_valid():
+            listing = form.save()
+            return listing
+
+    def test_init_with_user_and_listing(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        OfferForm(user=user, listing=listing)
+
+    def test_init_without_input(self):
+        with self.assertRaises(KeyError):
+            OfferForm()
+
+    def test_valid_data(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        form = OfferForm({
+            'offer': 100,
+            'zipcode': 30313,
+        }, user=user, listing=listing)
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(listing.current_offer, 100)
+
+    def test_invalid_offer(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        form = OfferForm({
+            'offer': 95,
+            'zipcode': 30313,
+        }, user=user, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'offer': ['Your offer cannot be less than the asking price.']
+        })
+
+    def test_invalid_second_offer(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        listing.current_offer = 100
+        form = OfferForm({
+            'offer': 95,
+            'zipcode': 30313,
+        }, user=user, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'offer': ['Your offer must be greater than the current offer.']
+        })
+
+    def test_offer_on_own_item(self):
+        listing = self.create_full_listing()
+        form = OfferForm({
+            'offer': 100,
+            'zipcode': 30313,
+        }, user=listing.item.seller, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'offer': ['You can\'t submit an offer on your own item.']
+        })
+
+    def test_invalid_zipcode(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        form = OfferForm({
+            'offer': 100,
+            'zipcode': 90210,
+        }, user=user, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'zipcode': ['Unfortunately, Circa is only available in metro Atlanta. Visit our '
+                        'help page to see which zipcodes are available.']
         })
