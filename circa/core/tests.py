@@ -400,3 +400,7 @@ class OfferTest(TestCase):
             'zipcode': ['Unfortunately, Circa is only available in metro Atlanta. Visit our '
                         'help page to see which zipcodes are available.']
         })
+
+class PromoTest(TestCase):
+
+    pass

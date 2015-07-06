@@ -1,3 +1,5 @@
+from core.models import PromoCode, User, Listing
+from datetime import datetime
 from django.test import LiveServerTestCase
 from django.test.utils import override_settings
 from selenium import webdriver
@@ -146,7 +148,7 @@ class NewVisitorTest(LiveServerTestCase):
         jumbotron_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('Buy and Sell in Atlanta', jumbotron_text)
 
-        # Later, a new person visits the site and makes an account
+        # Later, a new person visits the site and makes an account.  Her name is Abigail
         sign_up_button = self.browser.find_element_by_id("sign-up-large")
         sign_up_button.click()
 
@@ -178,3 +180,44 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('You currently have the highest offer!', page_text)
 
         # She now happily awaits for her offer to be accepted
+
+        # In the meantime, some trickery goes on behind the scenes to generate a promo code so that Andrew can test it.
+        abbey = User.objects.get(pk=2)
+        PromoCode.objects.create(user=abbey, code='12345', value=5)
+
+        # More trickery is used to speed up time and make that offer be accepted.
+        dragon_listing = Listing.objects.get(pk=1)
+        dragon_listing.end_date = datetime.now()
+        dragon_listing.save()
+
+        # Now that it has totally been an hour, Abigail refreshes the page to see that the sword is now gone!
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Dragon Slaying Sword', page_text)
+
+        # Being an astute user, she checks her pending payments to see if she can now pay for her item.
+        user_button = self.browser.find_element_by_id('username-large')
+        user_button.click()
+        logout_button = self.browser.find_element_by_id('pending-large')
+        logout_button.click()
+
+        # Greeted by a nice, big "Pending Payments" header, she immediately clicks on her item
+        pending_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Pending Payments', pending_text)
+
+        dragon_sword = self.browser.find_element_by_id('1')
+        dragon_sword.click()
+
+        # Abigail miraculously remembers that she has a promo code and inputs it
+        offer_text = self.browser.find_element_by_id('offer').text
+        self.assertIn('100', offer_text)
+
+        promo_code_field = self.browser.find_element_by_id('id_code')
+        promo_code_field.send_keys('12345')
+        promo_code_field.send_keys(Keys.ENTER)
+
+        discount_text = self.browser.find_element_by_id('discount').text
+        self.assertIn('95', discount_text)
+
+        # Gleefully, Abigail forgets what she was doing after this and then doesn't pay.  At least she
+        # stopped at a convenient point for Andrew to test
