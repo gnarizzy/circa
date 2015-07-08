@@ -1,10 +1,7 @@
 # A helper module to generate emails and avoid spaghetti code
 from circa.settings import ALLOWED_HOSTS
 from django.core.mail import EmailMessage
-from core.models import User, Listing
 from core.payout import calc_payout
-from decimal import *
-
 
 OFFER_DENIED = "Hey {},\n\nUnfortunately, your offer is no longer the highest on {}. The current offer is ${} and " \
                "you have 1 hour to make a higher offer. If you don't want to this to happen again, you can buy the " \
@@ -61,11 +58,11 @@ LISTING_PAID_FOR = "Hello,\n\nCongratulations on getting {}! This email is to co
                    "\n\nSincerely,\n\nThe Circa Team"
 
 LISTING_FREE_CONFIRMATION = "Hello,\n\nCongratulations on getting {}! This email is to confirm that you ordered " \
-                  "this item for FREE! Your item will be delivered within 24 hours of the seller handing it off to " \
-                  "us.\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how " \
-                  "your experience " \
-                  "with us was. We want to create the best way to buy and sell locally." \
-                  "\n\nSincerely,\n\nThe Circa Team"
+                            "this item for FREE! Your item will be delivered within 24 hours of the seller handing it off to " \
+                            "us.\n\nThanks for being awesome and using Circa, and feel free to reply with any feedback on how " \
+                            "your experience " \
+                            "with us was. We want to create the best way to buy and sell locally." \
+                            "\n\nSincerely,\n\nThe Circa Team"
 
 WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to build the easiest way to buy and " \
                    "sell locally, where haggling, meet-ups, and scams are a thing of the " \
@@ -81,6 +78,7 @@ WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to
                    "can also follow us on Facebook (https://www.facebook.com/usecirca) or visit " \
                    "http://usecirca.com to stay updated with the latest deals." \
                    "\n\nSincerely,\n\nAndrew\n\nCS '15"
+
 
 def offer_denied_notification(user, listing):
     content = OFFER_DENIED.format(
@@ -101,6 +99,7 @@ def offer_denied_notification(user, listing):
     message.send()
     return message.mandrill_response[0]
 
+
 def lost_listing_notification(user, listing):
     content = LOST_LISTING.format(user.username, listing.item.title)
 
@@ -114,6 +113,7 @@ def lost_listing_notification(user, listing):
     )
     message.send()
     return message.mandrill_response[0]
+
 
 def listing_buy_now_notification(email, listing):
     content = LISTING_BUY_NOW.format(listing.item.title, listing.current_offer)
@@ -129,6 +129,7 @@ def listing_buy_now_notification(email, listing):
     message.send()
     return message.mandrill_response[0]
 
+
 def listing_bought_notification(email, listing):
     content = LISTING_PAID_FOR.format(listing.item.title, listing.current_offer)
 
@@ -142,6 +143,7 @@ def listing_bought_notification(email, listing):
     )
     message.send()
     return message.mandrill_response[0]
+
 
 def listing_bought_discount_notification(email, listing_title, listing_discounted_price):
     content = LISTING_PAID_FOR.format(listing_title, listing_discounted_price)
@@ -157,6 +159,7 @@ def listing_bought_discount_notification(email, listing_title, listing_discounte
     message.send()
     return message.mandrill_response[0]
 
+
 def listing_free_confirm_notification(email, listing):
     content = LISTING_FREE_CONFIRMATION.format(listing.item.title)
 
@@ -170,6 +173,7 @@ def listing_free_confirm_notification(email, listing):
     )
     message.send()
     return message.mandrill_response[0]
+
 
 def offer_accepted_notification(user, listing):
     content = OFFER_ACCEPTED.format(user.username, listing.item.title)
@@ -185,6 +189,7 @@ def offer_accepted_notification(user, listing):
     message.send()
 
     return message.mandrill_response[0]
+
 
 def listing_bought_seller_notification(listing):
     price = calc_payout(listing.current_offer)
@@ -204,6 +209,7 @@ def listing_bought_seller_notification(listing):
 
     return message.mandrill_response[0]
 
+
 def offer_accepted_seller_notification(listing):
     price = calc_payout(listing.current_offer)
     earnings = round(price, 2)
@@ -222,6 +228,7 @@ def offer_accepted_seller_notification(listing):
 
     return message.mandrill_response[0]
 
+
 def welcome_new_user_notification(user):
     content = WELCOME_NEW_USER.format(user.username)
 
@@ -238,6 +245,7 @@ def welcome_new_user_notification(user):
 
     return message.mandrill_response[0]
 
+
 def welcome_new_user_fb_notification(username, email):
     content = WELCOME_NEW_USER.format(username)
 
@@ -253,4 +261,3 @@ def welcome_new_user_fb_notification(username, email):
     message.send()
 
     return message.mandrill_response[0]
-
