@@ -1,25 +1,10 @@
-# General imports
+from core.payout import calc_payout, COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PERCENT, COMMISSION_MAX
+from core.models import Item, Listing, PromoCode
+from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from decimal import *
-
-# PayoutTest imports
-from core.payout import calc_payout, COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PERCENT, COMMISSION_MAX
-
-# ItemTest imports
-from core.models import Item
-from core.forms import ItemForm
-
-# ListingTest imports
-from core.models import Listing
-from core.forms import ListingForm
-
-# EditListingTest imports
-from core.forms import EditListingForm
-
-# OfferTest imports
-from core.forms import OfferForm
 
 class PayoutTest(TestCase):
 
@@ -250,7 +235,7 @@ class EditListingTest(TestCase):
             'starting_offer': ['You can\'t edit the starting offer after an offer has been made.']
         })
 
-    def test_invalid_after_first_offer(self):
+    def test_invalid_after_first_offer_2(self):
         listing = self.create_full_listing()
         form = EditListingForm({
             'title': 'Different Name',
@@ -401,6 +386,109 @@ class OfferTest(TestCase):
                         'help page to see which zipcodes are available.']
         })
 
+    def test_buy_now_increase(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        form = OfferForm({
+            'offer': 200,
+            'zipcode': 30313,
+        }, user=user, listing=listing)
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(listing.current_offer, 200)
+        self.assertEqual(round(listing.buy_now_price), 220)
+
 class PromoTest(TestCase):
 
-    pass
+    def create_user(self, username='Juan', password='Pablo'):
+        return User.objects.create_user(username=username, password=password)
+
+    def create_item(self, title="Object Name", description="Object Description"):
+        seller = User.objects.create_user(username='Circa', password='Seller')
+        return Item.objects.create(title=title, description=description, seller=seller)
+
+    def create_full_listing(self):
+        item = self.create_item()
+        form = ListingForm({
+            'starting_offer': 100,
+            'buy_now_price': 200,
+            'zipcode': 30313,
+        }, item=item)
+        if form.is_valid():
+            listing = form.save()
+            return listing
+
+    def create_promo_code(self, user):
+        return PromoCode.objects.create(user=user, code='12345', value='5')
+
+    def test_init_with_user(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        PromoForm(user=user, listing=listing)
+
+    def test_init_without_input(self):
+        with self.assertRaises(KeyError):
+            PromoForm()
+
+    def test_valid_data(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        promo = self.create_promo_code(user)
+        form = PromoForm({
+            'code': '12345'
+        }, user=user, listing=listing)
+        self.assertTrue(form.is_valid())
+        form.save()
+        promo = PromoCode.objects.get(pk=promo.id)
+        self.assertEqual(listing.discount, 5)
+        self.assertEqual(promo.redeemed, True)
+
+    def test_invalid_code(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        self.create_promo_code(user)
+        form = PromoForm({
+            'code': '12344'
+        }, user=user, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'code': ['Sorry, that code is not valid.']
+        })
+
+    def test_used_code(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        promo = self.create_promo_code(user)
+        promo.redeemed = True
+        promo.save()
+        form = PromoForm({
+            'code': '12345'
+        }, user=user, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'code': ['Sorry, promo code already used.']
+        })
+
+    def test_edge_case_with_no_promo_codes(self):
+        user = self.create_user()
+        listing = self.create_full_listing()
+        form = PromoForm({
+            'code': '12345'
+        }, user=user, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'code': ['Sorry, that code isn\'t valid.']
+        })
+
+    def test_invalid_user(self):
+        user = self.create_user()
+        invalid_user = self.create_user('Jeff', 'Goldblum')
+        listing = self.create_full_listing()
+        self.create_promo_code(user)
+        form = PromoForm({
+            'code': '12345'
+        }, user=invalid_user, listing=listing)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'code': ['Sorry, that\'s not your code!']
+        })

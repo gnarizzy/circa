@@ -26,7 +26,7 @@ class Item(models.Model):
     photo = ImageCropField(upload_to='uploaded_images')
     cropping = ImageRatioField('photo', '225x225')
     listing = models.OneToOneField(Listing, null=True)
-    seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # many items per one seller
+    seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # Many items per one seller
     buyer = models.ForeignKey(User, related_name='buyer_profile', null=True, blank=True)
 
     UNCLASSIFIED = 0

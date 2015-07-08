@@ -148,16 +148,7 @@ def listing_detail(request, listing_id):
                     lost_listing_notification(prev_offer_user, listing)
 
                 return HttpResponseRedirect('/success/')
-            except stripe.error.CardError as e:
-
-                # Useful debug messages
-                # body = e.json_body
-                # err = body['error']
-                # print("Status is: %s" % e.http_status)
-                # print("Type is: %s" % err['type'])
-                # print("Code is: %s" % err['code'])
-                # print("Message is: %s" % err['message'])
-
+            except stripe.error.CardError:
                 messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
                                         'the problem may be with our payment processing system.  Wait an hour or '
                                         'so and try again.  If the problem persists, please contact us at '
@@ -197,6 +188,7 @@ def listing_detail(request, listing_id):
                'minutes': minutes, 'seconds': seconds, 'stripe_key': public_key()}
     return render(request, 'listing_detail.html', context)
 
+# Helper method for listing_detail
 def update_listing(listing, request, email):
     listing.buy_now_email = email
     listing.end_date = datetime.datetime.now()
@@ -210,6 +202,7 @@ def update_listing(listing, request, email):
         listing.current_offer_user = None  # change when we create accounts for buy-now people
     listing.save()
 
+# Helper method for listing_detail
 def get_status(listing):
     minutes = 0
     seconds = 0
@@ -241,27 +234,31 @@ def pending(request):
     return render(request, 'pending.html', {'items': items})
 
 
-# uses stripe checkout for user to pay for listing once offer has been accepted
+# Uses stripe checkout for user to pay for listing once offer has been accepted
 @login_required
 def pay(request, listing_id):
     free = 0
     listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
-    if request.user.id is not listing.current_offer_user.id:  # user is trying to pay for someone else's listing
+    # User is trying to pay for someone else's listing
+    if request.user.id is not listing.current_offer_user.id:
         raise PermissionDenied
-    if listing.paid_for:  # user already paid for item
+
+    # User already paid for item
+    if listing.paid_for:
         return render(request, 'expired.html')
-    # amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
+
+    # Amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
     if listing.current_offer - listing.discount < Decimal(0.50):
         free = 1
 
     if request.method == 'POST':
-        form = PromoForm(request.POST, user=request.user)
+        form = PromoForm(request.POST, user=request.user, listing=listing)
         token = request.POST.get('stripeToken', False)
-        if token:  # Successfully submitted Stripe
+        # Successfully submitted Stripe
+        if token:
             email = request.POST['stripeEmail']
             stripe.api_key = secret_key()
-            # email = request.POST['stripeEmail']
             amount_in_cents = int((listing.current_offer - listing.discount) * 100)
             try:
                 charge = stripe.Charge.create(
@@ -285,22 +282,14 @@ def pay(request, listing_id):
                 return HttpResponseRedirect('/success/')
 
             except stripe.error.CardError as e:
-
-                # Useful debug messages
-                # body = e.json_body
-                # err = body['error']
-                # print("Status is: %s" % e.http_status)
-                # print("Type is: %s" % err['type'])
-                # print("Code is: %s" % err['code'])
-                # print("Message is: %s" % err['message'])
-
                 messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
                                         'the problem may be with our payment processing system.  Wait an hour or '
                                         'so and try again.  If the problem persists, please contact us at '
                                         'support@usecirca.com so we can help sort out the issue.')
                 return HttpResponseRedirect(request.path)
+
         else:
-            # submit promocode form
+            # Submit promo code form
             if 'confirm_' in request.POST:  # confirm button
                 listing.paid_for = True
                 listing.payout = calc_payout(listing.current_offer)
@@ -312,14 +301,11 @@ def pay(request, listing_id):
                 return HttpResponseRedirect('/success/')
 
             if form.is_valid():
-                promo = PromoCode.objects.filter(code=form.cleaned_data['code'])[0]
-                listing.discount = promo.value
-                promo.redeemed = True
-                promo.save()
-                listing.save()
+                form.save()
                 return HttpResponseRedirect(request.path)
+
     else:
-        form = PromoForm()
+        form = PromoForm(user=request.user, listing=listing)
 
     elapsed = datetime.datetime.now() - listing.end_date
     days = elapsed.days
@@ -328,6 +314,7 @@ def pay(request, listing_id):
     if listing.discount > 0:
         amount = int((listing.current_offer - listing.discount) * 100)
         discounted_price = listing.current_offer - listing.discount
+
     else:
         amount = int(listing.current_offer * 100)
         discounted_price = None
@@ -383,27 +370,33 @@ def help(request):
 def dashboard(request):
     now = datetime.datetime.now()
     user = request.user
-    pending = Listing.objects.filter(current_offer_user=user).filter(paid_for=False).filter(end_date__lt=now).count()
-    offers = Listing.objects.filter(current_offer_user=user).filter(end_date__gt=now).count()
-    earnings = 0
-    active_items = 0
+    pending_num = Listing.objects.filter(current_offer_user=user).filter(paid_for=False).filter(end_date__lt=now).count()
+    offers_num = Listing.objects.filter(current_offer_user=user).filter(end_date__gt=now).count()
+    earnings_num = 0
+    active_items_num = 0
     items = Item.objects.filter(seller=user)
     for item in items:
         if item.listing:
-            earnings += item.listing.payout
-            if item.listing.end_date and item.listing.end_date > datetime.datetime.now():  # offer on listing, but still time left
-                active_items += 1
-            if item.listing.end_date and item.listing.end_date < now and not item.listing.paid_for:  # listing over but not paid for yet
-                active_items += 1
-            if not item.listing.end_date:  # listed item, but no offers
-                active_items += 1
+            earnings_num += item.listing.payout
+
+            # Offer on listing, but still time left
+            if item.listing.end_date and item.listing.end_date > datetime.datetime.now():
+                active_items_num += 1
+
+            # Listing over but not paid for yet
+            if item.listing.end_date and item.listing.end_date < now and not item.listing.paid_for:
+                active_items_num += 1
+
+            # Listed item, but no offers
+            if not item.listing.end_date:
+                active_items_num += 1
     orders = []
     bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
     for order in bought:
         orders.append(order.item)
 
-    context = {'pending': pending, 'offers': offers, 'earnings': earnings,
-               'orders': orders, 'active_items': active_items}
+    context = {'pending': pending_num, 'offers': offers_num, 'earnings': earnings_num,
+               'orders': orders, 'active_items': active_items_num}
     return render(request, 'dashboard.html', context)
 
 
@@ -423,20 +416,19 @@ def earnings(request):  # not very DRY
     items = Item.objects.filter(seller=user)
     items_list = []
     for item in items:
-        if item.listing:
-            if item.listing.payout > 0:
-                items_list.append(item)
-                total_earnings += item.listing.payout
+        if item.listing and item.listing.payout > 0:
+            items_list.append(item)
+            total_earnings += item.listing.payout
     context = {'items': items_list, 'earnings': total_earnings}
     return render(request, 'earnings.html', context)
 
 
-# remove from production
+# Remove from production (teehee)
 def todo(request):
     return render(request, 'todo.html')
 
 
-# active items for seller: items where offer is accepted but not sold, and items not yet sold
+# Active items for seller: items where offer is accepted but not sold, and items not yet sold
 @login_required
 def active_items(request):
     now = datetime.datetime.now()
@@ -448,11 +440,17 @@ def active_items(request):
     for item in items_list:
         if item.listing:
             if item.listing.end_date:
-                if item.listing.end_date > now:  # active listing with offers
+                # Active listing with offers
+                if item.listing.end_date > now:
                     active_items_list.append(item)
-                elif item.listing.end_date < now and not item.listing.paid_for:  # offer hasn't been paid for
+
+                # Offer hasn't been paid for
+                elif item.listing.end_date < now and not item.listing.paid_for:
                     unpaid_items_list.append(item)
-            else:  # listed item with no end date means no offers have been made
+
+            # listed item with no end date means no offers have been made
+            else:
                 no_offers_items_list.append(item)
+
     context = {'active_items': active_items_list, 'unpaid_items': unpaid_items_list, 'no_offers': no_offers_items_list}
     return render(request, 'active_items.html', context)

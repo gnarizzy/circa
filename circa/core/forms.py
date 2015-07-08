@@ -143,7 +143,8 @@ class PromoForm(forms.Form):
     code = forms.CharField()
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # Grabs current user
+        self.user = kwargs.pop('user')  # Grabs current user
+        self.listing = kwargs.pop('listing') # Grabs listing
         super(PromoForm, self).__init__(*args, **kwargs)
 
     def clean_code(self):
@@ -160,16 +161,25 @@ class PromoForm(forms.Form):
             if promotional_code.code == promo_code:
                 if promotional_code.redeemed:
                     raise forms.ValidationError("Sorry, promo code already used.")
+
                 elif promotional_code.user != self.user:
                     raise forms.ValidationError("Sorry, that's not your code!")
+
                 else:
                     found = True
+                    break
 
         if not found:
             raise forms.ValidationError("Sorry, that code is not valid.")
 
         return promo_code
 
+    def save(self):
+        promo = PromoCode.objects.filter(code=self.cleaned_data['code'])[0]
+        self.listing.discount = promo.value
+        promo.redeemed = True
+        promo.save()
+        self.listing.save()
 
 # For editing listing, as well as item
 class EditListingForm(forms.Form):
