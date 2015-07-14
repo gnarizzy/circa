@@ -181,6 +181,25 @@ class PromoForm(forms.Form):
         promo.save()
         self.listing.save()
 
+class AddressForm(forms.Form):
+    address_line_1 = forms.CharField()
+    address_line_2 = forms.CharField(required=False)
+    city = forms.CharField()
+
+    # Must be changed when we branch to different states!
+    state = forms.CharField(widget=forms.HiddenInput())
+    INITIAL_STATE = 'GA'
+
+    zipcode = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        print(self.cleaned_data['state'])
+        print('Saved')
+
 # For editing listing, as well as item
 class EditListingForm(forms.Form):
     # Information for Item

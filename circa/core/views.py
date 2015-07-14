@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidde
 from core.email import listing_bought_notification, listing_bought_seller_notification, lost_listing_notification, \
     offer_denied_notification, listing_free_confirm_notification, listing_bought_discount_notification
 from core.models import Item, Listing, UserProfile, PromoCode
-from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm
+from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm, AddressForm
 from core.keys import *
 from core.payout import calc_payout
 from core.zipcode import zipcodes
@@ -454,3 +454,18 @@ def active_items(request):
 
     context = {'active_items': active_items_list, 'unpaid_items': unpaid_items_list, 'no_offers': no_offers_items_list}
     return render(request, 'active_items.html', context)
+
+@login_required
+def address(request):
+    if request.method == 'POST':
+        form = AddressForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+
+        else:
+            print(form.errors)
+    else:
+        form = AddressForm(initial={'state': AddressForm.INITIAL_STATE}, user=request.user)
+
+    context = {'form': form}
+    return render(request, 'address.html', context)

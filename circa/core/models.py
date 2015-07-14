@@ -63,16 +63,18 @@ class Item(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    alt_id = models.TextField(default=None)  # Braintree?
-    rating = models.DecimalField(max_digits=4, decimal_places=2, blank=True, default=0.0)
-    num_reviews = models.IntegerField(default=0)
-    address = models.TextField(null=True, blank=True)
-    zipcode = models.IntegerField(default=0)
+
+class Address(models.Model):
+    address_line_1 = models.CharField(max_length=100)
+    address_line_2 = models.CharField(max_length=100, null=True)
+    city = models.CharField(max_length=20)
+    state = models.CharField(max_length=2)
+    zipcode = models.CharField(max_length=5)
 
 class PromoCode(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
     code = models.CharField(max_length=50, unique=True)
-    value = models.DecimalField(max_digits=5, decimal_places=2, default= 0.0)
+    value = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     redeemed = models.BooleanField(default=False)
 
     def __str__(self):
