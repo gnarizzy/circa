@@ -45,6 +45,12 @@
             </p>
             <input name="next" type="hidden" value="{{ next }}">
         </div>
+        <p class="input-field">
+            {{ form.special_instructions.errors }}
+            <label for="{{ form.special_instructions.id_for_label }}">Special Instructions (Important if you live in
+            an apartment!) </label>
+            {{ form.special_instructions }}
+        </p>
         <button id="list-item-button" class="btn-large waves-effect waves-light teal accent-4" type="submit"
                 name="action">Submit<i class="mdi-content-send right"></i>
         </button>

@@ -191,6 +191,7 @@ class AddressForm(forms.Form):
     INITIAL_STATE = 'GA'
 
     zipcode = forms.CharField()
+    special_instructions = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
@@ -203,6 +204,7 @@ class AddressForm(forms.Form):
             city=self.cleaned_data['city'],
             state=self.cleaned_data['state'],
             zipcode=self.cleaned_data['zipcode'],
+            special_instructions=self.cleaned_data['special_instructions']
         )
         self.user.userprofile.address = address
         self.user.userprofile.save()

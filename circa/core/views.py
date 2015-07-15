@@ -243,6 +243,8 @@ def pay(request, listing_id):
     free = 0
     listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
+    user_address = request.user.userprofile.address
+
     # User is trying to pay for someone else's listing
     if request.user.id is not listing.current_offer_user.id:
         raise PermissionDenied
@@ -325,7 +327,7 @@ def pay(request, listing_id):
     stripe_amount = json.dumps(amount)
     context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
                'listing': listing, 'amount': stripe_amount, 'discounted_price': discounted_price, 'item': item,
-               'form': form, 'free': free}
+               'form': form, 'free': free, 'address': user_address}
     return render(request, 'pay.html', context)
 
 
