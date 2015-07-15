@@ -1,7 +1,9 @@
 from core.models import Item, Listing, PromoCode
 from core.zipcode import zipcodes
+from datetime import datetime, timedelta
 from decimal import *
 from django import forms
+
 
 class ItemForm(forms.ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), label="Title", max_length=100)
@@ -16,12 +18,23 @@ class ItemForm(forms.ModelForm):
             raise forms.ValidationError("You must choose a category for your item.")
         return category
 
+    def __init__(self, *args, **kwargs):
+        self.seller = kwargs.pop('seller')
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        item = super().save(commit=False)
+        item.seller = self.seller
+        item.save()
+        return item
+
     class Meta:
         model = Item
         fields = ('title', 'description', 'category', 'photo')
 
+
 class ListingForm(forms.ModelForm):
-    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}),)
+    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), )
     buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
 
@@ -38,7 +51,7 @@ class ListingForm(forms.ModelForm):
             starting_offer = self.cleaned_data['starting_offer']
         except KeyError:  # starting_offer doesn't exist because it was invalid
             raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, which must "
-                                        "be at least $5.00")
+                                        "be at least $5.00.")
         buy_now_price = self.cleaned_data['buy_now_price']
 
         if starting_offer * Decimal(1.0999) > buy_now_price:
@@ -53,56 +66,86 @@ class ListingForm(forms.ModelForm):
             raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
         return zip_code
 
+    def __init__(self, *args, **kwargs):
+        self.item = kwargs.pop('item')
+        super().__init__(*args, **kwargs)
+
+    def save(self):
+        listing = super().save()
+        self.item.listing = listing
+        self.item.save()
+        return listing
+
     class Meta:
         model = Listing
         fields = ('starting_offer', 'buy_now_price', 'zipcode')
 
 
-class OfferForm (forms.Form):
+class OfferForm(forms.Form):
     offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                label='Your offer', decimal_places=2)
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
                                  label='Zip code')
 
     def __init__(self, *args, **kwargs):
-        self.listing = kwargs.pop('listing', None) #Grabs current listing ID
-        self.user = kwargs.pop('user', None) #Grabs current user
-        super(OfferForm, self).__init__(*args,**kwargs)
+        self.listing = kwargs.pop('listing')  # Grabs current listing ID
+        self.user = kwargs.pop('user')  # Grabs current user
+        super(OfferForm, self).__init__(*args, **kwargs)
 
-    # check to make sure offer isn't higher than buy it now?
+    # Check to make sure offer isn't higher than buy it now?
 
-    # make sure submitted offer is greater than current offer
+    # Make sure submitted offer is greater than current offer
     def clean_offer(self):
         offer = self.cleaned_data['offer']
+
         if self.listing:
-            listing_object = Listing.objects.get(pk=self.listing) #current listing
 
-            if self.user and self.user.id is listing_object.item.seller.id: #user submitted offer on their own auction
-                raise forms.ValidationError("Trying to submit an offer on your own item, eh? Seems legit.")
+            # User submitted offer on their own auction
+            if self.user and self.user.id is self.listing.item.seller.id:
+                raise forms.ValidationError("You can't submit an offer on your own item.")
 
-            listing_offer = listing_object.current_offer
-            if not listing_offer: #no current offer, meaning no initial offer has been made
-                if offer < Listing.objects.get(pk=self.listing).starting_offer:
+            listing_offer = self.listing.current_offer
+
+            # No current offer, meaning no initial offer has been made
+            if not listing_offer:
+
+                if offer < self.listing.starting_offer:
                     raise forms.ValidationError("Your offer cannot be less than the asking price.")
             else:
+
                 if offer <= listing_offer:
                     raise forms.ValidationError("Your offer must be greater than the current offer.")
+
         return offer
 
-    # make sure shipping zip code is one we deliver to
+    # Make sure shipping zip code is one we deliver to
     def clean_zipcode(self):
-        zip = self.cleaned_data['zipcode']
-        if zip not in zipcodes():
-            raise forms.ValidationError("Unfortunately, Circa is only available in zips near Georgia Tech. Visit our "
-                                        "help page to see which zipcodes are available.")
-        return zip
+        zip_code = self.cleaned_data['zipcode']
 
-class PromoForm (forms.Form):
+        if zip_code not in zipcodes():
+            raise forms.ValidationError("Unfortunately, Circa is only available in metro Atlanta. Visit our "
+                                        "help page to see which zipcodes are available.")
+        return zip_code
+
+    def save(self):
+        offer = self.cleaned_data['offer']
+        self.listing.current_offer = offer
+        self.listing.end_date = datetime.now() + timedelta(hours=1)
+        self.listing.current_offer_user = self.user
+
+        if offer * Decimal(1.0999) > self.listing.buy_now_price:
+            self.listing.buy_now_price = offer * Decimal(1.1000000)
+
+        self.listing.save()
+
+
+class PromoForm(forms.Form):
     code = forms.CharField()
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None) # Grabs current user
-        super(PromoForm, self).__init__(*args,**kwargs)
+        self.user = kwargs.pop('user')  # Grabs current user
+        self.listing = kwargs.pop('listing') # Grabs listing
+        super(PromoForm, self).__init__(*args, **kwargs)
 
     def clean_code(self):
         found = False
@@ -118,15 +161,25 @@ class PromoForm (forms.Form):
             if promotional_code.code == promo_code:
                 if promotional_code.redeemed:
                     raise forms.ValidationError("Sorry, promo code already used.")
+
                 elif promotional_code.user != self.user:
                     raise forms.ValidationError("Sorry, that's not your code!")
+
                 else:
                     found = True
+                    break
 
         if not found:
             raise forms.ValidationError("Sorry, that code is not valid.")
 
         return promo_code
+
+    def save(self):
+        promo = PromoCode.objects.filter(code=self.cleaned_data['code'])[0]
+        self.listing.discount = promo.value
+        promo.redeemed = True
+        promo.save()
+        self.listing.save()
 
 # For editing listing, as well as item
 class EditListingForm(forms.Form):
@@ -137,19 +190,18 @@ class EditListingForm(forms.Form):
     category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Item.CATEGORY_CHOICES)
 
     # Information for Listing
-    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}),)
+    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), )
     buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
 
     def __init__(self, *args, **kwargs):
-        self.listing = kwargs.pop('listing', None)  # Grabs current listing ID
-        super(EditListingForm, self).__init__(*args,**kwargs)
+        self.listing = kwargs.pop('listing')  # Grabs current listing
+        super(EditListingForm, self).__init__(*args, **kwargs)
 
     # Make sure starting offer is at least $5.00, and that no offers have yet been made
     def clean_starting_offer(self):
         starting_offer = Decimal(self.cleaned_data['starting_offer'])
-        listing = Listing.objects.get(pk=self.listing)  # current listing
-        if listing.current_offer and starting_offer != listing.starting_offer:
+        if self.listing.current_offer and starting_offer != self.listing.starting_offer:
             raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
 
         if starting_offer < 5:
@@ -160,9 +212,10 @@ class EditListingForm(forms.Form):
     def clean_buy_now_price(self):
         try:
             starting_offer = self.cleaned_data['starting_offer']
-        except KeyError:  # starting_offer doesn't exist because the form submission starting offer was invalid. May want to remove this
-            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, which must "
-                                        "be at least $5.00")
+        # starting_offer doesn't exist because the form submission starting offer was invalid. May want to remove this
+        except KeyError:
+            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, "
+                                        "which must be at least $5.00")
         buy_now_price = self.cleaned_data['buy_now_price']
 
         if starting_offer * Decimal(1.0999) > buy_now_price:
@@ -183,3 +236,15 @@ class EditListingForm(forms.Form):
         if zip_code not in zipcodes():
             raise forms.ValidationError("Unfortunately, Circa is not yet available in that zip code.")
         return zip_code
+
+    def save(self):
+        self.listing.item.title = self.cleaned_data['title']
+        self.listing.item.description = self.cleaned_data['description']
+        self.listing.item.category = self.cleaned_data['category']
+        self.listing.starting_offer = self.cleaned_data['starting_offer']
+        self.listing.buy_now_price = self.cleaned_data['buy_now_price']
+        self.listing.zipcode = self.cleaned_data['zipcode']
+
+        self.listing.item.save()
+        self.listing.save()
+        return None
