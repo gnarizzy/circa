@@ -221,6 +221,9 @@ def get_status(listing):
 # Shows all outstanding, unpaid listings for user
 @login_required
 def pending(request):
+    if not request.user.userprofile.address:
+        return HttpResponseRedirect('/address/?next=/pending/')
+
     # find listings where user is the highest offer user, payment has not been received, and have already ended
     now = datetime.datetime.now()
     user = request.user
@@ -461,11 +464,9 @@ def address(request):
         form = AddressForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
-
-        else:
-            print(form.errors)
+            return HttpResponseRedirect(request.POST.get('next', '/'))
     else:
         form = AddressForm(initial={'state': AddressForm.INITIAL_STATE}, user=request.user)
 
-    context = {'form': form}
+    context = {'form': form, 'next': request.GET.get('next', '/')}
     return render(request, 'address.html', context)

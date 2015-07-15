@@ -43,6 +43,7 @@
                 <label for="{{ form.zipcode.id_for_label }}">Zip Code</label>
                 {{ form.zipcode }}
             </p>
+            <input name="next" type="hidden" value="{{ next }}">
         </div>
         <button id="list-item-button" class="btn-large waves-effect waves-light teal accent-4" type="submit"
                 name="action">Submit<i class="mdi-content-send right"></i>

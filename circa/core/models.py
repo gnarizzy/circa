@@ -61,15 +61,19 @@ class Item(models.Model):
     def __str__(self):
         return self.title
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User)
-
 class Address(models.Model):
     address_line_1 = models.CharField(max_length=100)
-    address_line_2 = models.CharField(max_length=100, null=True)
+    address_line_2 = models.CharField(max_length=100, null=True, blank=True)
     city = models.CharField(max_length=20)
     state = models.CharField(max_length=2)
     zipcode = models.CharField(max_length=5)
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    address = models.OneToOneField(Address, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
 
 class PromoCode(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)

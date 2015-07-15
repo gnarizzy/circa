@@ -1,4 +1,4 @@
-from core.models import Item, Listing, PromoCode
+from core.models import Item, Listing, PromoCode, Address
 from core.zipcode import zipcodes
 from datetime import datetime, timedelta
 from decimal import *
@@ -197,8 +197,15 @@ class AddressForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def save(self):
-        print(self.cleaned_data['state'])
-        print('Saved')
+        address = Address.objects.create(
+            address_line_1=self.cleaned_data['address_line_1'],
+            address_line_2=self.cleaned_data['address_line_2'],
+            city=self.cleaned_data['city'],
+            state=self.cleaned_data['state'],
+            zipcode=self.cleaned_data['zipcode'],
+        )
+        self.user.userprofile.address = address
+        self.user.userprofile.save()
 
 # For editing listing, as well as item
 class EditListingForm(forms.Form):
