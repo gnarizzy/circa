@@ -9,7 +9,7 @@
            <li>
                <div class="collapsible-header active"><i class="mdi-navigation-expand-more left"></i>What is Circa?</div>
                <div class="collapsible-body">
-                   <p>Circa is a service for the Georgia Tech community that allows students to buy and sell electronics
+                   <p>Circa is a service for the Atlanta community that allows users to buy and sell items
                    with each other. We handle all the logistics including pricing, payment, shipping, and fraud protection.
                    No more haggling over prices with multiple people, coordinating awkward meet-ups, giving contact information
                    to strangers, or getting scammed!</p>
@@ -40,7 +40,9 @@
            <li>
                <div class="collapsible-header active"><i class="mdi-navigation-expand-more left"></i>What zip codes does Circa currently offer service to?</div>
                <div class="collapsible-body">
-                   <p>Right now, Circa can only deliver to 30308, 30309, 30313, 30318, 30332, and 30363, but we are
+                   <p>Right now, Circa can only deliver to
+                   {% for zip in zipcodes %}
+                        {% if forloop.counter == zip_len %} and {{ zip }}{% else %} {{ zip }}, {% endif %}{% endfor %}, but we are
                    willing to make arrangements for customers outside of this area.  Send an email to
                    support@usecirca.com and we'll see what we can do!</p>
                </div>
@@ -48,9 +50,10 @@
            <li>
                <div class="collapsible-header"><i class="mdi-navigation-expand-more left"></i>Why can't I make an offer on an item?</div>
                <div class="collapsible-body">
-                   <p>In order to ensure quick delivery and returns, we only serve the zip codes around Georgia Tech: 30308,
-                   30309, 30313, 30318, 30332, and 30363. If your shipping address isn't in those zips, we can't deliver the
-                   item to you. Shoot us an email (support@usecirca.com) if you want us to expand to your zip code!</p>
+                   <p>In order to ensure quick delivery and returns, we currently only serve a limited area. Check the
+                   previous question to see if we deliver to your zip code. If your shipping address isn't in those
+                   zips, we may not be able to get the item to you. Shoot us an email (support@usecirca.com) if you
+                   want us to expand to your zip code!</p>
                </div>
            </li>
            <li>
