@@ -198,8 +198,20 @@ class NewVisitorTest(LiveServerTestCase):
         # Being an astute user, she checks her pending payments to see if she can now pay for her item.
         user_button = self.browser.find_element_by_id('username-large')
         user_button.click()
-        logout_button = self.browser.find_element_by_id('pending-large')
-        logout_button.click()
+        pending_button = self.browser.find_element_by_id('pending-large')
+        pending_button.click()
+
+        # To her surprise, she's redirected to a page asking for her address.  She types it in, as the
+        # logic behind them needing the address is fairly sound.
+        address_line_1 = self.browser.find_element_by_id('id_address_line_1')
+        address_line_1.send_keys('454 Pine Grove Ln')
+        city = self.browser.find_element_by_id('id_city')
+        city.send_keys('Atlanta')
+        zipcode = self.browser.find_element_by_id('id_zipcode')
+        zipcode.send_keys('30313')
+        special_instructions = self.browser.find_element_by_id('id_special_instructions')
+        special_instructions.send_keys('Leave it under the door mat.')
+        special_instructions.send_keys(Keys.ENTER)
 
         # Greeted by a nice, big "Pending Payments" header, she immediately clicks on her item
         pending_text = self.browser.find_element_by_tag_name('h1').text

@@ -221,7 +221,7 @@ def get_status(listing):
 # Shows all outstanding, unpaid listings for user
 @login_required
 def pending(request):
-    if not request.user.userprofile.address:
+    if not hasattr(request.user, 'userprofile'):
         return HttpResponseRedirect('/address/?next=/pending/')
 
     # find listings where user is the highest offer user, payment has not been received, and have already ended
