@@ -1,4 +1,4 @@
-from core.models import Item, Listing, PromoCode, Address
+from core.models import Item, Listing, PromoCode, Address, UserProfile
 from core.zipcode import zipcodes
 from datetime import datetime, timedelta
 from decimal import *
@@ -181,6 +181,7 @@ class PromoForm(forms.Form):
         promo.save()
         self.listing.save()
 
+
 class AddressForm(forms.Form):
     address_line_1 = forms.CharField()
     address_line_2 = forms.CharField(required=False)
@@ -198,6 +199,9 @@ class AddressForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def save(self):
+        if not hasattr(self.user, 'userprofile'):
+            UserProfile.objects.create(user=self.user)
+
         address = Address.objects.create(
             address_line_1=self.cleaned_data['address_line_1'],
             address_line_2=self.cleaned_data['address_line_2'],
@@ -208,6 +212,7 @@ class AddressForm(forms.Form):
         )
         self.user.userprofile.address = address
         self.user.userprofile.save()
+
 
 # For editing listing, as well as item
 class EditListingForm(forms.Form):

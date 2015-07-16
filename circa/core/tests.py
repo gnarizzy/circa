@@ -1,10 +1,11 @@
 from core.payout import calc_payout, COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_PERCENT, COMMISSION_MAX
-from core.models import Item, Listing, PromoCode
-from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm
+from core.models import Item, Listing, PromoCode, Address, UserProfile
+from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm, AddressForm
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from decimal import *
+
 
 class PayoutTest(TestCase):
 
@@ -28,6 +29,7 @@ class PayoutTest(TestCase):
         payout = calc_payout(price)
 
         self.assertEqual(payout, predicted_payout)
+
 
 class ItemTest(TestCase):
 
@@ -89,6 +91,7 @@ class ItemTest(TestCase):
             self.assertEqual(form.errors, {
                 'category': ['You must choose a category for your item.'],
             })
+
 
 class ListingTest(TestCase):
 
@@ -173,6 +176,7 @@ class ListingTest(TestCase):
         self.assertEqual(form.errors, {
             'zipcode': ['Unfortunately, Circa is not yet available in your zip code.']
         })
+
 
 class EditListingTest(TestCase):
 
@@ -297,6 +301,7 @@ class EditListingTest(TestCase):
             'zipcode': ['Unfortunately, Circa is not yet available in that zip code.']
         })
 
+
 class OfferTest(TestCase):
 
     def create_user(self):
@@ -398,6 +403,7 @@ class OfferTest(TestCase):
         self.assertEqual(listing.current_offer, 200)
         self.assertEqual(round(listing.buy_now_price), 220)
 
+
 class PromoTest(TestCase):
 
     def create_user(self, username='Juan', password='Pablo'):
@@ -491,4 +497,65 @@ class PromoTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors, {
             'code': ['Sorry, that\'s not your code!']
+        })
+
+
+class AddressTest(TestCase):
+
+    def create_user(self):
+        return User.objects.create_user(username='Spongebob', password='Squarepants')
+
+    def create_address(self):
+        return Address.objects.create(
+            address_line_1='111 Ur Mum',
+            city='Buttville',
+            state='GA',
+            zipcode='30313'
+        )
+
+    def test_address_creation(self):
+        address = self.create_address()
+
+        self.assertTrue(isinstance(address, Address))
+        self.assertEqual("111 Ur Mum", address.__str__())
+
+    def test_init_with_user(self):
+        user = self.create_user()
+        AddressForm(user=user)
+
+    def test_init_without_user(self):
+        with self.assertRaises(KeyError):
+            AddressForm()
+
+    def test_with_valid_data(self):
+        user = self.create_user()
+        form = AddressForm({
+            'address_line_1': '555 Five ave',
+            'address_line_2': '',
+            'city': 'Alpharetta',
+            'state': 'GA',
+            'zipcode': '30009',
+            'special_instructions': 'Don\'t drop it!'
+        }, user=user)
+        self.assertTrue(form.is_valid())
+        form.save()
+        self.assertEqual(user.userprofile.address.address_line_1, '555 Five ave')
+        self.assertEqual(user.userprofile.address.address_line_2, '')
+        self.assertEqual(user.userprofile.address.city, 'Alpharetta')
+        self.assertEqual(user.userprofile.address.state, 'GA')
+        self.assertEqual(user.userprofile.address.zipcode, '30009')
+        self.assertEqual(user.userprofile.address.special_instructions, 'Don\'t drop it!')
+
+    def test_with_missing_data(self):
+        user = self.create_user()
+        form = AddressForm({
+            'address_line_1': '555 Five ave',
+            'address_line_2': '',
+            'state': 'GA',
+            'zipcode': '30009',
+            'special_instructions': 'Don\'t drop it!'
+        }, user=user)
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors, {
+            'city': ['This field is required.']
         })

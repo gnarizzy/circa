@@ -61,6 +61,7 @@ class Item(models.Model):
     def __str__(self):
         return self.title
 
+
 class Address(models.Model):
     address_line_1 = models.CharField(max_length=100)
     address_line_2 = models.CharField(max_length=100, null=True, blank=True)
@@ -68,6 +69,9 @@ class Address(models.Model):
     state = models.CharField(max_length=2)
     zipcode = models.CharField(max_length=5)
     special_instructions = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.address_line_1)
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
