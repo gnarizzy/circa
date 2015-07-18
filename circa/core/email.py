@@ -28,14 +28,16 @@ OFFER_ACCEPTED = "Dear {},\n\nYour offer on {} has been accepted!\n\nPlease navi
                  "\n\nSincerely,\n\nThe Circa Team"
 
 LISTING_BOUGHT = "Dear {},\n\nYour item, {}, has been sold!  Your total earnings are  ${}, which " \
-                 "will be given to you upon pick up of the item.  Please reply to this email with your address and " \
+                 "will be given to you within 24 hours of us picking up the item.  Please reply to this email " \
+                 "with your address and " \
                  "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
                  "experience, please reply to this email and let us know.  We want to be the best way " \
                  "to buy and sell locally." \
                  "\n\nSincerely\n\nThe Circa Team"
 
 OFFER_OVER = "Dear {},\n\nYour item, {}, has a winning offer!  Your total earnings are predicted to be ${}, which " \
-             "will be given to you upon pick up of the item.  Please reply to this email with your address and " \
+             "will be given to you within 24 hours of us picking up the item.  Please reply to this email with " \
+             "your address and " \
              "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
              "experience, please reply to this email and let us know.  We want to be the best way to buy " \
              "and sell locally." \
@@ -67,9 +69,8 @@ LISTING_FREE_CONFIRMATION = "Hello,\n\nCongratulations on getting {}! This email
                   "with us was. We want to create the best way to buy and sell locally." \
                   "\n\nSincerely,\n\nThe Circa Team"
 
-WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to build the easiest way to buy and " \
-                   "sell locally, where haggling, meet-ups, and scams are a thing of the " \
-                   "past.\n\nHere's how it works:\n\n1) Sellers post stuff they want to sell\n\n2) Buyers " \
+WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We bring locally bought goods directly to your door " \
+                   "\n\nHere's how it works:\n\n1) Sellers post stuff they want to sell\n\n2) Buyers " \
                    "make an offer. If nobody beats that offer within an hour, the offer " \
                    "is accepted and the buyer pays securely online. If you buy now, you instantly win the " \
                    "item.\n\n3) We pick up the item from the seller, " \
@@ -80,7 +81,7 @@ WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to
                    "questions, feel free to check out http://www.usecirca.com/about/ or reply to this email. You " \
                    "can also follow us on Facebook (https://www.facebook.com/usecirca) or visit " \
                    "http://usecirca.com to stay updated with the latest deals." \
-                   "\n\nSincerely,\n\nAndrew\n\nCS '15"
+                   "\n\nSincerely,\n\nAndrew\n\nCirca Co-founder and Head Delivery Boy"
 
 def offer_denied_notification(user, listing):
     content = OFFER_DENIED.format(
