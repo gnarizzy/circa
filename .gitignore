@@ -6,3 +6,4 @@ media/
 __pycache__/
 sqlite3.exe
 migrations/
+htmlcov/

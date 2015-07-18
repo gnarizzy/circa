@@ -6,7 +6,7 @@ from image_cropping import ImageCropField, ImageRatioField
 
 class Listing(models.Model):
     starting_offer = models.DecimalField(max_digits=6, decimal_places=2, default=5.00)
-    current_offer = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank = True)
+    current_offer = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     buy_now_price = models.DecimalField(max_digits=6, decimal_places=2, default=5.50)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
@@ -14,8 +14,8 @@ class Listing(models.Model):
     buy_now_email = models.EmailField(blank=True, null=True)  # temporary field until we create users from buy now purchases
     zipcode = models.IntegerField(default=0)
     paid_for = models.BooleanField(default=False)
-    payout = models.DecimalField(max_digits = 6, decimal_places=2, default = 0.00)
-    discount = models.DecimalField(max_digits = 6, decimal_places =2, default=0.00)
+    payout = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    discount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
 
     def __str__(self):
         return str(self.id)
@@ -26,7 +26,7 @@ class Item(models.Model):
     photo = ImageCropField(upload_to='uploaded_images')
     cropping = ImageRatioField('photo', '225x225')
     listing = models.OneToOneField(Listing, null=True)
-    seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # many items per one seller
+    seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # Many items per one seller
     buyer = models.ForeignKey(User, related_name='buyer_profile', null=True, blank=True)
 
     UNCLASSIFIED = 0
@@ -52,7 +52,6 @@ class Item(models.Model):
     }
     category = models.IntegerField(choices=CATEGORY_CHOICES, default=UNCLASSIFIED)
 
-
     def save(self, *args, **kwargs):
         if self.seller is not None and self.buyer is not None and self.seller == self.buyer:
             raise IntegrityError('seller cannot also be the buyer')
@@ -71,10 +70,10 @@ class UserProfile(models.Model):
     zipcode = models.IntegerField(default=0)
 
 class PromoCode(models.Model):
-    user = models.ForeignKey(User, blank=True, null = True)
+    user = models.ForeignKey(User, blank=True, null=True)
     code = models.CharField(max_length=50, unique=True)
     value = models.DecimalField(max_digits=5, decimal_places=2, default= 0.0)
-    redeemed = models.BooleanField(default = False)
+    redeemed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.code

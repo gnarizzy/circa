@@ -71,14 +71,28 @@
         </div>
     </div>
     {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row">
+        <div class="col s12">
+            <div class="card-panel red lighten-5">
+              <span class="red-text text-darken-3"><i class="mdi-alert-warning"></i>
+                {{ message }}
+              </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
     <div class="row">
         <div class="card">
             <div class="card-content">
                 <div class="center-align col l4 m6 s12">
                     {% if user.id and user.id == item.seller.id %}
-                    <a href="/edit/{{listing.id}}"><span class="badge white-text hide-on-med-and-up">Edit</span></a>
+                    <a id="edit-small" href="/edit/{{listing.id}}"><span class="badge white-text hide-on-med-and-up">
+                        Edit</span></a>
                     {% endif %}
-                    <span class="card-title black-text hide-on-med-and-up">{{ item.title }}</span>
+                    <span id="title-small" class="card-title black-text hide-on-med-and-up">{{ item.title }}</span>
                     <br>
                     <img class="hide-on-med-and-up" src="{% cropped_thumbnail item "cropping" width=150 %}">
                     <img class="hide-on-small-only hide-on-large-only" src="{% cropped_thumbnail item "cropping"
@@ -106,9 +120,10 @@
                 </div>
 
                 <div class="col l4 m6 s12">
-                    <span class="card-title black-text hide-on-small-only">{{ item.title }}</span>
+                    <span id="title-large" class="card-title black-text hide-on-small-only">{{ item.title }}</span>
                     {% if user.id and user.id == item.seller.id %}
-                    <a href="/edit/{{listing.id}}"><span class="badge white-text hide-on-small-only">Edit</span></a>
+                    <a id="edit-large" href="/edit/{{listing.id}}"><span class="badge white-text hide-on-small-only">
+                        Edit</span></a>
                     {% endif %}
                     <br>
 

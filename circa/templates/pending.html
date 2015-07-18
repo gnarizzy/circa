@@ -17,7 +17,7 @@
             </tr>
             {% for item in items %}
                 <tr>
-                    <td><a href = "/pay/{{item.listing.id}}/">{{item.title}}</a></td>
+                    <td><a id="{{ item.id }}" href = "/pay/{{item.listing.id}}/">{{item.title}}</a></td>
                     <td>${{item.listing.current_offer}}</td>
                 </tr>
 

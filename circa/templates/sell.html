@@ -4,43 +4,50 @@
 {{ form.media }}
 {% endblock %}
 {% block body_block %}
-    <div class = "container">
-        <h1>List an item for sale</h1>
+<div class="container">
+    <h1>List an item for sale</h1>
 
-                <form id ="item_form" method="post" action="/sell/"  enctype="multipart/form-data" >
-                    {% csrf_token %}
-                    <div class="form-group">
-                            {{ form.non_field_errors }}
-                            <p class="input-field">
-                                {{ form.title.errors }}
-                                <label for="{{ form.title.id_for_label }}">Title</label>
-                                {{ form.title }}
-                            </p>
-                            <p class="input-field">
-                                {{ form.description.errors }}
-                                <label for="{{ form.description.id_for_label }}">Description</label>
-                                {{ form.description }}
-                            </p>
-                                {{ form.category.errors }}
-                                {{ form.category }}
-                            <p>
-                                {{ form.photo.errors }}
-                                <div class="file-field input-field">
-                                    <input class="file-path validate" type="text"/>
-                                    <div class="btn blue">
-                                        <span>Photo</span>
-                                        {{ form.photo }}
-                                    </div>
-                                </div>
-                            </p>
-                    </div>
-                    <button class="btn-large waves-effect waves-light teal accent-4" type="submit" name="action">List Item
-                        <i class="mdi-content-send right"></i>
-                    </button>
-                </form>
-        <br>
-        <p><small>Once you list your item, you'll be able to set a price, create a listing, and schedule a pickup. By
-            posting your item, you agree to <a href="/policies/terms#selling" target="_blank">Circa's terms and conditions</a>.
-        </small></p>
-    </div>
+    <form id="item_form" method="post" action="/sell/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.non_field_errors }}
+            <p class="input-field">
+                {{ form.title.errors }}
+                <label for="{{ form.title.id_for_label }}">Title</label>
+                {{ form.title }}
+            </p>
+
+            <p class="input-field">
+                {{ form.description.errors }}
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+            </p>
+            {{ form.category.errors }}
+            {{ form.category }}
+            <p>
+                {{ form.photo.errors }}
+
+            <div class="file-field input-field">
+                <input class="file-path validate" type="text"/>
+
+                <div class="btn blue">
+                    <span>Photo</span>
+                    {{ form.photo }}
+                </div>
+            </div>
+            </p>
+        </div>
+        <button id="list-item-button" class="btn-large waves-effect waves-light teal accent-4" type="submit"
+                name="action">List Item<i class="mdi-content-send right"></i>
+        </button>
+    </form>
+    <br>
+
+    <p>
+        <small>Once you list your item, you'll be able to set a price, create a listing, and schedule a pickup. By
+            posting your item, you agree to <a href="/policies/terms#selling" target="_blank">Circa's terms and
+                conditions</a>.
+        </small>
+    </p>
+</div>
 {% endblock %}

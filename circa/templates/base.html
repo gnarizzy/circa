@@ -63,26 +63,26 @@
     <nav>
         <div class="nav-wrapper fb-blue">
             <div class="col s12">
-                <a href="/" class="no-style brand-logo"><img class="logo-spacer"
+                <a href="/" class="no-style brand-logo"><img class="logo-spacer" id="logo"
                                                              src="{% static 'other/Circa_Logo.png'%}"/></a>
                 <a href="#" data-activates="mobile-nav" class="no-style button-collapse"><i
                         class="mdi-navigation-menu"></i></a>
 
                 <div class="right hide-on-med-and-down">
-                    <a href="/sell" class="waves-effect waves-light btn green lighten-2"><span
+                    <a id="sell-large" href="/sell/" class="waves-effect waves-light btn green lighten-2"><span
                             class="glyphicon glyphicon-usd"></span> Sell</a>
                 </div>
 
                 <ul class="right hide-on-med-and-down">
                     {% if not user.is_authenticated %}
-                    <li><a class="no-style" href="/accounts/register/"><span class="glyphicon glyphicon-user"></span>
+                    <li><a id="sign-up-large" class="no-style" href="/accounts/register/"><span class="glyphicon glyphicon-user"></span>
                         Sign Up</a></li>
-                    <li><a class="no-style" href="/help/"><span class="glyphicon glyphicon-question-sign"></span>
+                    <li><a id="help-large" class="no-style" href="/help/"><span class="glyphicon glyphicon-question-sign"></span>
                         Help</a></li>
-                    <li><a class="no-style" href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span>
+                    <li><a id="login-large" class="no-style" href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span>
                         Login</a></li>
                     {% else %}
-                    <li><a class="no-style dropdown-button" href="#" data-beloworigin="true" data-constrainwidth="false"
+                    <li><a id="username-large" class="no-style dropdown-button" href="#" data-beloworigin="true" data-constrainwidth="false"
                            data-activates="dropdown1"><span class="glyphicon glyphicon-user"></span>
                         {{user.username}}</a></li>
                     <li><a class="no-style" href="/help/"><span class="glyphicon glyphicon-question-sign"></span>
@@ -93,7 +93,7 @@
                 <ul id='dropdown1' class='dropdown-content'>
                     <li><a class="no-style" href="/dashboard/">Dashboard</a></li>
                     <li class="divider"></li>
-                    <li><a class="no-style" href="/pending/">Pending Payments</a></li>
+                    <li><a id="pending-large" class="no-style" href="/pending/">Pending Payments</a></li>
                     <li class="divider"></li>
                     <li><a class="no-style" href="/offers/">Active Offers</a></li>
                     <li class="divider"></li>
@@ -101,7 +101,7 @@
                     <li class="divider"></li>
                     <li><a class="no-style" href="/items/">Listed Items</a></li>
                     <li class="divider"></li>
-                    <li><a class="no-style" href="{% url 'auth_logout' %}?next=/">Log out</a></li>
+                    <li><a id="logout-large" class="no-style" href="{% url 'auth_logout' %}?next=/">Log out</a></li>
                 </ul>
                 <ul class="side-nav" id="mobile-nav">
                     {% if not user.is_authenticated %}
@@ -147,8 +147,8 @@
                         Help</a></li>
                     {% endif %}
 
-                    <a href="/sell/" class="waves-effect waves-light btn green lighten-2 white-text"><span
-                            class="glyphicon glyphicon-usd"></span> Sell</a>
+                    <a href="/sell/" class="waves-effect waves-light btn green lighten-2 white-text">
+                        <span class="glyphicon glyphicon-usd"></span> Sell</a>
                 </ul>
             </div>
         </div>
