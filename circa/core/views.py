@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from core.email import listing_bought_notification, listing_bought_seller_notification, lost_listing_notification, \
-    offer_denied_notification, listing_free_confirm_notification, listing_bought_discount_notification
+from core.email import listing_bought_notification, listing_bought_seller_notification, \
+    listing_free_confirm_notification, listing_bought_discount_notification
 from core.models import Item, Listing, UserProfile, PromoCode
 from core.forms import ItemListingForm, EditListingForm, PromoForm, AddressForm
 from core.keys import *
@@ -98,28 +98,23 @@ def listing_detail(request, listing_id):
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
 
-        # Buy Now
         if token:
             stripe.api_key = secret_key()
-            email = request.POST['stripeEmail']
-            amount_in_cents = int(listing.buy_now_price * 100)
+            amount_in_cents = int(listing.price * 100)
             try:
-                prev_offer_user = listing.current_offer_user
                 charge = stripe.Charge.create(
                     amount=amount_in_cents,
                     currency="usd",
                     source=token,
                     description="Circa Buy Now " + str(listing_id) + ": " + str(listing.item.title)
                 )
-                update_listing(listing, request, email)
+                update_listing(listing, request)
 
-                listing_bought_notification(email, listing)
+                listing_bought_notification(request.user.email, listing)
                 listing_bought_seller_notification(listing)
 
-                if prev_offer_user is not None and prev_offer_user.email is not email:
-                    lost_listing_notification(prev_offer_user, listing)
-
                 return HttpResponseRedirect('/success/')
+
             except stripe.error.CardError:
                 messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
                                         'the problem may be with our payment processing system.  Wait an hour or '
@@ -127,35 +122,19 @@ def listing_detail(request, listing_id):
                                         'support@usecirca.com so we can help sort out the issue.')
                 return HttpResponseRedirect(request.path)
 
-        # Make an Offer
-        else:
-            if request.user.is_authenticated():
-                    return HttpResponseRedirect(request.path)
-
-            # Unauthenticated user. Redirect to login page, then bring 'em back here.
-            else:
-                return HttpResponseRedirect('/accounts/login/?next=/listing/' + str(listing.id))
-
     item = listing.item
     amount = int(listing.price * 100)
     stripe_amount = json.dumps(amount)
-    item_json = json.dumps(item.title)
     context = {'listing': listing, 'item': item, 'amount': stripe_amount, 'stripe_key': public_key()}
     return render(request, 'listing_detail.html', context)
 
 
 # Helper method for listing_detail
-def update_listing(listing, request, email):
-    listing.buy_now_email = email
+def update_listing(listing, request):
+    listing.item.buyer = request.user
     listing.end_date = datetime.datetime.now()
-    listing.current_offer = listing.buy_now_price
     listing.paid_for = True
-    listing.payout = calc_payout(listing.buy_now_price)
-    if request.user.id:  # logged in user used buy it now
-        listing.current_offer_user = request.user
-        listing.item.buyer = request.user
-    else:
-        listing.current_offer_user = None  # change when we create accounts for buy-now people
+    listing.payout = calc_payout(listing.price)
     listing.save()
 
 

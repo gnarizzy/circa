@@ -4,33 +4,6 @@
 {{ item.title }} | Circa
 {% endblock %}
 {% block head_block %}
-<script type="text/javascript">
-    function countdown(minutes, seconds, display) {
-            m = parseInt(minutes, 10);
-            s = parseInt(seconds, 10) - 2;
-
-            if(s < 0) {
-                display.textContent = "";
-            } else {
-                setInterval(function() {
-                    var displayStr = m + " minutes and " + s + " seconds";
-                    if(--s < 0) {
-                        if(--m < 0) {
-                            displayStr = "";
-                        } else {
-                            s = 59
-                        }
-                    }
-                    display.textContent = displayStr;
-                }, 1000);
-            }
-        }
-        window.onload = function () {
-        var display = document.querySelector('#time');
-        countdown({{ minutes }}, {{ seconds }}, display);
-        };
-
-</script>
 <link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 {% endblock %}
 
@@ -127,6 +100,11 @@
                                     name="action">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </button>
+                            {% elif not user.id %}
+                            <a class="btn light-blue accent-4 waves-effect waves-light" type="submit"
+                                    name="action" href="/accounts/login/?next=/listing/{{ listing.id }}">Buy Now
+                                <i class="mdi-editor-attach-money right"></i>
+                            </a>
                             {% else %}
                             <script src="https://checkout.stripe.com/checkout.js"></script>
 
@@ -153,7 +131,8 @@
                                         handler.open({
                                           name: 'Circa',
                                           description: item,
-                                          amount: stripe_amount
+                                          amount: stripe_amount,
+                                          email: '{{ user.email }}'
                                         });
                                         e.preventDefault();
                                       });

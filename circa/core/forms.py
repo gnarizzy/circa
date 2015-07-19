@@ -31,7 +31,7 @@ class ItemListingForm(forms.ModelForm):
     def clean_zipcode(self):
         zip_code = self.cleaned_data['zipcode']
         if zip_code not in zipcodes():
-            raise forms.ValidationError("Unfortunately, Circa is not yet available in your zip code.")
+            raise forms.ValidationError("Unfortunately, Circa is not yet available in that zip code.")
         return zip_code
 
     def __init__(self, *args, **kwargs):
@@ -155,7 +155,7 @@ class EditListingForm(forms.Form):
     def clean_category(self):
         category = self.cleaned_data['category']
         if category is '0':
-            raise forms.ValidationError("You must choose a category for your item.")
+            raise forms.ValidationError("You must choose a category for that item.")
         return category
 
     # make sure shipping zip code is one we deliver to

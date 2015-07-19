@@ -3,12 +3,6 @@ from circa.settings import ALLOWED_HOSTS
 from django.core.mail import EmailMessage
 from core.payout import calc_payout
 
-OFFER_DENIED = "Hey {},\n\nUnfortunately, your offer is no longer the highest on {}. The current offer is ${} and " \
-               "you have 1 hour to make a higher offer. If you don't want to this to happen again, you can buy the " \
-               "item now for ${}.\n\nThe listing can be found here: {}\n\nThanks for using Circa, and feel free to " \
-               "reply to this email with any questions or feedback." \
-               "\n\nSincerely,\n\nThe Circa Team"
-
 LOST_LISTING = "Hey {},\n\nUnfortunately, someone has used the buy now option on {}, which has ended all active " \
                "offers. To avoid this in future listings, you can click \"Buy Now\" to pay for the item immediately " \
                "and guarantee that you'll get it 24 hours.\n\nThanks for using Circa, and feel free to reply to this " \
@@ -80,26 +74,6 @@ WELCOME_NEW_USER = "Hey {},\n\nThanks for signing up for Circa! We're working to
                    "\n\nSincerely,\n\nAndrew\n\nCS '15"
 
 
-def offer_denied_notification(user, listing):
-    content = OFFER_DENIED.format(
-        user.username,
-        listing.item.title,
-        listing.current_offer,
-        listing.buy_now_price,
-        ALLOWED_HOSTS[0] + '/listing/{}'.format(listing.id)
-    )
-
-    recipient = list()
-    recipient.append(user.email)
-    message = EmailMessage(
-        subject="You no longer have the highest offer on {}".format(listing.item.title),
-        body=content,
-        to=recipient
-    )
-    message.send()
-    return message.mandrill_response[0]
-
-
 def lost_listing_notification(user, listing):
     content = LOST_LISTING.format(user.username, listing.item.title)
 
@@ -116,7 +90,7 @@ def lost_listing_notification(user, listing):
 
 
 def listing_buy_now_notification(email, listing):
-    content = LISTING_BUY_NOW.format(listing.item.title, listing.current_offer)
+    content = LISTING_BUY_NOW.format(listing.item.title, listing.price)
 
     recipient = list()
     recipient.append(email)
@@ -131,7 +105,7 @@ def listing_buy_now_notification(email, listing):
 
 
 def listing_bought_notification(email, listing):
-    content = LISTING_PAID_FOR.format(listing.item.title, listing.current_offer)
+    content = LISTING_PAID_FOR.format(listing.item.title, listing.price)
 
     recipient = list()
     recipient.append(email)
@@ -192,7 +166,7 @@ def offer_accepted_notification(user, listing):
 
 
 def listing_bought_seller_notification(listing):
-    price = calc_payout(listing.current_offer)
+    price = calc_payout(listing.price)
     earnings = round(price, 2)
 
     content = LISTING_BOUGHT.format(listing.item.seller.username, listing.item.title, earnings)
@@ -211,7 +185,7 @@ def listing_bought_seller_notification(listing):
 
 
 def offer_accepted_seller_notification(listing):
-    price = calc_payout(listing.current_offer)
+    price = calc_payout(listing.price)
     earnings = round(price, 2)
 
     content = OFFER_OVER.format(listing.item.seller.username, listing.item.title, earnings)
