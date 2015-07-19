@@ -83,8 +83,7 @@ def edit_listing(request, listing_id):
                 'title': item.title,
                 'description': item.description,
                 'category': item.category,
-                'starting_offer': listing.starting_offer,
-                'buy_now_price': listing.buy_now_price,
+                'price': listing.price,
                 'zipcode': listing.zipcode
             }, listing=listing)
 

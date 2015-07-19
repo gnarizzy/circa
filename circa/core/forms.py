@@ -129,7 +129,6 @@ class AddressForm(forms.Form):
         self.user.userprofile.save()
 
 
-# For editing listing, as well as item
 class EditListingForm(forms.Form):
     # Information for Item
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), label="Title", max_length=100)
@@ -138,8 +137,7 @@ class EditListingForm(forms.Form):
     category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Item.CATEGORY_CHOICES)
 
     # Information for Listing
-    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), )
-    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
+    price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}))
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
 
     def __init__(self, *args, **kwargs):
@@ -147,29 +145,11 @@ class EditListingForm(forms.Form):
         super(EditListingForm, self).__init__(*args, **kwargs)
 
     # Make sure starting offer is at least $5.00, and that no offers have yet been made
-    def clean_starting_offer(self):
-        starting_offer = Decimal(self.cleaned_data['starting_offer'])
-        if self.listing.current_offer and starting_offer != self.listing.starting_offer:
-            raise forms.ValidationError("You can't edit the starting offer after an offer has been made.")
-
-        if starting_offer < 5:
-            raise forms.ValidationError("The minimum starting offer is $5.00.")
-        return starting_offer
-
-    # Make sure buy now price is at least 10% greater than starting offer
-    def clean_buy_now_price(self):
-        try:
-            starting_offer = self.cleaned_data['starting_offer']
-        # starting_offer doesn't exist because the form submission starting offer was invalid. May want to remove this
-        except KeyError:
-            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, "
-                                        "which must be at least $5.00")
-        buy_now_price = self.cleaned_data['buy_now_price']
-
-        if starting_offer * Decimal(1.0999) > buy_now_price:
-            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer.")
-
-        return buy_now_price
+    def clean_price(self):
+        price = Decimal(self.cleaned_data['price'])
+        if price < 5:
+            raise forms.ValidationError("The minimum price is $5.00.")
+        return price
 
     # Make sure a category is chosen
     def clean_category(self):
@@ -189,8 +169,7 @@ class EditListingForm(forms.Form):
         self.listing.item.title = self.cleaned_data['title']
         self.listing.item.description = self.cleaned_data['description']
         self.listing.item.category = self.cleaned_data['category']
-        self.listing.starting_offer = self.cleaned_data['starting_offer']
-        self.listing.buy_now_price = self.cleaned_data['buy_now_price']
+        self.listing.price = self.cleaned_data['price']
         self.listing.zipcode = self.cleaned_data['zipcode']
 
         self.listing.item.save()
