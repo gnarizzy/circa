@@ -103,20 +103,6 @@
                     <em>Ships from zipcode {{ item.listing.zipcode }}</em>
                     <br>
                     <br>
-                    {% if status == 2 %}
-                    The first offer will be accepted within <span class="red-text">one hour</span> unless a higher offer
-                    is made
-                    {% elif status == 1 %}
-                    <span class="red-text">This item has been claimed</span>
-                    {% else %}
-                    The current offer will be accepted in
-                    <br>
-                    <strong><span class="red-text"
-                                  id="time"> {{ minutes }} minutes and {{ seconds|add:"-1" }} seconds</span></strong>
-                    <br>
-                    unless a higher offer is made.
-                    {% endif %}
-                    <br>
                 </div>
 
                 <div class="col l4 m6 s12">
@@ -133,47 +119,10 @@
                 <div class="col l4 m6 s12">
                     <div>
                         <div class="card-title black-text">
-                            {% if status == 2 %}
-                            Asking price: ${{ item.listing.starting_offer }}
-                            {% else %}
-                            Current Offer: ${{ item.listing.current_offer }}
-                            {% endif %}
+                            Price: ${{ item.listing.price }}
                         </div>
-                        <br>
-
-                        <form class="form-inline" action="/listing/{{ listing.id }}/" method="post">
-                            <div class="form-group">
-                                {% csrf_token %}
-                                {{ form.non_field_errors }}
-                                <p class="input-field">
-                                    {{ form.offer.errors }}
-                                    <label for="{{ form.offer.id_for_label }}">Your Offer</label>
-                                    {{ form.offer }}
-                                </p>
-
-                                <p class="input-field">
-                                    {{ form.zipcode.errors }}
-                                    <label for="{{ form.zipcode.id_for_label }}">Zipcode</label>
-                                    {{ form.zipcode }}
-                                </p>
-                                {% if user.id and user.id == item.seller.id or status == 1%}
-                                <button class="btn teal accent-4 waves-effect waves-light disabled" type="submit"
-                                        name="action">Make Offer
-                                    <i class="mdi-content-send right"></i>
-                                </button>
-                                {% else %}
-                                <button class="btn teal accent-4 waves-effect waves-light" type="submit">Make Offer
-                                    <i class="mdi-content-send right"></i>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </form>
-                        <br>
-
                         <div class="form-group">
-                            <span class="card-title black-text">Buy now for: ${{ item.listing.buy_now_price }}</span>
-                            <br><br>
-                            {% if user.id and user.id == item.seller.id or status == 1%}
+                            {% if user.id and user.id == item.seller.id %}
                             <button class="btn light-blue accent-4 waves-effect waves-light disabled" type="submit"
                                     name="action">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>

@@ -4,21 +4,19 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidde
 from core.email import listing_bought_notification, listing_bought_seller_notification, lost_listing_notification, \
     offer_denied_notification, listing_free_confirm_notification, listing_bought_discount_notification
 from core.models import Item, Listing, UserProfile, PromoCode
-from core.forms import ItemForm, ListingForm, EditListingForm, OfferForm, PromoForm, AddressForm
+from core.forms import ItemListingForm, EditListingForm, PromoForm, AddressForm
 from core.keys import *
 from core.payout import calc_payout
 from core.zipcode import zipcodes
-from django.contrib.auth.models import User
-from django import forms
 from decimal import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from core.tasks import queue_for_email_notifications
 import json
 import stripe
 import requests
 
 import datetime
+
 
 # Home page that shows items with associated listings that haven't already ended
 def index(request):
@@ -27,6 +25,7 @@ def index(request):
         .order_by('-pk')
     context = {'items': item_list}
     return render(request, 'index.html', context)
+
 
 # Displays home page, but with specific category items only
 def category(request, category_name):
@@ -39,42 +38,20 @@ def category(request, category_name):
     else:
         return HttpResponseRedirect('/')
 
+
 # Posting an item
 @login_required
 def sell(request):
     if request.method == 'POST':
-        form = ItemForm(request.POST, request.FILES, seller=request.user)
+        form = ItemListingForm(request.POST, request.FILES, seller=request.user)
 
         if form.is_valid():
             item = form.save()
-            return HttpResponseRedirect('/createlisting/' + str(item.id))
+            return HttpResponseRedirect('/listing/' + str(item.listing.id))
     else:
-        form = ItemForm(seller=request.user)
+        form = ItemListingForm(seller=request.user)
     return render(request, 'sell.html', {'form': form})
 
-# creating an listing for previously posted item
-@login_required
-def create_listing(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
-
-    if item.listing:  # item already has a listing
-        return render(request, 'expired.html')
-
-    if item.seller.id is not request.user.id:  # some bro wants to create a listing for an item that is not his!
-        raise PermissionDenied
-
-    if request.method == 'POST':
-        form = ListingForm(request.POST, item=item)
-
-        if form.is_valid():
-            listing = form.save()
-            return HttpResponseRedirect('/listing/' + str(listing.id))
-
-    else:
-        form = ListingForm(item=item)
-
-    context = {'item': item, 'form': form}
-    return render(request, 'create_listing.html', context)
 
 @login_required
 def edit_listing(request, listing_id):
@@ -119,10 +96,6 @@ def edit_listing(request, listing_id):
 def listing_detail(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
 
-    default_offer = listing.current_offer + Decimal(1.00) if listing.current_offer else listing.starting_offer
-    # Pre-populate offer with $1.00 above current offer or starting offer
-    form = OfferForm(initial={'offer': default_offer}, listing=listing, user=request.user)
-
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
 
@@ -157,36 +130,20 @@ def listing_detail(request, listing_id):
 
         # Make an Offer
         else:
-            # TODO update item.buyer
-            form = OfferForm(request.POST, listing=listing, user=request.user)
             if request.user.is_authenticated():
-
-                if form.is_valid():
-                    prev_offer_user = listing.current_offer_user
-                    form.save()
-
-                    if prev_offer_user is not None and prev_offer_user is not request.user:
-                        offer_denied_notification(prev_offer_user, listing)
-
-                    queue_for_email_notifications(request.user.id, listing.id)
-
                     return HttpResponseRedirect(request.path)
 
             # Unauthenticated user. Redirect to login page, then bring 'em back here.
             else:
-                # TODO Figure out how to set next variable in context so manual url isn't needed
-                # TODO If they sign up through this chain of events, bring them back here
-                # TODO Save the offer they entered and pre-populate form with it when they are brought back here
                 return HttpResponseRedirect('/accounts/login/?next=/listing/' + str(listing.id))
 
     item = listing.item
-    status, minutes, seconds = get_status(listing)
-    amount = int(listing.buy_now_price * 100)
+    amount = int(listing.price * 100)
     stripe_amount = json.dumps(amount)
     item_json = json.dumps(item.title)
-    context = {'listing': listing, 'form': form, 'item': item, 'amount': stripe_amount, 'status': status,
-               'minutes': minutes, 'seconds': seconds, 'stripe_key': public_key()}
+    context = {'listing': listing, 'item': item, 'amount': stripe_amount, 'stripe_key': public_key()}
     return render(request, 'listing_detail.html', context)
+
 
 # Helper method for listing_detail
 def update_listing(listing, request, email):
@@ -202,21 +159,6 @@ def update_listing(listing, request, email):
         listing.current_offer_user = None  # change when we create accounts for buy-now people
     listing.save()
 
-# Helper method for listing_detail
-def get_status(listing):
-    minutes = 0
-    seconds = 0
-    if listing.end_date is None:
-        status = 2
-    elif listing.end_date < datetime.datetime.now():
-        status = 1
-    else:
-        status = 0
-        minutes, seconds = divmod((listing.end_date - datetime.datetime.now()).total_seconds(), 60)
-        minutes = round(minutes)
-        seconds = round(seconds)
-
-    return status, minutes, seconds
 
 # Shows all outstanding, unpaid listings for user
 @login_required

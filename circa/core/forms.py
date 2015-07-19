@@ -5,11 +5,20 @@ from decimal import *
 from django import forms
 
 
-class ItemForm(forms.ModelForm):
+class ItemListingForm(forms.ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'class': 'validate'}), label="Title", max_length=100)
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea validate'}),
                                   label="Description")
     category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Item.CATEGORY_CHOICES)
+    price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
+    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
+
+    # Make sure starting offer is at least $5.00
+    def clean_price(self):
+        price = self.cleaned_data['price']
+        if price < 5:
+            raise forms.ValidationError("The minimum price is $5.00.")
+        return price
 
     # Make sure a category is chosen
     def clean_category(self):
@@ -18,48 +27,7 @@ class ItemForm(forms.ModelForm):
             raise forms.ValidationError("You must choose a category for your item.")
         return category
 
-    def __init__(self, *args, **kwargs):
-        self.seller = kwargs.pop('seller')
-        super().__init__(*args, **kwargs)
-
-    def save(self):
-        item = super().save(commit=False)
-        item.seller = self.seller
-        item.save()
-        return item
-
-    class Meta:
-        model = Item
-        fields = ('title', 'description', 'category', 'photo')
-
-
-class ListingForm(forms.ModelForm):
-    starting_offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), )
-    buy_now_price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
-    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
-
-    # Make sure starting offer is at least $5.00
-    def clean_starting_offer(self):
-        starting_offer = self.cleaned_data['starting_offer']
-        if starting_offer < 5:
-            raise forms.ValidationError("The minimum starting offer is $5.00.")
-        return starting_offer
-
-    # Make sure buy now price is at least 10% greater than starting offer
-    def clean_buy_now_price(self):
-        try:
-            starting_offer = self.cleaned_data['starting_offer']
-        except KeyError:  # starting_offer doesn't exist because it was invalid
-            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer, which must "
-                                        "be at least $5.00.")
-        buy_now_price = self.cleaned_data['buy_now_price']
-
-        if starting_offer * Decimal(1.0999) > buy_now_price:
-            raise forms.ValidationError("Buy now price must be at least 10% higher than starting offer.")
-
-        return buy_now_price
-
-    # make sure shipping zip code is one we deliver to
+    # Make sure shipping zip code is one we deliver to
     def clean_zipcode(self):
         zip_code = self.cleaned_data['zipcode']
         if zip_code not in zipcodes():
@@ -67,76 +35,23 @@ class ListingForm(forms.ModelForm):
         return zip_code
 
     def __init__(self, *args, **kwargs):
-        self.item = kwargs.pop('item')
+        self.seller = kwargs.pop('seller')
         super().__init__(*args, **kwargs)
 
-    def save(self):
-        listing = super().save()
-        self.item.listing = listing
-        self.item.save()
-        return listing
+    def save(self, commit=True):
+        item = super().save(commit=False)
+        listing = Listing.objects.create(
+            price=self.cleaned_data['price'],
+            zipcode=self.cleaned_data['zipcode']
+        )
+        item.listing = listing
+        item.seller = self.seller
+        item.save()
+        return item
 
     class Meta:
-        model = Listing
-        fields = ('starting_offer', 'buy_now_price', 'zipcode')
-
-
-class OfferForm(forms.Form):
-    offer = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
-                               label='Your offer', decimal_places=2)
-    zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control'}),
-                                 label='Zip code')
-
-    def __init__(self, *args, **kwargs):
-        self.listing = kwargs.pop('listing')  # Grabs current listing ID
-        self.user = kwargs.pop('user')  # Grabs current user
-        super(OfferForm, self).__init__(*args, **kwargs)
-
-    # Check to make sure offer isn't higher than buy it now?
-
-    # Make sure submitted offer is greater than current offer
-    def clean_offer(self):
-        offer = self.cleaned_data['offer']
-
-        if self.listing:
-
-            # User submitted offer on their own auction
-            if self.user and self.user.id is self.listing.item.seller.id:
-                raise forms.ValidationError("You can't submit an offer on your own item.")
-
-            listing_offer = self.listing.current_offer
-
-            # No current offer, meaning no initial offer has been made
-            if not listing_offer:
-
-                if offer < self.listing.starting_offer:
-                    raise forms.ValidationError("Your offer cannot be less than the asking price.")
-            else:
-
-                if offer <= listing_offer:
-                    raise forms.ValidationError("Your offer must be greater than the current offer.")
-
-        return offer
-
-    # Make sure shipping zip code is one we deliver to
-    def clean_zipcode(self):
-        zip_code = self.cleaned_data['zipcode']
-
-        if zip_code not in zipcodes():
-            raise forms.ValidationError("Unfortunately, Circa is only available in metro Atlanta. Visit our "
-                                        "help page to see which zipcodes are available.")
-        return zip_code
-
-    def save(self):
-        offer = self.cleaned_data['offer']
-        self.listing.current_offer = offer
-        self.listing.end_date = datetime.now() + timedelta(hours=1)
-        self.listing.current_offer_user = self.user
-
-        if offer * Decimal(1.0999) > self.listing.buy_now_price:
-            self.listing.buy_now_price = offer * Decimal(1.1000000)
-
-        self.listing.save()
+        model = Item
+        fields = {'title', 'description', 'category', 'photo'}
 
 
 class PromoForm(forms.Form):

@@ -4,14 +4,11 @@ from django.contrib.auth.models import User
 from image_cropping import ImageCropField, ImageRatioField
 # Create your models here.
 
+
 class Listing(models.Model):
-    starting_offer = models.DecimalField(max_digits=6, decimal_places=2, default=5.00)
-    current_offer = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
-    buy_now_price = models.DecimalField(max_digits=6, decimal_places=2, default=5.50)
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=5.00)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField(null=True, blank=True)
-    current_offer_user = models.ForeignKey(User, null=True, blank=True)
-    buy_now_email = models.EmailField(blank=True, null=True)  # temporary field until we create users from buy now purchases
     zipcode = models.IntegerField(default=0)
     paid_for = models.BooleanField(default=False)
     payout = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
@@ -19,6 +16,7 @@ class Listing(models.Model):
 
     def __str__(self):
         return str(self.id)
+
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
@@ -73,12 +71,14 @@ class Address(models.Model):
     def __str__(self):
         return str(self.address_line_1)
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     address = models.OneToOneField(Address, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
+
 
 class PromoCode(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
