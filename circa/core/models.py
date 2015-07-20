@@ -2,6 +2,7 @@ from django.db import models
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from image_cropping import ImageCropField, ImageRatioField
+from django.utils.text import slugify
 # Create your models here.
 
 
@@ -13,6 +14,7 @@ class Listing(models.Model):
     paid_for = models.BooleanField(default=False)
     payout = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     discount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+
 
     def __str__(self):
         return str(self.id)
@@ -26,6 +28,7 @@ class Item(models.Model):
     listing = models.OneToOneField(Listing, null=True)
     seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # Many items per one seller
     buyer = models.ForeignKey(User, related_name='buyer_profile', null=True, blank=True)
+    slug = models.SlugField()
 
     UNCLASSIFIED = 0
     ELECTRONICS = 1
@@ -51,6 +54,9 @@ class Item(models.Model):
     category = models.IntegerField(choices=CATEGORY_CHOICES, default=UNCLASSIFIED)
 
     def save(self, *args, **kwargs):
+        if not self.id:
+            #newly created object, so create slug. This ensures if title changes there are no broken links
+            self.slug = slugify(self.title)
         if self.seller is not None and self.buyer is not None and self.seller == self.buyer:
             raise IntegrityError('seller cannot also be the buyer')
         else:

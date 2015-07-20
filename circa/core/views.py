@@ -52,6 +52,32 @@ def sell(request):
         form = ItemListingForm(seller=request.user)
     return render(request, 'sell.html', {'form': form})
 
+<<<<<<< HEAD
+=======
+# creating an listing for previously posted item
+@login_required
+def create_listing(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+
+    if item.listing:  # item already has a listing
+        return render(request, 'expired.html')
+
+    if item.seller.id is not request.user.id:  # some bro wants to create a listing for an item that is not his!
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        form = ListingForm(request.POST, item=item)
+
+        if form.is_valid():
+            listing = form.save()
+            return HttpResponseRedirect('/listing/' + str(listing.id)+'/')
+
+    else:
+        form = ListingForm(item=item)
+
+    context = {'item': item, 'form': form}
+    return render(request, 'create_listing.html', context)
+>>>>>>> slugify-url
 
 @login_required
 def edit_listing(request, listing_id):
@@ -90,10 +116,16 @@ def edit_listing(request, listing_id):
     context = {'item': item, 'listing': listing, 'form': form}
     return render(request, 'edit_listing.html', context)
 
+# URL with no slug, redirect to url with slug
+def listing_detail_no_slug(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
 
 # Displays the requested listing along with info about listing item, or 404 page
-def listing_detail(request, listing_id):
+def listing_detail(request, listing_id, listing_slug):
     listing = get_object_or_404(Listing, pk=listing_id)
+    if listing_slug != listing.item.slug:
+        return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
 
     if request.method == 'POST':
         token = request.POST.get('stripeToken', False)
