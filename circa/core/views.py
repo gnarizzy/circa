@@ -174,7 +174,7 @@ def pay(request, listing_id):
         return render(request, 'expired.html')
 
     # Amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
-    if listing.current_offer - listing.discount < Decimal(0.50):
+    if listing.price - listing.discount < Decimal(0.50):
         free = 1
 
     if request.method == 'POST':
@@ -295,8 +295,6 @@ def help(request):
 def dashboard(request):
     now = datetime.datetime.now()
     user = request.user
-    pending_num = Listing.objects.filter(current_offer_user=user).filter(paid_for=False).filter(end_date__lt=now).count()
-    offers_num = Listing.objects.filter(current_offer_user=user).filter(end_date__gt=now).count()
     earnings_num = 0
     active_items_num = 0
     items = Item.objects.filter(seller=user)
@@ -315,13 +313,9 @@ def dashboard(request):
             # Listed item, but no offers
             if not item.listing.end_date:
                 active_items_num += 1
-    orders = []
-    bought = Listing.objects.filter(current_offer_user=user).filter(paid_for=True)
-    for order in bought:
-        orders.append(order.item)
+    bought = Item.objects.filter(buyer=user)
 
-    context = {'pending': pending_num, 'offers': offers_num, 'earnings': earnings_num,
-               'orders': orders, 'active_items': active_items_num}
+    context = {'earnings': earnings_num, 'orders': bought, 'active_items': active_items_num}
     return render(request, 'dashboard.html', context)
 
 
