@@ -47,7 +47,7 @@ def sell(request):
 
         if form.is_valid():
             item = form.save()
-            return HttpResponseRedirect('/createlisting/' + str(item.id))
+            return HttpResponseRedirect('/createlisting/' + str(item.id)+'/')
     else:
         form = ItemForm(seller=request.user)
     return render(request, 'sell.html', {'form': form})
@@ -68,7 +68,7 @@ def create_listing(request, item_id):
 
         if form.is_valid():
             listing = form.save()
-            return HttpResponseRedirect('/listing/' + str(listing.id))
+            return HttpResponseRedirect('/listing/' + str(listing.id)+'/')
 
     else:
         form = ListingForm(item=item)
@@ -114,10 +114,16 @@ def edit_listing(request, listing_id):
     context = {'item': item, 'listing': listing, 'form': form}
     return render(request, 'edit_listing.html', context)
 
+# URL with no slug, redirect to url with slug
+def listing_detail_no_slug(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
 
 # Displays the requested listing along with info about listing item, or 404 page
-def listing_detail(request, listing_id):
+def listing_detail(request, listing_id, listing_slug):
     listing = get_object_or_404(Listing, pk=listing_id)
+    if listing_slug != listing.item.slug:
+        return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
 
     default_offer = listing.current_offer + Decimal(1.00) if listing.current_offer else listing.starting_offer
     # Pre-populate offer with $1.00 above current offer or starting offer
