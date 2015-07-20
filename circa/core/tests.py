@@ -492,3 +492,9 @@ class PromoTest(TestCase):
         self.assertEqual(form.errors, {
             'code': ['Sorry, that\'s not your code!']
         })
+
+
+#slug tests
+#1) correct id but incorrect slug redirects to correct slugified url (/listing/40/asdas redirects to /listing/40/actual-slug)
+#2) correct id but no slug redirects to slugified url, (/listing/40/ redirects to /listing/40/actual-slug)
+#3) correct slug--slug = slugify(item.title)(uses django.utils.text slugify method)
