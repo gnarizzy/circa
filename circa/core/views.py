@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
-from core.email import listing_bought_notification, listing_bought_seller_notification, \
-    listing_free_confirm_notification, listing_bought_discount_notification
+from core.email import listing_bought_seller_notification, admin_notification_of_sale, \
+    listing_bought_notification
 from core.models import Item, Listing, UserProfile, PromoCode
 from core.forms import ItemListingForm, EditListingForm, PromoForm, AddressForm
 from core.keys import *
@@ -120,12 +120,7 @@ def listing_detail(request, listing_id, listing_slug):
                     source=token,
                     description="Circa Buy Now " + str(listing_id) + ": " + str(listing.item.title)
                 )
-                listing.item.buyer = request.user
-                listing.item.save()
                 update_listing(listing, request)
-
-                listing_bought_notification(request.user.email, listing)
-                listing_bought_seller_notification(listing)
 
                 if hasattr(request.user, 'userprofile'):
                     return HttpResponseRedirect('/confirm/' + str(listing.id))
@@ -176,97 +171,97 @@ def pending(request):
 
 
 # Uses stripe checkout for user to pay for listing once offer has been accepted
-@login_required
-def pay(request, listing_id):
-    free = 0
-    listing = get_object_or_404(Listing, pk=listing_id)
-    item = listing.item
-    user_address = request.user.userprofile.address
-
-    # User is trying to pay for someone else's listing
-    if request.user.id is not listing.current_offer_user.id:
-        raise PermissionDenied
-
-    # User already paid for item
-    if listing.paid_for:
-        return render(request, 'expired.html')
-
-    # Amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
-    if listing.price - listing.discount < Decimal(0.50):
-        free = 1
-
-    if request.method == 'POST':
-        form = PromoForm(request.POST, user=request.user, listing=listing)
-        token = request.POST.get('stripeToken', False)
-        # Successfully submitted Stripe
-        if token:
-            email = request.POST['stripeEmail']
-            stripe.api_key = secret_key()
-            amount_in_cents = int((listing.current_offer - listing.discount) * 100)
-            try:
-                charge = stripe.Charge.create(
-                    amount=amount_in_cents,
-                    currency="usd",
-                    source=token,
-                    description="Circa Sale " + str(listing_id) + ": " + str(listing.item.title)
-                )
-                item.buyer = request.user
-                listing.paid_for = True
-                listing.payout = calc_payout(listing.current_offer)
-                listing.save()
-                item.save()
-
-                if listing.discount > Decimal(0.00):
-                    listing_bought_discount_notification(email, listing.item.title,
-                                                         listing.current_offer - listing.discount)
-                else:
-                    listing_bought_notification(email, listing)
-
-                return HttpResponseRedirect('/success/')
-
-            except stripe.error.CardError as e:
-                messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
-                                        'the problem may be with our payment processing system.  Wait an hour or '
-                                        'so and try again.  If the problem persists, please contact us at '
-                                        'support@usecirca.com so we can help sort out the issue.')
-                return HttpResponseRedirect(request.path)
-
-        else:
-            # Submit promo code form
-            if 'confirm_' in request.POST:  # confirm button
-                listing.paid_for = True
-                listing.payout = calc_payout(listing.current_offer)
-                listing.save()
-                item.save()
-
-                listing_free_confirm_notification(listing.current_offer_user.email, listing)
-
-                return HttpResponseRedirect('/success/')
-
-            if form.is_valid():
-                form.save()
-                return HttpResponseRedirect(request.path)
-
-    else:
-        form = PromoForm(user=request.user, listing=listing)
-
-    elapsed = datetime.datetime.now() - listing.end_date
-    days = elapsed.days
-    hours, remainder = divmod(elapsed.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    if listing.discount > 0:
-        amount = int((listing.current_offer - listing.discount) * 100)
-        discounted_price = listing.current_offer - listing.discount
-
-    else:
-        amount = int(listing.current_offer * 100)
-        discounted_price = None
-
-    stripe_amount = json.dumps(amount)
-    context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
-               'listing': listing, 'amount': stripe_amount, 'discounted_price': discounted_price, 'item': item,
-               'form': form, 'free': free, 'address': user_address}
-    return render(request, 'pay.html', context)
+# @login_required
+# def pay(request, listing_id):
+#     free = 0
+#     listing = get_object_or_404(Listing, pk=listing_id)
+#     item = listing.item
+#     user_address = request.user.userprofile.address
+#
+#     # User is trying to pay for someone else's listing
+#     if request.user.id is not listing.current_offer_user.id:
+#         raise PermissionDenied
+#
+#     # User already paid for item
+#     if listing.paid_for:
+#         return render(request, 'expired.html')
+#
+#     # Amount after discount is under 31 cents, meaning we'd barely make anything or even lose money
+#     if listing.price - listing.discount < Decimal(0.50):
+#         free = 1
+#
+#     if request.method == 'POST':
+#         form = PromoForm(request.POST, user=request.user, listing=listing)
+#         token = request.POST.get('stripeToken', False)
+#         # Successfully submitted Stripe
+#         if token:
+#             email = request.POST['stripeEmail']
+#             stripe.api_key = secret_key()
+#             amount_in_cents = int((listing.current_offer - listing.discount) * 100)
+#             try:
+#                 charge = stripe.Charge.create(
+#                     amount=amount_in_cents,
+#                     currency="usd",
+#                     source=token,
+#                     description="Circa Sale " + str(listing_id) + ": " + str(listing.item.title)
+#                 )
+#                 item.buyer = request.user
+#                 listing.paid_for = True
+#                 listing.payout = calc_payout(listing.current_offer)
+#                 listing.save()
+#                 item.save()
+#
+#                 if listing.discount > Decimal(0.00):
+#                     listing_bought_discount_notification(email, listing.item.title,
+#                                                          listing.current_offer - listing.discount)
+#                 else:
+#                     listing_bought_notification(email, listing)
+#
+#                 return HttpResponseRedirect('/success/')
+#
+#             except stripe.error.CardError as e:
+#                 messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
+#                                         'the problem may be with our payment processing system.  Wait an hour or '
+#                                         'so and try again.  If the problem persists, please contact us at '
+#                                         'support@usecirca.com so we can help sort out the issue.')
+#                 return HttpResponseRedirect(request.path)
+#
+#         else:
+#             # Submit promo code form
+#             if 'confirm_' in request.POST:  # confirm button
+#                 listing.paid_for = True
+#                 listing.payout = calc_payout(listing.current_offer)
+#                 listing.save()
+#                 item.save()
+#
+#                 listing_free_confirm_notification(listing.current_offer_user.email, listing)
+#
+#                 return HttpResponseRedirect('/success/')
+#
+#             if form.is_valid():
+#                 form.save()
+#                 return HttpResponseRedirect(request.path)
+#
+#     else:
+#         form = PromoForm(user=request.user, listing=listing)
+#
+#     elapsed = datetime.datetime.now() - listing.end_date
+#     days = elapsed.days
+#     hours, remainder = divmod(elapsed.seconds, 3600)
+#     minutes, seconds = divmod(remainder, 60)
+#     if listing.discount > 0:
+#         amount = int((listing.current_offer - listing.discount) * 100)
+#         discounted_price = listing.current_offer - listing.discount
+#
+#     else:
+#         amount = int(listing.current_offer * 100)
+#         discounted_price = None
+#
+#     stripe_amount = json.dumps(amount)
+#     context = {'days': days, 'hours': hours, 'minutes': minutes, 'stripe_key': public_key(),
+#                'listing': listing, 'amount': stripe_amount, 'discounted_price': discounted_price, 'item': item,
+#                'form': form, 'free': free, 'address': user_address}
+#     return render(request, 'pay.html', context)
 
 
 # Allows users to connect their Stripe accounts to Circa
@@ -304,10 +299,6 @@ def about(request):
 def confirm(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
 
-    print(request.user)
-    print(listing.item)
-    print(listing.item.buyer)
-
     # User is trying to pay for someone else's listing
     if request.user.id is not listing.item.buyer.id:
         raise PermissionDenied
@@ -321,6 +312,13 @@ def confirm(request, listing_id):
             return HttpResponseRedirect('/address/?next=/confirm/' + str(listing.id))
 
         else:
+            listing.address_confirmed = True
+            listing.save()
+
+            listing_bought_notification(listing)
+            listing_bought_seller_notification(listing)
+            admin_notification_of_sale(listing)
+
             return HttpResponseRedirect('/success/')
 
     if hasattr(request.user, 'userprofile'):
@@ -447,7 +445,6 @@ def address(request):
             form = AddressForm(initial={
                 'state': AddressForm.INITIAL_STATE
             }, user=request.user)
-
 
     context = {'form': form, 'next': request.GET.get('next', '/')}
     return render(request, 'address.html', context)

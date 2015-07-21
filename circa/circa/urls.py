@@ -5,6 +5,7 @@ from django.conf.urls.static import static  # New Import
 from django.contrib import admin
 from registration.backends.simple.views import RegistrationView
 
+
 class MyRegistrationView(RegistrationView):
     def get_success_url(self,request, user):
         url = request.GET.get('next')
@@ -25,7 +26,7 @@ urlpatterns = patterns('',
     url(r'^confirm/(?P<listing_id>\d+)', 'core.views.confirm', name='confirm'),
     url(r'^help/', 'core.views.help', name='help'),
     url(r'^pending/', 'core.views.pending', name='pending'),
-    url(r'^pay/(?P<listing_id>\d+)/$', 'core.views.pay', name='pay'),
+    # url(r'^pay/(?P<listing_id>\d+)/$', 'core.views.pay', name='pay'),
     url(r'^connect/', 'core.views.connect', name='connect'),
     url(r'^category/(?P<category_name>[a-z]+)', 'core.views.category', name='category'),
     url(r'^about/', 'core.views.about', name='about'),
