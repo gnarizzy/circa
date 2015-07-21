@@ -18,7 +18,7 @@ Payment Successful
         <div class="col s12 m6 offset-m3">
             <div class="card">
                 <div class="card-content center">
-                    <span class="card-title black-text">Confirm your address</span>
+                    <span id="confirm-address" class="card-title black-text">Confirm your address</span>
 
                     <p style="font-weight: bold;">
                         You're almost done!  Just confirm that it's going to the right place:
@@ -43,7 +43,8 @@ Payment Successful
                     </form>
                     <form style="float: right;" action="{{ request.path }}" method="POST">
                         {% csrf_token %}
-                        <button name="confirm" class="waves-effect waves-light btn green lighten-2 white-text right"
+                        <button id="confirm-button" name="confirm"
+                                class="waves-effect waves-light btn green lighten-2 white-text right"
                                 type="submit">
                             Confirm
                         </button>

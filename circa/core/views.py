@@ -145,6 +145,7 @@ def listing_detail(request, listing_id, listing_slug):
 # Helper method for listing_detail
 def update_listing(listing, request):
     listing.item.buyer = request.user
+    listing.item.save()
     listing.end_date = datetime.datetime.now()
     listing.paid_for = True
     listing.payout = calc_payout(listing.price)
