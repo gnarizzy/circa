@@ -71,19 +71,11 @@ class NewVisitorTest(LiveServerTestCase):
         category_field.select_by_value('5')
         photo_field = self.browser.find_element_by_id('id_photo')
         photo_field.send_keys(os.getcwd() + '\\functional_tests\\func_test_image.jpg')
+        price_field = self.browser.find_element_by_id('id_price')
+        price_field.send_keys('50')
+        zip_field = self.browser.find_element_by_id('id_zipcode')
+        zip_field.send_keys('30313')
         self.browser.find_element_by_id('list-item-button').click()
-
-        # Titillating from the excitement of posting an item, Jeremy swiftly punches in his price and
-        # a valid zip code
-        listing_header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Create a listing', listing_header_text)
-        starting_offer_field = self.browser.find_element_by_id('id_starting_offer')
-        starting_offer_field.send_keys('100')
-        buy_now_field = self.browser.find_element_by_id('id_buy_now_price')
-        buy_now_field.send_keys('140')
-        zipcode_field = self.browser.find_element_by_id('id_zipcode')
-        zipcode_field.send_keys('30313')
-        zipcode_field.send_keys(Keys.ENTER)
 
         # Alas, all his hard work paid off and Jeremy beheld his post in all its glory
         listing_title_text = self.browser.find_element_by_id('title-large').text
@@ -170,25 +162,23 @@ class NewVisitorTest(LiveServerTestCase):
         listing_card = self.browser.find_element_by_id('1')
         listing_card.click()
 
-        # This is just what she's been looking for in her collection.  She decides to make an offer.
-        zipcode_field = self.browser.find_element_by_id('id_zipcode')
-        zipcode_field.send_keys('30313')
-        zipcode_field.send_keys(Keys.ENTER)
+        # This is just what she's been looking for to add to her collection!  She immediately buys it
+        buy_button = self.browser.find_element_by_id('buy-item')
+        buy_button.click()
 
-        # She excitedly sees that she is now the top offer!
-        page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn('You currently have the highest offer!', page_text)
+        time.sleep(3)
 
-        # She now happily awaits for her offer to be accepted
+        stripe_frame = self.browser.find_element_by_tag_name('iframe')
+        var = self.browser.switch_to.frame(stripe_frame)
 
-        # In the meantime, some trickery goes on behind the scenes to generate a promo code so that Andrew can test it.
-        abbey = User.objects.get(pk=2)
-        PromoCode.objects.create(user=abbey, code='12345', value=5)
-
-        # More trickery is used to speed up time and make that offer be accepted.
-        dragon_listing = Listing.objects.get(pk=1)
-        dragon_listing.end_date = datetime.now()
-        dragon_listing.save()
+        stripe_cc_num = var.find_element_by_id('card_number')
+        stripe_cc_num.send_keys('4242424242424242')
+        stripe_cc_exp = var.find_element_by_id('cc_exp')
+        stripe_cc_exp.send_keys('0817')
+        stripe_cc_csc = var.find_element_by_id('cc_csc')
+        stripe_cc_csc.send_keys('4242')
+        pay_now = var.find_element_by_id('submitButton')
+        pay_now.click()
 
         # Now that it has totally been an hour, Abigail refreshes the page to see that the sword is now gone!
         self.browser.get(self.live_server_url)

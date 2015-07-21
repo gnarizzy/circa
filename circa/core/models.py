@@ -14,7 +14,7 @@ class Listing(models.Model):
     paid_for = models.BooleanField(default=False)
     payout = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     discount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-
+    address_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
@@ -55,7 +55,7 @@ class Item(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            #newly created object, so create slug. This ensures if title changes there are no broken links
+            # Newly created object, so create slug. This ensures if title changes there are no broken links
             self.slug = slugify(self.title)
         if self.seller is not None and self.buyer is not None and self.seller == self.buyer:
             raise IntegrityError('seller cannot also be the buyer')

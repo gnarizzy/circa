@@ -52,32 +52,6 @@ def sell(request):
         form = ItemListingForm(seller=request.user)
     return render(request, 'sell.html', {'form': form})
 
-<<<<<<< HEAD
-=======
-# creating an listing for previously posted item
-@login_required
-def create_listing(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
-
-    if item.listing:  # item already has a listing
-        return render(request, 'expired.html')
-
-    if item.seller.id is not request.user.id:  # some bro wants to create a listing for an item that is not his!
-        raise PermissionDenied
-
-    if request.method == 'POST':
-        form = ListingForm(request.POST, item=item)
-
-        if form.is_valid():
-            listing = form.save()
-            return HttpResponseRedirect('/listing/' + str(listing.id)+'/')
-
-    else:
-        form = ListingForm(item=item)
-
-    context = {'item': item, 'form': form}
-    return render(request, 'create_listing.html', context)
->>>>>>> slugify-url
 
 @login_required
 def edit_listing(request, listing_id):
@@ -116,14 +90,20 @@ def edit_listing(request, listing_id):
     context = {'item': item, 'listing': listing, 'form': form}
     return render(request, 'edit_listing.html', context)
 
+
 # URL with no slug, redirect to url with slug
 def listing_detail_no_slug(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
 
+
 # Displays the requested listing along with info about listing item, or 404 page
 def listing_detail(request, listing_id, listing_slug):
     listing = get_object_or_404(Listing, pk=listing_id)
+
+    if listing.item.buyer:
+        return render(request, 'expired.html')
+
     if listing_slug != listing.item.slug:
         return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
 
@@ -140,12 +120,18 @@ def listing_detail(request, listing_id, listing_slug):
                     source=token,
                     description="Circa Buy Now " + str(listing_id) + ": " + str(listing.item.title)
                 )
+                listing.item.buyer = request.user
+                listing.item.save()
                 update_listing(listing, request)
 
                 listing_bought_notification(request.user.email, listing)
                 listing_bought_seller_notification(listing)
 
-                return HttpResponseRedirect('/success/')
+                if hasattr(request.user, 'userprofile'):
+                    return HttpResponseRedirect('/confirm/' + str(listing.id))
+
+                else:
+                    return HttpResponseRedirect('/address/?next=/confirm/' + str(listing.id))
 
             except stripe.error.CardError:
                 messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
@@ -314,6 +300,37 @@ def about(request):
     return render(request, 'about.html', context)
 
 
+@login_required
+def confirm(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+
+    print(request.user)
+    print(listing.item)
+    print(listing.item.buyer)
+
+    # User is trying to pay for someone else's listing
+    if request.user.id is not listing.item.buyer.id:
+        raise PermissionDenied
+
+    # User already paid for item
+    if listing.address_confirmed:
+        return render(request, 'expired.html')
+
+    if request.method == 'POST':
+        if 'change' in request.POST:
+            return HttpResponseRedirect('/address/?next=/confirm/' + str(listing.id))
+
+        else:
+            return HttpResponseRedirect('/success/')
+
+    if hasattr(request.user, 'userprofile'):
+        context = {'address': request.user.userprofile.address}
+        return render(request, 'confirm.html', context)
+
+    else:
+        return HttpResponseRedirect('/address/?next=/confirm/' + str(listing.id))
+
+
 def success(request):
     return render(request, 'success.html')
 
@@ -406,6 +423,7 @@ def active_items(request):
     context = {'active_items': active_items_list, 'unpaid_items': unpaid_items_list, 'no_offers': no_offers_items_list}
     return render(request, 'active_items.html', context)
 
+
 @login_required
 def address(request):
     if request.method == 'POST':
@@ -414,7 +432,22 @@ def address(request):
             form.save()
             return HttpResponseRedirect(request.POST.get('next', '/'))
     else:
-        form = AddressForm(initial={'state': AddressForm.INITIAL_STATE}, user=request.user)
+        if hasattr(request.user, 'userprofile'):
+            addr = request.user.userprofile.address
+            form = AddressForm(initial={
+                'address_line_1': addr.address_line_1,
+                'address_line_2': addr.address_line_2,
+                'city': addr.city,
+                'state': addr.state,
+                'zipcode': addr.zipcode,
+                'special_instructions': addr.special_instructions
+            }, user=request.user)
+
+        else:
+            form = AddressForm(initial={
+                'state': AddressForm.INITIAL_STATE
+            }, user=request.user)
+
 
     context = {'form': form, 'next': request.GET.get('next', '/')}
     return render(request, 'address.html', context)

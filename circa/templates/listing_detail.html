@@ -97,18 +97,19 @@
                         <div class="form-group">
                             {% if user.id and user.id == item.seller.id %}
                             <button class="btn light-blue accent-4 waves-effect waves-light disabled" type="submit"
-                                    name="action">Buy Now
+                                    name="action" id="buy-item-disabled">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </button>
                             {% elif not user.id %}
                             <a class="btn light-blue accent-4 waves-effect waves-light" type="submit"
-                                    name="action" href="/accounts/login/?next=/listing/{{ listing.id }}">Buy Now
+                                    name="action" href="/accounts/login/?next=/listing/{{ listing.id }}"
+                                    id="buy-item-redirect">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </a>
                             {% else %}
                             <script src="https://checkout.stripe.com/checkout.js"></script>
 
-                            <button id="buyNow" class="btn light-blue accent-4 waves-effect waves-light" type="submit"
+                            <button id="buy-item" class="btn light-blue accent-4 waves-effect waves-light" type="submit"
                                     name="action">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </button>
@@ -126,7 +127,7 @@
                                         }
                                       });
 
-                                      $('#buyNow').on('click', function(e) {
+                                      $('#buy-item').on('click', function(e) {
                                         // Open Checkout with further options
                                         handler.open({
                                           name: 'Circa',
