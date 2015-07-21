@@ -159,15 +159,15 @@ def pending(request):
         return HttpResponseRedirect('/address/?next=/pending/')
 
     # find listings where user is the highest offer user, payment has not been received, and have already ended
-    now = datetime.datetime.now()
-    user = request.user
     items = []
-    listings = Listing.objects.filter(current_offer_user=user).filter(paid_for=False).filter(end_date__lt=now)
+    listings = Listing.objects.filter(paid_for=True).filter(address_confirmed=False)
     for listing in listings:
         try:
             items.append(listing.item)
+
         except ObjectDoesNotExist:  # listing has no related item
             pass
+
     return render(request, 'pending.html', {'items': items})
 
 
