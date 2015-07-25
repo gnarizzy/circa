@@ -111,6 +111,8 @@ def listing_detail_no_slug(request, listing_id):
 # Displays the requested listing along with info about listing item, or 404 page
 def listing_detail(request, listing_id, listing_slug):
     listing = get_object_or_404(Listing, pk=listing_id)
+    if request.user.is_authenticated:
+        form = PromoForm(user=request.user, listing=listing)
 
     if listing.item.buyer:
         return render(request, 'expired.html')
@@ -122,45 +124,76 @@ def listing_detail(request, listing_id, listing_slug):
         token = request.POST.get('stripeToken', False)
 
         if token:
-            stripe.api_key = secret_key()
-            amount_in_cents = int(listing.price * 100)
-            try:
-                charge = stripe.Charge.create(
-                    amount=amount_in_cents,
-                    currency="usd",
-                    source=token,
-                    description="Circa Buy Now " + str(listing_id) + ": " + str(listing.item.title)
-                )
-                update_listing(listing, request)
+            return handle_stripe(request, listing, token)
 
-                if hasattr(request.user, 'userprofile'):
-                    return HttpResponseRedirect('/confirm/' + str(listing.id))
-
-                else:
-                    return HttpResponseRedirect('/address/?next=/confirm/' + str(listing.id))
-
-            except stripe.error.CardError:
-                messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
-                                        'the problem may be with our payment processing system.  Wait an hour or '
-                                        'so and try again.  If the problem persists, please contact us at '
-                                        'support@usecirca.com so we can help sort out the issue.')
-                return HttpResponseRedirect(request.path)
+        else:
+            form = PromoForm(request.POST, user=request.user, listing=listing)
+            if form.is_valid():
+                form.save()
 
     item = listing.item
     amount = int(listing.price * 100)
     stripe_amount = json.dumps(amount)
-    context = {'listing': listing, 'item': item, 'amount': stripe_amount, 'stripe_key': public_key()}
+    context = {'listing': listing, 'item': item, 'amount': stripe_amount, 'stripe_key': public_key(),
+               'form': form}
+
+    if request.user.is_authenticated and listing.promocode_set.all().count() > 0:
+        for promo in listing.promocode_set.all():
+            if promo.user.id is request.user.id:
+                context['discount'] = promo.value
+                context['discounted_price'] = listing.price - promo.value
+                context['discounted_price_amount'] = (listing.price - promo.value) * Decimal(100)
+                break
+
     return render(request, 'listing_detail.html', context)
 
+def handle_stripe(request, listing, token):
+    stripe.api_key = secret_key()
+    promo_code = None
+    amount_in_cents = -1
+    if listing.promocode_set.all().count() > 0:
+        for promo in listing.promocode_set.all():
+            if promo.user.id is request.user.id:
+                promo_code = promo
+                amount_in_cents = int((listing.price - promo.value) * 100)
+                break
+
+    if amount_in_cents == -1:
+        amount_in_cents = int(listing.price * 100)
+
+    try:
+        charge = stripe.Charge.create(
+            amount=amount_in_cents,
+            currency="usd",
+            source=token,
+            description="Circa Buy Now " + str(listing.id) + ": " + str(listing.item.title)
+        )
+        update_listing(listing, request, promo_code)
+
+        if hasattr(request.user, 'userprofile'):
+            return HttpResponseRedirect('/confirm/' + str(listing.id))
+
+        else:
+            return HttpResponseRedirect('/address/?next=/confirm/' + str(listing.id))
+
+    except stripe.error.CardError:
+        messages.error(request, 'Your credit card was declined.  If you\'re sure that your card is valid, '
+                                'the problem may be with our payment processing system.  Wait an hour or '
+                                'so and try again.  If the problem persists, please contact us at '
+                                'support@usecirca.com so we can help sort out the issue.')
+        return HttpResponseRedirect(request.path)
 
 # Helper method for listing_detail
-def update_listing(listing, request):
+def update_listing(listing, request, promo_code):
     listing.item.buyer = request.user
     listing.item.save()
     listing.end_date = datetime.datetime.now()
     listing.paid_for = True
     listing.payout = calc_payout(listing.price)
     listing.save()
+    if promo_code is not None:
+        promo_code.redeemed = True
+        promo_code.save()
 
 
 # Shows all outstanding, unpaid listings for user
@@ -240,7 +273,6 @@ def pending(request):
 #                 return HttpResponseRedirect(request.path)
 #
 #         else:
-#             # Submit promo code form
 #             if 'confirm_' in request.POST:  # confirm button
 #                 listing.paid_for = True
 #                 listing.payout = calc_payout(listing.current_offer)
@@ -251,7 +283,7 @@ def pending(request):
 #
 #                 return HttpResponseRedirect('/success/')
 #
-#             if form.is_valid():
+#             if form.is_valid(): # Submit promo code form
 #                 form.save()
 #                 return HttpResponseRedirect(request.path)
 #

@@ -92,7 +92,13 @@
                 <div class="col l4 m6 s12">
                     <div>
                         <div class="card-title black-text">
+                            {% if discount %}
+                            Price: ${{ discounted_price }}
+                            <br>
+                            <small><small>Discount: ${{ discount }}</small></small>
+                            {% else %}
                             Price: ${{ item.listing.price }}
+                            {% endif %}
                         </div>
                         <div class="form-group">
                             {% if user.id and user.id == item.seller.id %}
@@ -115,8 +121,12 @@
                             </button>
 
                             <script type="text/javascript">
-                                      var stripe_amount = "{{amount}}"
                                       var item = "{{item.title}}"
+                                      {% if discount %}
+                                      var stripe_amount = "{{discounted_price_amount}}"
+                                      {% else %}
+                                      var stripe_amount = "{{amount}}"
+                                      {% endif %}
                                       var handler = StripeCheckout.configure({
                                         key: '{{ stripe_key }}',
                                         // image: '/img/documentation/checkout/marketplace.png',
@@ -145,6 +155,19 @@
 
                             </script>
                             {% endif %}
+                            <br><br><br>
+                            <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
+                                {% csrf_token %}
+                                <p class="input-field">
+                                    {{ form.code.errors }}
+                                    <label for="{{ form.code.id_for_label }}">Code</label>
+                                    {{ form.code }}
+                                </p>
+                                <button type="submit" class="btn light-blue accent-4 waves-effect waves-light" name="action">
+                                    Apply promo
+                                </button>
+                                <br><br>
+                            </form>
                         </div>
                         <br>
                     </div>

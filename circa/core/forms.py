@@ -59,7 +59,7 @@ class PromoForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')  # Grabs current user
-        self.listing = kwargs.pop('listing') # Grabs listing
+        self.listing = kwargs.pop('listing')  # Grabs listing
         super(PromoForm, self).__init__(*args, **kwargs)
 
     def clean_code(self):
@@ -91,8 +91,7 @@ class PromoForm(forms.Form):
 
     def save(self):
         promo = PromoCode.objects.filter(code=self.cleaned_data['code'])[0]
-        self.listing.discount = promo.value
-        promo.redeemed = True
+        promo.listing = self.listing
         promo.save()
         self.listing.save()
 

@@ -13,7 +13,6 @@ class Listing(models.Model):
     zipcode = models.IntegerField(default=0)
     paid_for = models.BooleanField(default=False)
     payout = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
-    discount = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     address_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
@@ -90,6 +89,7 @@ class PromoCode(models.Model):
     user = models.ForeignKey(User, blank=True, null=True)
     code = models.CharField(max_length=50, unique=True)
     value = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    listing = models.ForeignKey(Listing, blank=True, null=True)
     redeemed = models.BooleanField(default=False)
 
     def __str__(self):
