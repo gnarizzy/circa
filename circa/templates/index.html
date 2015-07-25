@@ -14,43 +14,13 @@
     .categories-wrapper.pinned {
     width: 15%;
     }
+
+    .card .card-content {
+    padding: 10px;
+    border-radius: 0 0 2px 2px;
+    }
 </style>
 
-
-<script text="text/javascript">
-        function calc_time_left(end, display) {
-            var time_left = end - (Date.now() / 1000.0);
-            var displayText;
-
-            if(time_left > 0) {
-                // We only care about hours left
-                time_left = time_left / 3600.0;
-                if(time_left < 1){
-                    //less than an hour left, display minutes
-                    time_left = time_left * 60.0;
-                    time_left = Math.floor(time_left);
-                    displayText = time_left + " minutes";
-                    }
-                else {
-                    time_left = Math.floor(time_left);
-                    displayText = time_left + " hours";
-                    }
-            } else {
-                displayText = "None";
-            }
-            display.textContent = displayText
-        }
-        window.onload = function () {
-        var display;
-        {% for item in items %}
-            display = document.querySelector("#time_left{{ item.listing.id }}");
-            {% if item.listing.end_date %}
-                calc_time_left({{ item.listing.end_date|date:"U" }}, display);
-            {% endif %}
-        {% endfor %}
-    };
-
-</script>
 <link href="{% static 'css/jumbotron-narrow.css'%}" rel="stylesheet" media="screen">
 <link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 
@@ -63,7 +33,7 @@
     <div class="jumbotron">
         <h1>Buy and Sell in Atlanta</h1>
 
-        <p class="lead"> Local goods delivered directly to you. Total happiness or your money back.
+        <p class="lead"> Buy goods locally and have them delivered right to your door
         </p>
 
         <p><a class="waves-effect waves-light btn-large green lighten-2 no-underline" href="/about/"><i
@@ -75,9 +45,10 @@
 {% endif %}
 
 <div class="take-space"></div>
+<div class="container">
 <div class="row">
-    <div class="col hide-on-small-only m3 l2">
-        <div class="categories-wrapper">
+    <div class="col hide-on-small-only m3 l3">
+        <div class="categories-wrapper" style="padding: 0px 15px 15px;">
             <div class="collection">
                 <a href="/" class="collection-item category {% if not category %}active{% endif %} no-underline">All</a>
                 <a href="/category/books"
@@ -93,43 +64,26 @@
             </div>
         </div>
     </div>
-    <div class="col s12 m9 l10">
+    <div class="col s12 m9 l9">
         {% if items %}
         {% load cropping %}
         <div class="row">
 
             {% for item in items %}
-            <div class="col s12 m6 l3">
-                <div class="card medium">
+            <div class="col s12 m6 l4">
+                <div class="card">
                     <a id="{{ item.listing.id }}" href="/listing/{{ item.listing.id }}">
                         <div class="card-image get-faded">
-                            <img src="{% cropped_thumbnail item "cropping" width=200 %}">
+                            <img src="{% cropped_thumbnail item "cropping" width=195 %}">
                         </div>
                     </a>
 
-                    <div class="card-content activator">
-                        <h5 class="black-text truncate">{{ item.title }}</h5>
-
-                        <p> {% if item.listing.current_offer %}
-                            Current Offer: <strong>${{ item.listing.current_offer }}</strong>
-                            {% else %}
-                            Asking price: <strong>${{ item.listing.starting_offer }}</strong>
-                            {% endif %}<br>
-                            Buy Now: ${{ item.listing.buy_now_price }}<br>
-                            {% if item.listing.current_offer %}
-                            Time Left: <span id="time_left{{ item.listing.id }}" class="red-text">XX min</span>
-                            {% else %}
-                            &nbsp;
-                            {% endif %}
-                            <i class="mdi-navigation-more-vert right"></i></p>
-
-                    </div>
-                    <div class="card-reveal">
-                                <span class="card-title grey-text text-darken-4">{{ item.title|truncatechars:40 }}
-                                <i class="mdi-navigation-close right"></i></span>
-
-                        <p>{{ item.description|linebreaks }}</p>
-                        <a href="/listing/{{ item.listing.id }}" class="waves-effect waves-light btn teal accent-4">See Listing</a>
+                    <div class="card-content">
+                        <h5 class="black-text truncate" style="font-size: 19px">
+                            {{ item.title }}
+                            <br>
+                            <span style="font-size: 15px">Price: ${{ item.listing.price }}</span>
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -139,5 +93,6 @@
     {% else %}
     <h2>This is awkward...there's nothing for sale! Why don't you <a href="/sell/">sell something</a>?</h2>
     {% endif %}
+</div>
 </div>
 {% endblock %}

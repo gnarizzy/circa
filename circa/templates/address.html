@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title_block %}
+    Shipping Address
+{% endblock %}
+{% block body_block %}
+<div class="container">
+    <h1>Shipping Address</h1>
+    <div class="row">
+        <div class="col s12">
+            <div class="card-panel blue lighten-5">
+          <span class="blue-text text-darken-3"><i class="mdi-action-info-outline"></i>
+            We don't have your shipping address, yet!  Once we've got it, we can make sure the product gets to you as
+            soon as possible.
+          </span>
+            </div>
+        </div>
+    </div>
+    <form id="item_form" method="post" action="/address/" enctype="multipart/form-data">
+        <div class="row">
+            <p class="input-field col s12">
+                {% csrf_token %}
+                {{ form.address_line_1.errors }}
+                <label for="{{ form.address_line_1.id_for_label }}">Address Line 1</label>
+                {{ form.address_line_1 }}
+            </p>
+        </div>
+        <div class="row">
+            <p class="input-field col s12">
+                {{ form.address_line_2.errors }}
+                <label for="{{ form.address_line_1.id_for_label }}">Address Line 2</label>
+                {{ form.address_line_2 }}
+            </p>
+        </div>
+        <div class="row">
+            <p class="input-field col s12 m5">
+                {{ form.city.errors }}
+                <label for="{{ form.ciyt.id_for_label }}">City</label>
+                {{ form.city }}
+            </p>
+            <p class="input-field disabled red-text col s12 m3">
+                <label for="{{ form.state.id_for_label }}">State</label>
+                <input name="dummy" type="text" value="Georgia" disabled>
+                {{ form.state }}
+            </p>
+            <p class="input-field col s12 m4">
+                {{ form.zipcode.errors }}
+                <label for="{{ form.zipcode.id_for_label }}">Zip Code</label>
+                {{ form.zipcode }}
+            </p>
+            <input name="next" type="hidden" value="{{ next }}">
+        </div>
+        <div class="row">
+            <p class="input-field col s12">
+                {{ form.special_instructions.errors }}
+                <label for="{{ form.special_instructions.id_for_label }}">Special Instructions (Important if you live in
+                an apartment!) </label>
+                {{ form.special_instructions }}
+            </p>
+        </div>
+        <button id="list-item-button" class="btn-large waves-effect waves-light teal accent-4" type="submit"
+                name="action">Submit<i class="mdi-content-send right"></i>
+        </button>
+    </form>
+</div>
+{% endblock %}

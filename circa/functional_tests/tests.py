@@ -1,5 +1,7 @@
 from core.models import PromoCode, User, Listing
+from core.payout import calc_payout
 from datetime import datetime
+from django.core import mail
 from django.test import LiveServerTestCase
 from django.test.utils import override_settings
 from selenium import webdriver
@@ -9,7 +11,8 @@ from selenium.webdriver.support.ui import Select
 import os
 import time
 
-@override_settings(DEBUG=True, EMAIL_BACKEND="djrill.mail.backends.djrill.DjrillBackend")
+
+@override_settings(DEBUG=True)
 class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
@@ -50,6 +53,10 @@ class NewVisitorTest(LiveServerTestCase):
         password_confirm_field.send_keys('pooploop')
         password_confirm_field.send_keys(Keys.ENTER)
 
+        time.sleep(3)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, "Welcome to Circa!")
+
         # Gleefully, Jeremy sees that his new user name is up in the corner and that he is now logged in
         user_button = self.browser.find_element_by_id('username-large')
         user_text = user_button.text
@@ -71,19 +78,11 @@ class NewVisitorTest(LiveServerTestCase):
         category_field.select_by_value('5')
         photo_field = self.browser.find_element_by_id('id_photo')
         photo_field.send_keys(os.getcwd() + '\\functional_tests\\func_test_image.jpg')
+        price_field = self.browser.find_element_by_id('id_price')
+        price_field.send_keys('50')
+        zip_field = self.browser.find_element_by_id('id_zipcode')
+        zip_field.send_keys('30313')
         self.browser.find_element_by_id('list-item-button').click()
-
-        # Titillating from the excitement of posting an item, Jeremy swiftly punches in his price and
-        # a valid zip code
-        listing_header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Create a listing', listing_header_text)
-        starting_offer_field = self.browser.find_element_by_id('id_starting_offer')
-        starting_offer_field.send_keys('100')
-        buy_now_field = self.browser.find_element_by_id('id_buy_now_price')
-        buy_now_field.send_keys('140')
-        zipcode_field = self.browser.find_element_by_id('id_zipcode')
-        zipcode_field.send_keys('30313')
-        zipcode_field.send_keys(Keys.ENTER)
 
         # Alas, all his hard work paid off and Jeremy beheld his post in all its glory
         listing_title_text = self.browser.find_element_by_id('title-large').text
@@ -166,58 +165,56 @@ class NewVisitorTest(LiveServerTestCase):
         password_confirm_field.send_keys('zoopzoopzoop')
         password_confirm_field.send_keys(Keys.ENTER)
 
+        # An email verifies her new account
+        time.sleep(5)
+        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(mail.outbox[1].subject, "Welcome to Circa!")
+
         # The first thing she notices is a neat sword on the front page.  She immediately clicks it.
         listing_card = self.browser.find_element_by_id('1')
         listing_card.click()
 
-        # This is just what she's been looking for in her collection.  She decides to make an offer.
-        zipcode_field = self.browser.find_element_by_id('id_zipcode')
-        zipcode_field.send_keys('30313')
-        zipcode_field.send_keys(Keys.ENTER)
+        # This is just what she's been looking for to add to her collection!  She immediately buys it
+        buy_button = self.browser.find_element_by_id('buy-item')
+        buy_button.click()
 
-        # She excitedly sees that she is now the top offer!
-        page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertIn('You currently have the highest offer!', page_text)
+        # Because Stripe is a b***h to get working on a functional test, I'm just making the item paid for in the
+        # background
+        listing = Listing.objects.all()[0]
+        listing.item.buyer = User.objects.get(pk=2)
+        listing.item.save()
+        listing.end_date = datetime.now()
+        listing.paid_for = True
+        listing.payout = calc_payout(listing.price)
+        listing.save()
 
-        # She now happily awaits for her offer to be accepted
+        # Now that she has "paid" for her item, she is redirected to input her address
+        self.browser.get(self.live_server_url + '/address/?next=/confirm/' + str(listing.id))
 
-        # In the meantime, some trickery goes on behind the scenes to generate a promo code so that Andrew can test it.
-        abbey = User.objects.get(pk=2)
-        PromoCode.objects.create(user=abbey, code='12345', value=5)
+        address_line_1 = self.browser.find_element_by_id('id_address_line_1')
+        address_line_1.send_keys('454 Pine Grove Ln')
+        city = self.browser.find_element_by_id('id_city')
+        city.send_keys('Atlanta')
+        zipcode = self.browser.find_element_by_id('id_zipcode')
+        zipcode.send_keys('30313')
+        special_instructions = self.browser.find_element_by_id('id_special_instructions')
+        special_instructions.send_keys('Leave it under the door mat.')
+        special_instructions.send_keys(Keys.ENTER)
 
-        # More trickery is used to speed up time and make that offer be accepted.
-        dragon_listing = Listing.objects.get(pk=1)
-        dragon_listing.end_date = datetime.now()
-        dragon_listing.save()
+        # Now that she has inputted her address, she is asked to confirm, and then an email is sent
+        # to all parties involved to get the ball rolling
+        confirm_addr_text = self.browser.find_element_by_id('confirm-address').text
+        self.assertEqual('Confirm your address', confirm_addr_text)
 
-        # Now that it has totally been an hour, Abigail refreshes the page to see that the sword is now gone!
-        self.browser.get(self.live_server_url)
-        page_text = self.browser.find_element_by_tag_name('body').text
-        self.assertNotIn('Dragon Slaying Sword', page_text)
+        confirm_button = self.browser.find_element_by_id('confirm-button')
+        confirm_button.click()
 
-        # Being an astute user, she checks her pending payments to see if she can now pay for her item.
-        user_button = self.browser.find_element_by_id('username-large')
-        user_button.click()
-        logout_button = self.browser.find_element_by_id('pending-large')
-        logout_button.click()
+        time.sleep(5)
+        self.assertEqual(len(mail.outbox), 5)
+        self.assertEqual(mail.outbox[2].subject, "You've bought Dragon Slaying Sword")
+        self.assertEqual(mail.outbox[3].subject, "Dragon Slaying Sword has sold!")
+        self.assertEqual(mail.outbox[4].subject, "Pending Delivery")
 
-        # Greeted by a nice, big "Pending Payments" header, she immediately clicks on her item
-        pending_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Pending Payments', pending_text)
-
-        dragon_sword = self.browser.find_element_by_id('1')
-        dragon_sword.click()
-
-        # Abigail miraculously remembers that she has a promo code and inputs it
-        offer_text = self.browser.find_element_by_id('offer').text
-        self.assertIn('100', offer_text)
-
-        promo_code_field = self.browser.find_element_by_id('id_code')
-        promo_code_field.send_keys('12345')
-        promo_code_field.send_keys(Keys.ENTER)
-
-        discount_text = self.browser.find_element_by_id('discount').text
-        self.assertIn('95', discount_text)
-
-        # Gleefully, Abigail forgets what she was doing after this and then doesn't pay.  At least she
-        # stopped at a convenient point for Andrew to test
+        # Redirected to the Success page, Abigail knows her sale is in good hands
+        success_header = self.browser.find_element_by_tag_name('h1').text
+        self.assertEqual('Success', success_header)

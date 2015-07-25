@@ -4,33 +4,6 @@
 {{ item.title }} | Circa
 {% endblock %}
 {% block head_block %}
-<script type="text/javascript">
-    function countdown(minutes, seconds, display) {
-            m = parseInt(minutes, 10);
-            s = parseInt(seconds, 10) - 2;
-
-            if(s < 0) {
-                display.textContent = "";
-            } else {
-                setInterval(function() {
-                    var displayStr = m + " minutes and " + s + " seconds";
-                    if(--s < 0) {
-                        if(--m < 0) {
-                            displayStr = "";
-                        } else {
-                            s = 59
-                        }
-                    }
-                    display.textContent = displayStr;
-                }, 1000);
-            }
-        }
-        window.onload = function () {
-        var display = document.querySelector('#time');
-        countdown({{ minutes }}, {{ seconds }}, display);
-        };
-
-</script>
 <link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 {% endblock %}
 
@@ -103,20 +76,6 @@
                     <em>Ships from zipcode {{ item.listing.zipcode }}</em>
                     <br>
                     <br>
-                    {% if status == 2 %}
-                    The first offer will be accepted within <span class="red-text">one hour</span> unless a higher offer
-                    is made
-                    {% elif status == 1 %}
-                    <span class="red-text">This item has been claimed</span>
-                    {% else %}
-                    The current offer will be accepted in
-                    <br>
-                    <strong><span class="red-text"
-                                  id="time"> {{ minutes }} minutes and {{ seconds|add:"-1" }} seconds</span></strong>
-                    <br>
-                    unless a higher offer is made.
-                    {% endif %}
-                    <br>
                 </div>
 
                 <div class="col l4 m6 s12">
@@ -133,55 +92,24 @@
                 <div class="col l4 m6 s12">
                     <div>
                         <div class="card-title black-text">
-                            {% if status == 2 %}
-                            Asking price: ${{ item.listing.starting_offer }}
-                            {% else %}
-                            Current Offer: ${{ item.listing.current_offer }}
-                            {% endif %}
+                            Price: ${{ item.listing.price }}
                         </div>
-                        <br>
-
-                        <form class="form-inline" action="/listing/{{ listing.id }}/" method="post">
-                            <div class="form-group">
-                                {% csrf_token %}
-                                {{ form.non_field_errors }}
-                                <p class="input-field">
-                                    {{ form.offer.errors }}
-                                    <label for="{{ form.offer.id_for_label }}">Your Offer</label>
-                                    {{ form.offer }}
-                                </p>
-
-                                <p class="input-field">
-                                    {{ form.zipcode.errors }}
-                                    <label for="{{ form.zipcode.id_for_label }}">Zipcode</label>
-                                    {{ form.zipcode }}
-                                </p>
-                                {% if user.id and user.id == item.seller.id or status == 1%}
-                                <button class="btn teal accent-4 waves-effect waves-light disabled" type="submit"
-                                        name="action">Make Offer
-                                    <i class="mdi-content-send right"></i>
-                                </button>
-                                {% else %}
-                                <button class="btn teal accent-4 waves-effect waves-light" type="submit">Make Offer
-                                    <i class="mdi-content-send right"></i>
-                                </button>
-                                {% endif %}
-                            </div>
-                        </form>
-                        <br>
-
                         <div class="form-group">
-                            <span class="card-title black-text">Buy now for: ${{ item.listing.buy_now_price }}</span>
-                            <br><br>
-                            {% if user.id and user.id == item.seller.id or status == 1%}
+                            {% if user.id and user.id == item.seller.id %}
                             <button class="btn light-blue accent-4 waves-effect waves-light disabled" type="submit"
-                                    name="action">Buy Now
+                                    name="action" id="buy-item-disabled">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </button>
+                            {% elif not user.id %}
+                            <a class="btn light-blue accent-4 waves-effect waves-light" type="submit"
+                                    name="action" href="/accounts/login/?next=/listing/{{ listing.id }}"
+                                    id="buy-item-redirect">Buy Now
+                                <i class="mdi-editor-attach-money right"></i>
+                            </a>
                             {% else %}
                             <script src="https://checkout.stripe.com/checkout.js"></script>
 
-                            <button id="buyNow" class="btn light-blue accent-4 waves-effect waves-light" type="submit"
+                            <button id="buy-item" class="btn light-blue accent-4 waves-effect waves-light" type="submit"
                                     name="action">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </button>
@@ -199,12 +127,13 @@
                                         }
                                       });
 
-                                      $('#buyNow').on('click', function(e) {
+                                      $('#buy-item').on('click', function(e) {
                                         // Open Checkout with further options
                                         handler.open({
                                           name: 'Circa',
                                           description: item,
-                                          amount: stripe_amount
+                                          amount: stripe_amount,
+                                          email: '{{ user.email }}'
                                         });
                                         e.preventDefault();
                                       });

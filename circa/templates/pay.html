@@ -41,8 +41,21 @@ Pay
 
                 <div class="col l4 m6 s12">
                     <span class="card-title black-text hide-on-small-only">{{ item.title }}</span>
-
-                    <p>{{ item.description|linebreaks }}</p>
+                    <p>
+                        <br>
+                        <span style="font-weight: bold;">To be delivered to:</span>
+                        <br>
+                        {{ address.address_line_1 }} {{ address.address_line_2 }}
+                        <br>
+                        {{ address.city }}, {{ address.state }}
+                        {{ address.zipcode }}
+                        <br><br>
+                        <span style="font-weight: bold;">Special Instructions:</span>
+                        <br>
+                        {{ address.special_instructions }}
+                    </p>
+                    <a id="edit-address" href="/address/?next=/pay/{{ listing.id }}" class="waves-effect waves-light btn green lighten-2"> Edit Address<i
+                            class="glyphicon glyphicon-edit right"></i></a>
                     <br><br>
                 </div>
                 <div class="col l4 m6 s12">
@@ -109,6 +122,7 @@ Pay
                                       $(window).on('popstate', function() {
                                         handler.close();
                                       });
+
 
                             </script>
                         </form>
