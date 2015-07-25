@@ -29,9 +29,11 @@ Payment Successful
                     <p>{{ address.address_line_2 }}</p>
                     {% endif %}
                     <p>{{ address.city }}, {{ address.state }} {{ address.zipcode }}</p>
-                    {% if address.special_instructions %}
                     <br>
+                    {% if address.special_instructions %}
                     <p>Special Instructions: {{ address.special_instructions }}</p>
+                    {% else %}
+                    <p>No Special Instructions given</p>
                     {% endif %}
                 </div>
                 <div class="card-action">

@@ -5,7 +5,7 @@
 {% block body_block %}
     <div class = "container">
         <h1>
-            Pending Payments
+            Pending Orders
         </h1>
         {% if items %}
             <p>You've paid for these items, but haven't confirmed shipping.  Do it now so we can get it to you sooner!</p>
@@ -13,7 +13,7 @@
             <table class = "table table-striped">
             <tr>
                 <th>Item</th>
-                <th>Your Winning Offer</th>
+                <th>Cost</th>
             </tr>
             {% for item in items %}
                 <tr>

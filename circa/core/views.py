@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from core.email import listing_bought_seller_notification, admin_notification_of_sale, \
@@ -23,7 +24,17 @@ def index(request):
     now = datetime.datetime.now()
     item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now) \
         .order_by('-pk')
-    context = {'items': item_list}
+    if request.user.is_authenticated():
+        all_user_items = Item.objects.filter(buyer=request.user)
+        pending_num = 0
+        for bought_item in all_user_items:
+            if bought_item.listing.paid_for is True and bought_item.listing.address_confirmed is False:
+                pending_num += 1
+        context = {'items': item_list, 'pending_num': pending_num}
+
+    else:
+        context = {'items': item_list}
+
     return render(request, 'index.html', context)
 
 
@@ -163,7 +174,8 @@ def pending(request):
     listings = Listing.objects.filter(paid_for=True).filter(address_confirmed=False)
     for listing in listings:
         try:
-            items.append(listing.item)
+            if listing.item.buyer and listing.item.buyer.id is request.user.id:
+                items.append(listing.item)
 
         except ObjectDoesNotExist:  # listing has no related item
             pass
@@ -304,7 +316,7 @@ def confirm(request, listing_id):
     if request.user.id is not listing.item.buyer.id:
         raise PermissionDenied
 
-    # User already paid for item
+    # User already confirmed item
     if listing.address_confirmed:
         return render(request, 'expired.html')
 

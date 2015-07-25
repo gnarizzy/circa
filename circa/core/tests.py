@@ -128,6 +128,8 @@ class ItemListingTest(TestCase):
 # class EditListingTest(TestCase):
 #
 #     def create_item_and_listing(self):
+#         item = Item.objects.create(title="Hello Friend", description="This is a test")
+#         listing = Listing.objects.create()
 #         pass
 #
 #     def test_init_with_listing(self):
