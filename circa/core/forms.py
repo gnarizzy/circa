@@ -154,7 +154,7 @@ class EditListingForm(forms.Form):
     def clean_category(self):
         category = self.cleaned_data['category']
         if category is '0':
-            raise forms.ValidationError("You must choose a category for that item.")
+            raise forms.ValidationError("You must choose a category for your item.")
         return category
 
     # make sure shipping zip code is one we deliver to
@@ -173,4 +173,3 @@ class EditListingForm(forms.Form):
 
         self.listing.item.save()
         self.listing.save()
-        return None

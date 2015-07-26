@@ -53,7 +53,7 @@ class NewVisitorTest(LiveServerTestCase):
         password_confirm_field.send_keys('pooploop')
         password_confirm_field.send_keys(Keys.ENTER)
 
-        time.sleep(3)
+        time.sleep(5)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "Welcome to Circa!")
 
