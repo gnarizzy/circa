@@ -129,9 +129,9 @@ class EditListingTest(TestCase):
 
     def create_item_and_listing(self):
         user = User.objects.create_user(username="frankie", password="blahblahblah")
-        item = Item.objects.create(title="Hello Friend", description="This is a test")
-        listing = Listing.objects.create()
-
+        item = Item.objects.create(title="Hello Friend", description="This is a test", seller=user)
+        listing = Listing.objects.create(price=50, )
+        return listing
 
     def test_init_with_listing(self):
         listing = self.create_full_listing()

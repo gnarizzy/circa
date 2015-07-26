@@ -50,11 +50,6 @@
         ul.errorlist {
         color: #ff5252;
         }
-
-        .constant-length {
-        width: 180px;
-        max-width: 180px;
-        }
     </style>
 
 
@@ -87,7 +82,7 @@
                     <li><a id="login-large" class="no-style" href="/accounts/login/"><span class="glyphicon glyphicon-log-in"></span>
                         Login</a></li>
                     {% else %}
-                    <li><a id="username-large" class="no-style constant-length  truncate dropdown-button" href="#" data-beloworigin="true" data-constrainwidth="true"
+                    <li><a id="username-large" class="no-style constant-length  truncate dropdown-button" href="#" data-beloworigin="true" data-constrainwidth="false"
                            data-activates="dropdown1"><span class="glyphicon glyphicon-user"></span>
                         {{user.username}}</a></li>
                     <li><a class="no-style" href="/help/"><span class="glyphicon glyphicon-question-sign"></span>
