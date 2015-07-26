@@ -15,7 +15,7 @@ Payment Successful
 <div class="container">
     <div class="take-space"></div>
     <div class="row">
-        <div class="col s12 m6 offset-m3">
+        <div class="col s12 m8 offset-m2">
             <div class="card">
                 <div class="card-content center">
                     <span id="confirm-address" class="card-title black-text">Confirm your address</span>
@@ -37,20 +37,41 @@ Payment Successful
                     {% endif %}
                 </div>
                 <div class="card-action">
-                    <form style="float: left;" action="{{ request.path }}" method="POST">
-                        {% csrf_token %}
-                        <button name="change" class="waves-effect waves-light btn red lighten-2 white-text" type="submit">
-                            Change
-                        </button>
-                    </form>
-                    <form style="float: right;" action="{{ request.path }}" method="POST">
-                        {% csrf_token %}
-                        <button id="confirm-button" name="confirm"
-                                class="waves-effect waves-light btn green lighten-2 white-text right"
-                                type="submit">
-                            Confirm
-                        </button>
-                    </form>
+                    <div class="hide-on-small-only">
+                        <form style="float: left;" action="{{ request.path }}" method="POST">
+                            {% csrf_token %}
+                            <button name="change" class="waves-effect waves-light btn red lighten-2 white-text" type="submit">
+                                Change
+                            </button>
+                        </form>
+                        <form style="float: right;" action="{{ request.path }}" method="POST">
+                            {% csrf_token %}
+                            <button id="confirm-button" name="confirm"
+                                    class="waves-effect waves-light btn green lighten-2 white-text right"
+                                    type="submit">
+                                Confirm
+                            </button>
+                        </form>
+                    </div>
+                    <div class="row hide-on-med-and-up center">
+                        <form class="col s12" action="{{ request.path }}" method="POST">
+                            {% csrf_token %}
+                            <button name="change" class="waves-effect waves-light btn red lighten-2 white-text" type="submit">
+                                Change
+                            </button>
+                        </form>
+                    </div>
+                    <br>
+                    <div class="row hide-on-med-and-up center">
+                        <form class="col s12" action="{{ request.path }}" method="POST">
+                            {% csrf_token %}
+                            <button id="confirm-button-small" name="confirm"
+                                    class="waves-effect waves-light btn green lighten-2 white-text"
+                                    type="submit">
+                                Confirm
+                            </button>
+                        </form>
+                    </div>
                     <br><br>
                 </div>
             </div>
