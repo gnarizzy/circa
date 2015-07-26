@@ -180,13 +180,13 @@
                                     <br><br>
                                 </form>
                             {% else %}
-                                <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
+                                <div class="form-inline">
                                     <input name="dummy" type="text" value="Code" disabled>
                                     <button type="submit" class="btn light-blue accent-4 waves-effect waves-light disabled" name="action">
                                         Apply promo
                                     </button>
                                     <br><br>
-                                </form>
+                                </div>
                             {% endif %}
                         </div>
                         <br>
