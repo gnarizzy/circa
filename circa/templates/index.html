@@ -25,11 +25,6 @@
 <link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 
 {% endblock %}
-{% block pending_block %}
-{% if pending_num and pending_num != 0 %}
-    <span class="new badge">{{ pending_num }}</span>
-{% endif %}
-{% endblock %}
 {% block body_block %}
 {% if not user.id and not category%}
 <div class="container">
