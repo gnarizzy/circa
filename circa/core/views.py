@@ -126,6 +126,15 @@ def listing_detail(request, listing_id, listing_slug):
         if token:
             return handle_stripe(request, listing, token)
 
+        elif "free" in request.POST:
+            update_listing(listing, request, promo_code=None)
+
+            if hasattr(request.user, 'userprofile'):
+                return HttpResponseRedirect('/confirm/' + str(listing.id))
+
+            else:
+                return HttpResponseRedirect('/address/?next=/confirm/' + str(listing.id))
+
         else:
             form = PromoForm(request.POST, user=request.user, listing=listing)
             if form.is_valid():
@@ -137,13 +146,20 @@ def listing_detail(request, listing_id, listing_slug):
     context = {'listing': listing, 'item': item, 'amount': stripe_amount, 'stripe_key': public_key(),
                'form': form}
 
+    break_even = .5
     if request.user.is_authenticated and listing.promocode_set.all().count() > 0:
         for promo in listing.promocode_set.all():
             if promo.user.id is request.user.id:
-                context['discount'] = promo.value
-                context['discounted_price'] = listing.price - promo.value
-                context['discounted_price_amount'] = (listing.price - promo.value) * Decimal(100)
+                if listing.price - promo.value < break_even:
+                    context['free'] = 1
+
+                else:
+                    context['discount'] = promo.value
+                    context['discounted_price'] = listing.price - promo.value
+                    context['discounted_price_amount'] = (listing.price - promo.value) * Decimal(100)
+
                 break
+
 
     return render(request, 'listing_detail.html', context)
 
