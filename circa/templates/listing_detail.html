@@ -166,7 +166,7 @@
                             </script>
                             {% endif %}
                             <br><br><br>
-                            {% if user.id %}
+                            {% if user.id and user.id != item.seller.id %}
                                 <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
                                     {% csrf_token %}
                                     <p class="input-field">
