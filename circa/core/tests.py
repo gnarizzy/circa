@@ -125,20 +125,21 @@ class ItemListingTest(TestCase):
         })
 
 
-# class EditListingTest(TestCase):
-#
-#     def create_item_and_listing(self):
-#         item = Item.objects.create(title="Hello Friend", description="This is a test")
-#         listing = Listing.objects.create()
-#         pass
-#
-#     def test_init_with_listing(self):
-#         listing = self.create_full_listing()
-#         EditListingForm(listing=listing)
-#
-#     def test_init_without_listing(self):
-#         with self.assertRaises(KeyError):
-#             EditListingForm()
+class EditListingTest(TestCase):
+
+    def create_item_and_listing(self):
+        user = User.objects.create_user(username="frankie", password="blahblahblah")
+        item = Item.objects.create(title="Hello Friend", description="This is a test")
+        listing = Listing.objects.create()
+
+
+    def test_init_with_listing(self):
+        listing = self.create_full_listing()
+        EditListingForm(listing=listing)
+
+    def test_init_without_listing(self):
+        with self.assertRaises(KeyError):
+            EditListingForm()
 #
 #     def test_valid_data(self):
 #         listing = self.create_full_listing()

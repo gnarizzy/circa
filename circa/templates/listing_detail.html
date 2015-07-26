@@ -165,18 +165,20 @@
                             </script>
                             {% endif %}
                             <br><br><br>
-                            <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
-                                {% csrf_token %}
-                                <p class="input-field">
-                                    {{ form.code.errors }}
-                                    <label for="{{ form.code.id_for_label }}">Code</label>
-                                    {{ form.code }}
-                                </p>
-                                <button type="submit" class="btn light-blue accent-4 waves-effect waves-light" name="action">
-                                    Apply promo
-                                </button>
-                                <br><br>
-                            </form>
+                            {% if user.id %}
+                                <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
+                                    {% csrf_token %}
+                                    <p class="input-field">
+                                        {{ form.code.errors }}
+                                        <label for="{{ form.code.id_for_label }}">Code</label>
+                                        {{ form.code }}
+                                    </p>
+                                    <button type="submit" class="btn light-blue accent-4 waves-effect waves-light" name="action">
+                                        Apply promo
+                                    </button>
+                                    <br><br>
+                                </form>
+                            {% endif %}
                         </div>
                         <br>
                     </div>
