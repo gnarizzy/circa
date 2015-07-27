@@ -126,7 +126,7 @@ def admin_notification_of_sale(listing):
         listing.item.title,
         listing.item.seller.username,
         listing.item.buyer.username,
-        addr
+        addr_str
     )
 
     recipient = list()
