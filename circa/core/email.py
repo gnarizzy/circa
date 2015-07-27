@@ -4,7 +4,7 @@ from django.core.mail import EmailMessage
 from core.payout import calc_payout
 
 
-LISTING_BOUGHT =    \
+LISTING_BOUGHT_SELLER =    \
     "Dear {},\n\nYour item, {}, has been sold!  Your total earnings are  ${}, which " \
     "will be given to you within 24 hours of pick up.  Please reply to this email with your address and " \
     "preferred pick-up time.\n\nThank you for using Circa!  If you have any feedback on your " \
@@ -55,7 +55,7 @@ WELCOME_NEW_USER = \
     "\n\nSincerely,\n\nAndrew\n\nCo-Founder of Circa and Head Delivery Boy"
 
 
-def listing_bought_notification(listing):
+def listing_bought_buyer_notification(listing):
     addr = listing.item.buyer.userprofile.address
 
     addr_str = addr.address_line_1
@@ -99,7 +99,7 @@ def listing_bought_seller_notification(listing):
     price = calc_payout(listing.price)
     earnings = round(price, 2)
 
-    content = LISTING_BOUGHT.format(listing.item.seller.username, listing.item.title, earnings)
+    content = LISTING_BOUGHT_SELLER.format(listing.item.seller.username, listing.item.title, earnings)
 
     recipient = list()
     recipient.append(listing.item.seller.email)

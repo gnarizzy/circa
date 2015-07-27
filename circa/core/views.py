@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from core.email import listing_bought_seller_notification, admin_notification_of_sale, \
-    listing_bought_notification
+    listing_bought_buyer_notification
 from core.models import Item, Listing, UserProfile, PromoCode
 from core.forms import ItemListingForm, EditListingForm, PromoForm, AddressForm
 from core.keys import *
@@ -376,7 +376,7 @@ def confirm(request, listing_id):
             listing.address_confirmed = True
             listing.save()
 
-            listing_bought_notification(listing)
+            listing_bought_buyer_notification(listing)
             listing_bought_seller_notification(listing)
             admin_notification_of_sale(listing)
 
