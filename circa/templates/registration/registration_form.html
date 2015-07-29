@@ -2,37 +2,58 @@
 {% load static %}
 
 {% block body_block %}
-    <div class = "container">
-        <h1>Sign up for Circa</h1>
-                <form method="post" action=".">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <p class="input-field">
-                                {{ form.username.errors }}
-                                <label for="{{ form.username.id_for_label }}">Username</label>
-                                {{ form.username }}
-                            </p>
-                            <p class="input-field">
-                                {{ form.email.errors }}
-                                <label for="{{ form.email.id_for_label }}">E-mail</label>
-                                {{ form.email }}
-                            </p>
-                            <p class="input-field">
-                                {{ form.password1.errors }}
-                                <label for="{{ form.password1.id_for_label }}">Password</label>
-                                {{ form.password1 }}
-                            </p>
-                            <p class="input-field">
-                                {{ form.password2.errors }}
-                                <label for="{{ form.password2.id_for_label }}">Password Confirmation</label>
-                                {{ form.password2 }}
-                            </p>
-                            <input type="submit" class="btn btn-primary" value="Sign up" />
-                        </div>
-                </form>
-        <br>
-            <a href="{% url 'social:begin' 'facebook' %}?next={{ next }}">
-                <img src="{% static 'other/fb-login-image.png' %}" alt = "Log in with Facebook">
-            </a>
+    <div class="container">
+        <div class="take-space"></div>
+        <div class="row">
+            <div class="card col s10 offset-s1 m8 offset-m2 l6 offset-l3">
+                <div class="card-content center ">
+                    <span class="card-title black-text" style="font-size: 30px;">Sign up for Circa</span>
+                    <br><br>
+                    <a href="{% url 'social:begin' 'facebook' %}?next={{ next }}">
+                        <img src="{% static 'other/fb-login-image.png' %}" alt = "Log in with Facebook">
+                    </a>
+                    <br><br>
+                    <p>or</p>
+                    <br>
+                    <button id="show-sign-up" class="btn waves-effect waves-light teal accent-4" type="submit"
+                            name="action">Create an Account
+                    </button>
+                    <form style="display: none;" method="post" action="." class="">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <p class="input-field">
+                                    {{ form.username.errors }}
+                                    <label for="{{ form.username.id_for_label }}">Username</label>
+                                    {{ form.username }}
+                                </p>
+                                <p class="input-field">
+                                    {{ form.email.errors }}
+                                    <label for="{{ form.email.id_for_label }}">E-mail</label>
+                                    {{ form.email }}
+                                </p>
+                                <p class="input-field">
+                                    {{ form.password1.errors }}
+                                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                                    {{ form.password1 }}
+                                </p>
+                                <p class="input-field">
+                                    {{ form.password2.errors }}
+                                    <label for="{{ form.password2.id_for_label }}">Password Confirmation</label>
+                                    {{ form.password2 }}
+                                </p>
+                                <input type="submit" class="btn btn-primary" value="Sign up" />
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+<script>
+    $(document).ready(function(){
+        $("button#show-sign-up").click(function(){
+            $("form").show(700);
+            $("button#show-sign-up").hide(700);
+        });
+    });
+</script>
 {% endblock %}
