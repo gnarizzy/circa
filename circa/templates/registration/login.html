@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block body_block %}
-<div class = "container">
-    <h1>Login</h1>
+<div class="container">
     {% if next %}
     <div class="row">
         <div class="col s12">
@@ -14,29 +13,44 @@
         </div>
     </div>
     {% endif %}
+    <div class="take-space"></div>
+    <div class="row">
+        <div class="card col s12 m8 offset-m2 l6 offset-l3">
+            <div class="card-content center ">
+                <span class="card-title black-text" style="font-size: 30px;">Login</span>
+                    <br><br>
+                <a href="{% url 'social:begin' 'facebook' %}?next={{ next }}">
+                    <img src="{% static 'other/fb-login-image.png' %}" alt="Log in with Facebook">
+                </a>
+                <br><br>
+                <p>or</p>
+                <br>
+                <form method="post" action=".">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <p class="input-field">
+                        {{ form.username.errors }}
+                        <label for="{{ form.username.id_for_label }}">Username</label>
+                        {{ form.username }}
+                    </p>
 
-        <form method="post" action=".">
-             {% csrf_token %}
-             {{ form.non_field_errors }}
-                <p class="input-field">
-                    {{ form.username.errors }}
-                    <label for="{{ form.username.id_for_label }}">Username</label>
-                    {{ form.username }}
-                </p>
-                <p class="input-field">
-                    {{ form.password.errors }}
-                    <label for="{{ form.password.id_for_label }}">Password</label>
-                    {{ form.password }}
-                </p>
-             <button class="btn waves-effect waves-light" type="submit" name="action">Login</button>
-             <input type="hidden" name="next" value="{{ next }}" />
-        </form>
-        <br>
-            <a href="{% url 'social:begin' 'facebook' %}?next={{ next }}">
-                <img src="{% static 'other/fb-login-image.png' %}" alt = "Log in with Facebook">
-            </a>
-    <br><br>
-    <p>Feeling sad and left out? <a href="{% url 'registration_register' %}?next={{ next }}">Sign up for Circa</a>!</p>
-    <p>Feeling forgetful? <a href="{% url 'auth_password_reset' %}">Reset your password</a>!</p>
+                    <p class="input-field">
+                        {{ form.password.errors }}
+                        <label for="{{ form.password.id_for_label }}">Password</label>
+                        {{ form.password }}
+                    </p>
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Login</button>
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                </form>
+                <br>
+
+                <p>Feeling sad and left out? <a href="{% url 'registration_register' %}?next={{ next }}">Sign up for
+                    Circa</a>!</p>
+
+                <p>Feeling forgetful? <a href="{% url 'auth_password_reset' %}">Reset your password</a>!</p>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 {% endblock %}
