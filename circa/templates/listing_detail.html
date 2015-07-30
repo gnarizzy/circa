@@ -76,17 +76,17 @@
                 <div class="listing-panel">
                     {% if free %}
                     <h3 class="price-title">Price: Free!</h3>
-                    <p><small>Don't worry about payment, this one is on use!</small></p>
+                    <p><small>Don't worry about payment, this one is on us!</small></p>
                     {% elif discount %}
                     <h3 class="price-title">Price: ${{ discounted_price }}</h3>
                     <p><small><small>Discount: ${{ discount }}</small></small></p>
                     {% else %}
                     <h3 class="price-title">Price: ${{ item.listing.price }}</h3>
                     {% endif %}
-                    <a class="hidden-xs hidden-sm right" href="https://stripe.com">
+                    <a class="hidden-xs hidden-sm right" href="https://stripe.com" target="_blank">
                         <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
                     </a>
-                    <a class="hidden-md hidden-lg left" href="https://stripe.com">
+                    <a class="hidden-md hidden-lg left" href="https://stripe.com" target="_blank">
                         <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
                     </a>
                     <br class="hidden-md hidden-lg">

@@ -3,7 +3,7 @@
 .thumbnail .caption.cust {
     padding: 10px;
     max-width: 250px;
-    background: #f8fbfc;
+    background: #f5fafa;
     border: 1px solid #eaeaea;
 }
 
@@ -21,13 +21,13 @@ h4.thumb-title {
 
 span.thumb-content {
     padding: 10px;
-    background: #3dc697;
+    background: #009ee1;
     color: white;
 }
 
 .listing-panel {
     padding: 15px;
-    background: #f8fbfc;
+    background: #f5fafa;
     border: 1px solid #eaeaea;
 }
 
