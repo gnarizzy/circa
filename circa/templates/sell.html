@@ -5,74 +5,63 @@
 {% endblock %}
 {% block body_block %}
 <div class="container">
-    <h1>List an item for sale</h1>
+    <div class="row">
+        <div class="card col s10 offset-s1 m8 offset-m2 l6 offset-l3">
+            <div class="card-content center ">
+                <span class="card-title black-text" style="font-size: 30px;">List an item for sale</span>
+                <form id="item_form" method="post" action="/sell/" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.non_field_errors }}
+                        {{ form.title.errors }}
+                        <p class="input-field">
+                            <label for="{{ form.title.id_for_label }}">Title</label>
+                            {{ form.title }}
+                        </p>
+                        {{ form.description.errors }}
+                        <p class="input-field">
+                            <label for="{{ form.description.id_for_label }}">Description</label>
+                            {{ form.description }}
+                        </p>
+                        {{ form.category.errors }}
+                        {{ form.category }}
+                        <p>
+                            {{ form.photo.errors }}
 
-    <form id="item_form" method="post" action="/sell/" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ form.non_field_errors }}
-            <div class="row">
-                {{ form.title.errors }}
-                <p class="input-field col s12 m9 l6">
-                    <label for="{{ form.title.id_for_label }}">Title</label>
-                    {{ form.title }}
-                </p>
-            </div>
+                        <div class="file-field input-field">
+                            <input class="file-path validate" type="text"/>
 
-            <div class="row">
-                {{ form.description.errors }}
-                <p class="input-field col s12">
-                    <label for="{{ form.description.id_for_label }}">Description</label>
-                    {{ form.description }}
-                </p>
-            </div>
-
-            <div class="row">
-                {{ form.category.errors }}
-                <div class="col s12 m4">
-                {{ form.category }}
-                </div>
-            </div>
-            <div class="row">
-                <p>
-                    {{ form.photo.errors }}
-
-                <div class="file-field input-field col s6">
-                    <input class="file-path validate" type="text"/>
-
-                    <div class="btn blue">
-                        <span>Photo</span>
-                        {{ form.photo }}
+                            <div class="btn blue" style="padding-right: 20px; padding-left: 20px;">
+                                <span>Photo</span>
+                                {{ form.photo }}
+                            </div>
+                        </div>
+                        </p>
+                        {{ form.price.errors }}
+                        <p class="input-field col s12 m6" data-position="right" data-delay="50" data-tooltip="I am tooltip">
+                            <label for="{{ form.price.id_for_label }}">Price</label>
+                            {{ form.price }}
+                        </p>
+                        {{ form.zipcode.errors }}
+                        <p class="input-field col s12 m6">
+                            <label for="{{ form.zipcode.id_for_label }}">Shipping Zip Code</label>
+                            {{ form.zipcode }}
+                        </p>
                     </div>
-                </div>
-                </p>
-            </div>
-            <div class="row">
-                {{ form.price.errors }}
-                <p class="input-field col s12 m6 l4">
-                    <label for="{{ form.price.id_for_label }}">Price</label>
-                    {{ form.price }}
-                </p>
-            </div>
-            <div class="row">
-                {{ form.zipcode.errors }}
-                <p class="input-field col s12 m5 l4">
-                    <label for="{{ form.zipcode.id_for_label }}">Shipping Zip Code</label>
-                    {{ form.zipcode }}
+                    <button id="list-item-button" class="btn-large waves-effect waves-light teal accent-4" type="submit"
+                            name="action">List Item<i class="mdi-content-send right"></i>
+                    </button>
+                </form>
+                <br>
+                <p>
+                    <small>Once you list your item, you'll be able to set a price, create a listing, and schedule a pickup. By
+                    posting your item, you agree to <a href="/policies/terms#selling" target="_blank">Circa's terms and
+                    conditions</a>.
+                    </small>
                 </p>
             </div>
         </div>
-        <button id="list-item-button" class="btn-large waves-effect waves-light teal accent-4" type="submit"
-                name="action">List Item<i class="mdi-content-send right"></i>
-        </button>
-    </form>
+    </div>
     <br>
-
-    <p>
-        <small>Once you list your item, you'll be able to set a price, create a listing, and schedule a pickup. By
-            posting your item, you agree to <a href="/policies/terms#selling" target="_blank">Circa's terms and
-                conditions</a>.
-        </small>
-    </p>
 </div>
 {% endblock %}

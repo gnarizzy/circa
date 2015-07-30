@@ -110,17 +110,26 @@
                                         name="free" id="buy-item-free">Confirm Address
                                     <i class="mdi-editor-attach-money right"></i>
                                 </button>
+                                <a href="https://stripe.com">
+                                    <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
+                                </a>
                             </form>
                             {% elif user.id and user.id == item.seller.id %}
                             <button class="btn green lighten-2 waves-effect waves-light disabled" type="submit"
                                     name="action" id="buy-item-disabled">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </button>
+                            <a href="https://stripe.com">
+                                <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
+                            </a>
                             {% elif not user.id %}
                             <a class="btn green lighten-2 waves-effect waves-light" type="submit"
                                     name="action" href="/accounts/login/?next=/listing/{{ listing.id }}"
                                     id="buy-item-redirect" style="right: 10px">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
+                            </a>
+                            <a href="https://stripe.com">
+                                <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
                             </a>
                             {% else %}
                             <script src="https://checkout.stripe.com/checkout.js"></script>
@@ -129,7 +138,9 @@
                                     name="action">Buy Now
                                 <i class="mdi-editor-attach-money right"></i>
                             </button>
-
+                            <a href="https://stripe.com">
+                                <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
+                            </a>
                             <script type="text/javascript">
                                       var item = "{{item.title}}"
                                       {% if discount %}
@@ -166,7 +177,7 @@
                             </script>
                             {% endif %}
                             <br><br><br>
-                            {% if user.id %}
+                            {% if user.id and user.id != item.seller.id %}
                                 <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
                                     {% csrf_token %}
                                     <p class="input-field">
@@ -180,13 +191,13 @@
                                     <br><br>
                                 </form>
                             {% else %}
-                                <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
+                                <div class="form-inline">
                                     <input name="dummy" type="text" value="Code" disabled>
                                     <button type="submit" class="btn light-blue accent-4 waves-effect waves-light disabled" name="action">
                                         Apply promo
                                     </button>
                                     <br><br>
-                                </form>
+                                </div>
                             {% endif %}
                         </div>
                         <br>
