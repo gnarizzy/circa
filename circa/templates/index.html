@@ -45,53 +45,25 @@
 
 <div class="take-space"></div>
 <div class="container">
-<div class="row">
-    <div class="col hide-on-small-only m3 l3">
-        <div class="categories-wrapper" style="padding: 0px 15px 15px;">
-            <div class="collection">
-                <a href="/" class="collection-item category {% if not category %}active{% endif %} no-underline">All</a>
-                <a href="/category/books"
-                   class="collection-item category {% if category == 3 %}active{% endif %} no-underline">Books</a>
-                <a href="/category/electronics "
-                   class="collection-item category {% if category == 1 %}active{% endif %} no-underline">Electronics</a>
-                <a href="/category/shoes"
-                   class="collection-item category {% if category == 4 %}active{% endif %} no-underline">Shoes</a>
-                <a href="/category/videogames"
-                   class="collection-item category {% if category == 6 %}active{% endif %} no-underline">Video Games</a>
-                <a href="/category/other"
-                   class="collection-item category {% if category == 5 %}active{% endif %} no-underline">Other</a>
-            </div>
-        </div>
-    </div>
-    <div class="col s12 m9 l9">
+    <div class="row">
         {% if items %}
         {% load cropping %}
-        <div class="row">
-
-            {% for item in items %}
-            <div class="col s12 m6 l4">
-                <div class="card">
-                    <a id="{{ item.listing.id }}" href="/listing/{{ item.listing.id }}">
-                        <div class="card-image get-faded">
-                            <img src="{% cropped_thumbnail item "cropping" width=195 %}">
-                        </div>
-                    </a>
-
-                    <div class="card-content">
-                        <h5 class="black-text truncate" style="font-size: 19px">
-                            {{ item.title }}
-                            <br>
-                            <span style="font-size: 15px">Price: ${{ item.listing.price }}</span>
-                        </h5>
-                    </div>
+        {% for item in items %}
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="thumbnail cust center-block">
+                <a href="/listing/{{ item.listing.id }}">
+                    <img src="{% cropped_thumbnail item 'cropping' width=250 %}"/>
+                </a>
+                <div class="caption cust center-block">
+                    <h4 class="thumb-title">{{ item.title }}</h4>
+                    <p><span class="thumb-content">Price: ${{ item.listing.price }}</span></p>
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
+        {% else %}
+        <h2>This is awkward...there's nothing for sale! Why don't you <a href="/sell/">sell something</a>?</h2>
+        {% endif %}
     </div>
-    {% else %}
-    <h2>This is awkward...there's nothing for sale! Why don't you <a href="/sell/">sell something</a>?</h2>
-    {% endif %}
-</div>
 </div>
 {% endblock %}

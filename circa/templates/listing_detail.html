@@ -4,7 +4,6 @@
 {{ item.title }} | Circa
 {% endblock %}
 {% block head_block %}
-<link href="{% static 'css/main.css'%}" rel="stylesheet" media="screen">
 {% endblock %}
 
 {% block body_block %}
@@ -58,160 +57,132 @@
     {% endfor %}
     {% endif %}
     <div class="row">
-        <div class="card">
-            <div class="card-content">
-                <div class="center-align col l4 m6 s12">
+        <div class="col-xs-12 col-sm-8">
+            <div class="thumbnail cust">
+                <div class="listing-panel">
                     {% if user.id and user.id == item.seller.id %}
-                    <a id="edit-small" href="/edit/{{listing.id}}"><span class="badge white-text hide-on-med-and-up">
+                    <a id="edit-small" href="/edit/{{listing.id}}"><span class="btn blue white-text right
+                        waves-effect waves-light">
                         Edit</span></a>
                     {% endif %}
-                    <span id="title-small" class="card-title black-text hide-on-med-and-up">{{ item.title }}</span>
-                    <br>
-                    <img class="hide-on-med-and-up" src="{% cropped_thumbnail item "cropping" width=150 %}">
-                    <img class="hide-on-small-only hide-on-large-only" src="{% cropped_thumbnail item "cropping"
-                    width=200 %}">
-                    <img class="hide-on-med-and-down" src="{% cropped_thumbnail item "cropping" width=250 %}">
-                    <br>
-                    <br>
-                    <em>Ships from zipcode {{ item.listing.zipcode }}</em>
-                    <br>
-                    <br>
-                </div>
-
-                <div class="col l4 m6 s12">
-                    <span id="title-large" class="card-title black-text hide-on-small-only">{{ item.title }}</span>
-                    {% if user.id and user.id == item.seller.id %}
-                    <a id="edit-large" href="/edit/{{listing.id}}"><span class="badge white-text hide-on-small-only">
-                        Edit</span></a>
-                    {% endif %}
-                    <br>
-
+                    <h3 class="listing-title">{{ item.title }}</h3>
+                    <img class="img-thumbnail center-block" src="{% cropped_thumbnail item 'cropping' width=450 %}">
                     <p>{{ item.description|linebreaks }}</p>
-                    <br><br>
-                </div>
-                <div class="col l4 m6 s12">
-                    <div>
-                        <div class="card-title black-text">
-                            {% if free %}
-                            <p>Price: Free!</p>
-                            <p><small>Don't worry about payment, this one is on use!</small></p>
-                            {% elif discount %}
-                            <p>Price: ${{ discounted_price }}</p>
-                            <p><small><small>Discount: ${{ discount }}</small></small></p>
-                            {% else %}
-                            <p>Price: ${{ item.listing.price }}</p>
-                            {% endif %}
-                        </div>
-                        <div class="form-group">
-                            {% if free %}
-                            <form method="POST" action="/listing/{{item.listing.id}}/{{ item.slug }}/">
-                                {% csrf_token %}
-                                <button class="btn green lighten-2 waves-effect waves-light" type="submit"
-                                        name="free" id="buy-item-free">Confirm Address
-                                    <i class="mdi-editor-attach-money right"></i>
-                                </button>
-                                <a href="https://stripe.com">
-                                    <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
-                                </a>
-                            </form>
-                            {% elif user.id and user.id == item.seller.id %}
-                            <button class="btn green lighten-2 waves-effect waves-light disabled" type="submit"
-                                    name="action" id="buy-item-disabled">Buy Now
-                                <i class="mdi-editor-attach-money right"></i>
-                            </button>
-                            <a href="https://stripe.com">
-                                <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
-                            </a>
-                            {% elif not user.id %}
-                            <a class="btn green lighten-2 waves-effect waves-light" type="submit"
-                                    name="action" href="/accounts/login/?next=/listing/{{ listing.id }}"
-                                    id="buy-item-redirect" style="right: 10px">Buy Now
-                                <i class="mdi-editor-attach-money right"></i>
-                            </a>
-                            <a href="https://stripe.com">
-                                <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
-                            </a>
-                            {% else %}
-                            <script src="https://checkout.stripe.com/checkout.js"></script>
-
-                            <button id="buy-item" class="btn green lighten-2 waves-effect waves-light" type="submit"
-                                    name="action">Buy Now
-                                <i class="mdi-editor-attach-money right"></i>
-                            </button>
-                            <a href="https://stripe.com">
-                                <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
-                            </a>
-                            <script type="text/javascript">
-                                      var item = "{{item.title}}"
-                                      {% if discount %}
-                                      var stripe_amount = "{{discounted_price_amount}}"
-                                      {% else %}
-                                      var stripe_amount = "{{amount}}"
-                                      {% endif %}
-                                      var handler = StripeCheckout.configure({
-                                        key: '{{ stripe_key }}',
-                                        // image: '/img/documentation/checkout/marketplace.png',
-                                        token: function(token) {
-                                          var tokenInput = $("<input type=hidden name=stripeToken />").val(token.id);
-                                          var emailInput = $("<input type=hidden name=stripeEmail />").val(token.email);
-                                          $("form").append(tokenInput).append(emailInput).submit();
-                                        }
-                                      });
-
-                                      $('#buy-item').on('click', function(e) {
-                                        // Open Checkout with further options
-                                        handler.open({
-                                          name: 'Circa',
-                                          description: item,
-                                          amount: stripe_amount,
-                                          email: '{{ user.email }}'
-                                        });
-                                        e.preventDefault();
-                                      });
-
-                                      // Close Checkout on page navigation
-                                      $(window).on('popstate', function() {
-                                        handler.close();
-                                      });
-
-                            </script>
-                            {% endif %}
-                            <br><br><br>
-                            {% if user.id and user.id != item.seller.id %}
-                                <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
-                                    {% csrf_token %}
-                                    <p class="input-field">
-                                        {{ form.code.errors }}
-                                        <label for="{{ form.code.id_for_label }}">Code</label>
-                                        {{ form.code }}
-                                    </p>
-                                    <button type="submit" class="btn light-blue accent-4 waves-effect waves-light" name="action">
-                                        Apply promo
-                                    </button>
-                                    <br><br>
-                                </form>
-                            {% else %}
-                                <div class="form-inline">
-                                    <input name="dummy" type="text" value="Code" disabled>
-                                    <button type="submit" class="btn light-blue accent-4 waves-effect waves-light disabled" name="action">
-                                        Apply promo
-                                    </button>
-                                    <br><br>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <br>
-                    </div>
                 </div>
             </div>
         </div>
+        <div class="col-xs-12 col-sm-4">
+            <div class="thumbnail cust">
+                <div class="listing-panel">
+                    {% if free %}
+                    <h3 class="price-title">Price: Free!</h3>
+                    <p><small>Don't worry about payment, this one is on use!</small></p>
+                    {% elif discount %}
+                    <h3 class="price-title">Price: ${{ discounted_price }}</h3>
+                    <p><small><small>Discount: ${{ discount }}</small></small></p>
+                    {% else %}
+                    <h3 class="price-title">Price: ${{ item.listing.price }}</h3>
+                    {% endif %}
+                    <a class="hidden-xs hidden-sm right" href="https://stripe.com">
+                        <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
+                    </a>
+                    <a class="hidden-md hidden-lg left" href="https://stripe.com">
+                        <img src="{% static 'other/powered_by_stripe.png' %}" alt="Powered By Stripe"/>
+                    </a>
+                    <br class="hidden-md hidden-lg">
+                    <br class="hidden-md hidden-lg">
+                    {% if free %}
+                    <form method="POST" action="/listing/{{item.listing.id}}/{{ item.slug }}/">
+                        {% csrf_token %}
+                        <button class="btn green lighten-2 waves-effect waves-light" type="submit"
+                                name="free" id="buy-item-free">Confirm Address
+                            <i class="mdi-editor-attach-money right"></i>
+                        </button>
+                    </form>
+                    {% elif user.id and user.id == item.seller.id %}
+                    <button class="btn green lighten-2 waves-effect waves-light disabled" type="submit"
+                            name="action" id="buy-item-disabled">Buy Now
+                        <i class="mdi-editor-attach-money right"></i>
+                    </button>
+                    {% elif not user.id %}
+                    <a class="btn green lighten-2 waves-effect waves-light" type="submit"
+                            name="action" href="/accounts/login/?next=/listing/{{ listing.id }}"
+                            id="buy-item-redirect" style="right: 10px">Buy Now
+                        <i class="mdi-editor-attach-money right"></i>
+                    </a>
+                    {% else %}
+                    <script src="https://checkout.stripe.com/checkout.js"></script>
 
-        <form action="{{request.path}}" method="POST">
-            {% csrf_token %}
-        </form>
-        <p class="grey-text text-darken-1">Circa guarantees one day shipping and no-questions-asked returns for 30
-            days.</p>
+                    <button id="buy-item" class="btn green lighten-2 waves-effect waves-light" type="submit"
+                            name="action">Buy Now
+                        <i class="mdi-editor-attach-money right"></i>
+                    </button>
+                    <script type="text/javascript">
+                              var item = "{{item.title}}"
+                              {% if discount %}
+                              var stripe_amount = "{{discounted_price_amount}}"
+                              {% else %}
+                              var stripe_amount = "{{amount}}"
+                              {% endif %}
+                              var handler = StripeCheckout.configure({
+                                key: '{{ stripe_key }}',
+                                // image: '/img/documentation/checkout/marketplace.png',
+                                token: function(token) {
+                                  var tokenInput = $("<input type=hidden name=stripeToken />").val(token.id);
+                                  var emailInput = $("<input type=hidden name=stripeEmail />").val(token.email);
+                                  $("form").append(tokenInput).append(emailInput).submit();
+                                }
+                              });
+
+                              $('#buy-item').on('click', function(e) {
+                                // Open Checkout with further options
+                                handler.open({
+                                  name: 'Circa',
+                                  description: item,
+                                  amount: stripe_amount,
+                                  email: '{{ user.email }}'
+                                });
+                                e.preventDefault();
+                              });
+
+                              // Close Checkout on page navigation
+                              $(window).on('popstate', function() {
+                                handler.close();
+                              });
+
+                    </script>
+                    {% endif %}
+                    {% if user.id and user.id != item.seller.id %}
+                        <form class="form-inline" action="/listing/{{item.listing.id}}/{{ item.slug }}/" method="post">
+                            {% csrf_token %}
+                            <p class="input-field">
+                                {{ form.code.errors }}
+                                <label for="{{ form.code.id_for_label }}">Code</label>
+                                {{ form.code }}
+                            </p>
+                            <button type="submit" class="btn light-blue accent-4 waves-effect waves-light" name="action">
+                                Apply promo
+                            </button>
+                            <br><br>
+                        </form>
+                    {% else %}
+                        <div class="form-inline">
+                            <input name="dummy" type="text" value="Code" disabled>
+                            <button type="submit" class="btn light-blue accent-4 waves-effect waves-light disabled" name="action">
+                                Apply promo
+                            </button>
+                            <br><br>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
+    <form action="{{request.path}}" method="POST">
+        {% csrf_token %}
+    </form>
+    <p class="grey-text text-darken-1">Circa guarantees one day shipping and no-questions-asked returns for 30
+        days.</p>
 </div>
 
 {% endblock %}
