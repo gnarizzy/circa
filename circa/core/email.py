@@ -117,10 +117,13 @@ def admin_notification_of_sale(listing):
 
     addr_str = addr.address_line_1
 
-    if addr.address_line_2 is not None:
+    if addr.address_line_2 is not '':
         addr_str += "\n" + addr.address_line_2
 
     addr_str += "\n" + addr.city + ", " + addr.state + " " + addr.zipcode
+
+    if addr.special_instructions is not '':
+        addr_str += "\n\nSpecial Instructions: " + addr.special_instructions
 
     content = ADMIN_NOTIFICATION.format(
         listing.item.title,
