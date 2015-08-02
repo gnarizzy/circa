@@ -88,3 +88,7 @@ nav ul a {
     display: block;
     padding: 0 15px;
 }
+
+.thumb-content a {
+    color: #fff;
+}
