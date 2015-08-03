@@ -29,18 +29,18 @@
 {% if not user.id and not category%}
 <div class="container">
     <div class="take-space"></div>
-    <div class ="bg"></div>
-        <div class="jumbotron">
-            <h1>Buy and Sell in Atlanta</h1>
+    <div class="bg hidden-xs hidden-sm"></div>
+    <div class="jumbotron">
+        <h1>Buy and Sell in Atlanta</h1>
 
-            <p class="lead"> Buy goods locally and have them delivered right to your door
-            </p>
+        <p class="lead"> Buy goods locally and have them delivered right to your door
+        </p>
 
-            <p><a class="waves-effect waves-light btn-large green lighten-2 no-underline" href="/about/"><i
-                    class="mdi-action-info left"></i>Learn
-                more</a>
-            </p>
-        </div>
+        <p><a class="waves-effect waves-light btn-large green lighten-2 no-underline" href="/about/"><i
+                class="mdi-action-info left"></i>Learn
+            more</a>
+        </p>
+    </div>
 </div>
 {% endif %}
 
@@ -71,8 +71,13 @@
 <script>
 var jumboHeight = $('.jumbotron').outerHeight();
 function parallax(){
-    var scrolled = $(window).scrollTop();
-    $('.bg').css('height', (jumboHeight-scrolled) + 'px');
+    var ismobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    if(!ismobile) {
+        var scrolled = $(window).scrollTop();
+        $('.bg').css('height', (jumboHeight-scrolled) + 'px');
+    } else {
+        $('.jumbotron').css('background', '#a0a0a0');
+    }
 }
 
 $(window).scroll(function(e){
