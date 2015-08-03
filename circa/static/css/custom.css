@@ -91,11 +91,42 @@ nav ul a {
   filter: blur(5px);
 }
 
+/* Extra small devices (phones, less than 768px) */
 .jumbotron {
-  height: 500px;
+  height: 400px;
   color: white;
   text-shadow: #444 0 1px 1px;
-  background:transparent;
+  background: #e0e0e0;
+}
+
+/* Small devices (tablets, 768px and up) */
+@media screen and (min-width: 768px) {
+      .jumbotron {
+      height: 400px;
+      color: white;
+      text-shadow: #444 0 1px 1px;
+      background: #e0e0e0;
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media screen and (min-width: 992px) {
+     .jumbotron {
+      height: 400px;
+      color: white;
+      text-shadow: #444 0 1px 1px;
+      background: transparent;
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media screen and (min-width: 1200px) {
+    .jumbotron {
+      height: 400px;
+      color: white;
+      text-shadow: #444 0 1px 1px;
+      background: transparent;
+    }
 }
 
 /* This corrects the container to Bootstrap's instead of materializes */
