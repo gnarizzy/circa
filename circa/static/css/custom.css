@@ -16,6 +16,14 @@
     background: inherit;
 }
 
+.above-categories {
+    background-color: #1565c0;
+    height: 10px;
+    margin-top: -15px;
+    margin-bottom: -64px;
+    padding-bottom: 69px;
+}
+
 h4.thumb-title {
     margin-top: 0px;
     padding-bottom: 10px;

@@ -43,10 +43,10 @@
     </div>
 </div>
 {% endif %}
-
-<div class="navbar">
+<div id="listing-nav-separator" class="above-categories"></div>
+<div id="listing-nav" class="navbar">
     <nav>
-        <div class="nav-wrapper">
+        <div class="nav-wrapper fb-blue">
             <div class="col s12">
                 <!-- Dropdown Structure -->
                 <ul id="categories-drop" class="dropdown-content">
@@ -93,7 +93,7 @@ function parallax(){
     var ismobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     if(!ismobile) {
         var scrolled = $(window).scrollTop();
-        $('.bg').css('height', (jumboHeight-scrolled) + 'px');
+        $('.bg').css('height', (jumboHeight+100-scrolled) + 'px');
     }
 }
 
