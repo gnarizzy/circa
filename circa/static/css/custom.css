@@ -74,9 +74,31 @@ nav ul a {
     color: #fff;
 }
 
+div.faded-effect {
+    background-color: #009ee1 !important;
+    opacity: 0.4;
+}
+
+nav.custom {
+    color: #fff;
+    background-color: transparent;
+    width: 100%;
+    height: 56px;
+    line-height: 56px;
+}
+
+.do-not-fade {
+    opacity: 1;
+}
+
 .brand-logo.cat-style {
     font-size: 14px;
     padding: 0 2rem;
+    background-color: #81C784;
+}
+
+div.take-space-2 {
+  margin: 10px;
 }
 
 .bg {

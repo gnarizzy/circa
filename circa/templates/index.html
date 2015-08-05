@@ -42,6 +42,8 @@
         </p>
     </div>
 </div>
+{% else %}
+<div class="take-space-2"></div>
 {% endif %}
 <div id="listing-nav-separator" class="above-categories"></div>
 <div id="listing-nav" class="navbar">
@@ -52,10 +54,17 @@
                         style="margin-top: 12px;">Categories <span class="mdi-navigation-expand-more right"></span></a>
                 <!-- Dropdown Structure -->
                 <ul id="categories-drop" class="dropdown-content">
-                  <li><a href="#!">one</a></li>
-                  <li><a href="#!">two</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#!">three</a></li>
+                    <li><a class="no-underline" href="/">All</a></li>
+                    <li class="divider"></li>
+                    <li><a class="no-underline" href="/category/books">Books</a></li>
+                    <li class="divider"></li>
+                    <li><a class="no-underline" href="/category/electronics">Electronics</a></li>
+                    <li class="divider"></li>
+                    <li><a class="no-underline" href="/category/shoes">Shoes</a></li>
+                    <li class="divider"></li>
+                    <li><a class="no-underline" href="/category/videogames">Video Games</a></li>
+                    <li class="divider"></li>
+                    <li><a class="no-underline" href="/category/other">Other</a></li>
                 </ul>
             </div>
         </div>
@@ -85,7 +94,6 @@
         {% endif %}
     </div>
 </div>
-}
 <script>
 var jumboHeight = $('.jumbotron').outerHeight();
 function parallax(){

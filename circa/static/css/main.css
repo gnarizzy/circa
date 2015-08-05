@@ -1,5 +1,5 @@
 body {
-  background: #fafafa;
+  background: #e0e0e0;
   color: #333333 !important;
 }
 
@@ -15,8 +15,13 @@ div.get-faded:hover {
   opacity: 0.6;
 }
 
-.fb-blue{
-	background-color: #009ee1 !important; }
+.fb-blue {
+	background-color: #009ee1 !important;
+}
+
+.fb-blue-faded {
+    background-color: rgba(0, 158, 225, .3);
+}
 
 footer.page-footer {
   background-color: #009ee1 }
