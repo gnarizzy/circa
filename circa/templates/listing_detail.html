@@ -94,7 +94,7 @@
                     {% if free %}
                     <form method="POST" action="/listing/{{item.listing.id}}/{{ item.slug }}/">
                         {% csrf_token %}
-                        <button class="btn custom green lighten-2 waves-effect waves-light" type="submit"
+                        <button class="btn custom green lighten-2 waves-effect waves-light buy-button" type="submit"
                                 name="free" id="buy-item-free">Confirm Address
                             <i class="mdi-editor-attach-money right"></i>
                         </button>

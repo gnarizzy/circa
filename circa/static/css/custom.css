@@ -9,6 +9,10 @@
     min-height: 150px;
 }
 
+a.waves-effect.waves-light.btn.buy-button {
+    margin: 0px;
+}
+
 .thumbnail.cust {
     -webkit-box-shadow: 0 0px 0px rgba(0,0,0,0);
     box-shadow: 0 0px 0px rgba(0,0,0,.0);
