@@ -23,7 +23,7 @@ import datetime
 def index(request):
     now = datetime.datetime.now()
     item_list = Item.objects.exclude(listing__isnull=True).exclude(listing__end_date__lte=now) \
-        .order_by('-pk')
+        .order_by('?')
     if request.user.is_authenticated():
         all_user_items = Item.objects.filter(buyer=request.user)
         pending_num = 0

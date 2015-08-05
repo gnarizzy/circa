@@ -7,105 +7,135 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/main.css'%}">
 {% endblock %}
 {% block body_block %}
-<div class = "container">
-    <h1>About</h1>
-</div>
-    <section id="about" class="section">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12">
-						<p class="lead">
-							Circa is a Georgia Tech startup that takes the hassle out of buying
-                            and selling with your neighbors. We handle payments, delivery, and returns so you don't have to!
-						</p>
-						<div class="row">
-							<div class="col-sm-4 feature-box-container">
-								<div class="feature-box wow fadeInDown">
-									<div class="icon">
-										<i class="glyphicon glyphicon-cog"></i>
-									</div>
-									<div class="description">
-										<h4>Easy Buying</h4>
-										<p>Sellers list their items, and buyers make their purchases.  Hassle-free
-                                            online shopping you've come to expect.
-										</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-4 feature-box-container">
-								<div class="feature-box wow fadeInDown" data-wow-delay="0.2s">
-									<div class="icon">
-										<i class="glyphicon glyphicon-hourglass"></i>
-									</div>
-									<div class="description">
-										<h4>Easy Delivery</h4>
-										<p>We'll take it from here. We pick up and deliver the item within 24 hours, and
-                                            all payments are handled online. Goodbye, awkward meetups!
-										</p>
-									</div>
-								</div>
-							</div>
-							<div class="col-sm-4 feature-box-container">
-								<div class="feature-box wow fadeInDown" data-wow-delay="0.4s">
-									<div class="icon">
-										<i class="glyphicon glyphicon-heart"></i>
-									</div>
-									<div class="description">
-										<h4>Easy Returns</h4>
-										<p>Unhappy with your purchase? Let us know within 30 days and you'll get a full
-                                            refund, no questions asked. No tricks, no scams, no tears - just love.
-										</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-        <div class = "container">
-            <h3>How It Works</h3>
-            <div class="row">
-                <div class ="take-space"></div>
-                <div id="staggered-sell" class="left col l6 m6 s12">
-                    <h4> Selling </h4>
+<section id="about" class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="card center about-card">
+                    <div class="card-content">
+                    <h1>About</h1>
                     <p>
-                        <ul>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> Post your item</h5>
-                            </li>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> Item gets sold</h5>
-                            </li>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> We pick up the item</h5>
-                            </li>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> You get paid*</h5>
-                            </li>
-                        </ul>
-                        <small>*A fee of $2 or 15% (whichever is greater, with a max of $10) helps keep Circa <a href="https://www.youtube.com/watch?v=qLWPscIWbjk"
-                                                                                            target="_blank">running</a>.</small>
+                        Circa is a Georgia Tech startup that takes the hassle out of buying
+                        and selling with your neighbors. We handle payments, delivery, and returns so you don't have to!
                     </p>
+                    </div>
                 </div>
-                <div id="staggered-buy" class="left col l6 m6 s12">
-                    <h4> Buying </h4>
-                    <p>
-                        <ul>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> Find the item you want</h5>
-                            </li>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> Pay securely online</h5>
-                            </li>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> Confirm your address</h5>
-                            </li>
-                            <li>
-                              <h5><i class="mdi-toggle-check-box"></i> Item arrives on your doorstep</h5>
-                            </li>
-                        </ul>
-                    </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-4">
+                <div class="card center about-card">
+                    <div class="card-content">
+                        <div class="icon">
+                            <i class="glyphicon medium circle white-text green glyphicon-cog"
+                                    style="padding: 10px 9px 9px 10px;"></i>
+                        </div>
+                        <div class="description">
+                            <h4>Easy Buying</h4>
+                            <p>Sellers list their items, and buyers purchase them with two clicks. No hassles,
+                                no worries.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <div class="card center about-card">
+                    <div class="card-content">
+                        <div class="icon">
+                            <i class="glyphicon medium circle white-text yellow glyphicon-hourglass"
+                                    style="padding: 10px 9px 9px 10px;"></i>
+                        </div>
+                        <div class="description">
+                            <h4>Easy Delivery</h4>
+                            <p>We'll take it from here. We pick up and deliver the item within 24 hours, and
+                                all payments are handled online. Goodbye, awkward meetups!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-4">
+                <div class="card center about-card">
+                    <div class="card-content">
+                        <div class="icon">
+                            <i class="glyphicon medium circle white-text red  glyphicon-heart"
+                                    style="padding: 12px 13px 7px 9px;"></i>
+                        </div>
+                        <div class="description">
+                            <h4>Easy Returns</h4>
+                            <p>Unhappy with your purchase? Let us know within 30 days and you'll get a full
+                                refund, no questions asked. No tricks, no scams, no tears - just love.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class = "container">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="card center">
+                <div class="card-content">
+                    <h1>How It Works</h1>
+                    <p>The local buying process made simple</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class ="take-space"></div>
+        <div class="col-xs-12 col-md-6">
+            <div class="card">
+                <div class="card-content">
+                    <div id="staggered-sell">
+                        <h4 class="center"> Selling </h4>
+                        <p>
+                            <ul>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> Post your item</h5>
+                                </li>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> Item gets sold</h5>
+                                </li>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> We pick up the item</h5>
+                                </li>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> You get paid through Venmo, PayPal, or direct deposit*</h5>
+                                </li>
+                            </ul>
+                            <small>*A fee of $2 or 15% (whichever is greater, with a max of $10) helps keep Circa <a href="https://www.youtube.com/watch?v=qLWPscIWbjk"
+                                                                                                target="_blank">running</a>.</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <div class="card">
+                <div class="card-content">
+                    <div id="staggered-buy">
+                        <h4 class="center"> Buying </h4>
+                        <p>
+                            <ul>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> Find the item you want</h5>
+                                </li>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> Pay securely online</h5>
+                                </li>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> Confirm your address</h5>
+                                </li>
+                                <li>
+                                  <h5><i class="mdi-toggle-check-box"></i> Item arrives on your doorstep</h5>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

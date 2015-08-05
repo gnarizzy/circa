@@ -34,9 +34,12 @@ LISTING_FREE_CONFIRMATION = \
 
 ADMIN_NOTIFICATION = \
     "Item: {}\n" + \
+    "Item Description: {}\n" + \
     "Seller: {}\n" + \
+    "Seller Email: {}\n" + \
     "Buyer: {}\n" + \
-    "Buyer Address: {}"
+    "Buyer Email: {}\n" + \
+    "Buyer Address: \n{}"
 
 WELCOME_NEW_USER = \
     "Hey {},\n\nThanks for signing up for Circa! We're working to build the easiest way to buy and " \
@@ -117,15 +120,21 @@ def admin_notification_of_sale(listing):
 
     addr_str = addr.address_line_1
 
-    if addr.address_line_2 is not None:
+    if addr.address_line_2 is not '':
         addr_str += "\n" + addr.address_line_2
 
     addr_str += "\n" + addr.city + ", " + addr.state + " " + addr.zipcode
 
+    if addr.special_instructions is not '':
+        addr_str += "\n\nSpecial Instructions: " + addr.special_instructions
+
     content = ADMIN_NOTIFICATION.format(
         listing.item.title,
+        listing.item.description,
         listing.item.seller.username,
+        listing.item.seller.email,
         listing.item.buyer.username,
+        listing.item.buyer.email,
         addr_str
     )
 

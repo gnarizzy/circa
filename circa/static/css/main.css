@@ -1,155 +1,27 @@
-
-/* Base */
-html {
-  overflow-y: scroll;
-}
 body {
-  background: #f3f3f3;
+  background: #e0e0e0;
   color: #333333 !important;
-}
-.row {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-.row > div {
-  margin-bottom: 15px;
-}
-.alerts-container .alert:last-child {
-  margin-bottom: 0;
-}
-#page-wrapper {
-  padding-left: 70px;
-  height: 100%;
-}
-#sidebar-wrapper {
-  margin-left: -150px;
-  left: -30px;
-  width: 250px;
-  position: fixed;
-  height: 100%;
-  z-index: 999;
-}
-#page-wrapper,
-#sidebar-wrapper {
-  transition: all .4s ease 0s;
-}
-.green {
-  background: #4caf50 !important;
-}
-.blue {
-  background: #2361ae !important;
-}
-.orange {
-  background: #d3a938 !important;
-}
-.red {
-  background: #ae2323 !important;
-}
-.form-group .help-block.form-group-inline-message {
-  padding-top: 5px;
-}
-div.input-mask {
-  padding-top: 7px;
-}
-div.take-space {
-  margin: 20px;
-}
-div.get-faded:hover {
-  opacity: 0.6;
-}
-
-/* About */
-
-
-
-.feature-box-container{
-	margin: 60px 0;
-}
-
-.feature-box-container:last-child{
-	margin-bottom: 0;
-}
-
-.feature-box {
-	text-align: center;
-	background: #e4e4e4;
-}
-
-.feature-box .icon {
-	width: 100px;
-	height: 55px;
-	color: #fff;
-	position: relative;
-	background: #bbbcbc;
-	margin: 35px auto 20px;
-}
-
-.feature-box .icon:before {
-	content: "";
-	position: absolute;
-	top: -25px;
-	left: 0;
-	width: 0;
-	height: 0;
-	border-left: 50px solid transparent;
-	border-right: 50px solid transparent;
-	border-bottom: 25px solid #bbbcbc;
-}
-
-.feature-box .icon:after {
-	content: "";
-	position: absolute;
-	bottom: -25px;
-	left: 0;
-	width: 0;
-	height: 0;
-	border-left: 50px solid transparent;
-	border-right: 50px solid transparent;
-	border-top: 25px solid #bbbcbc;
-}
-
-.feature-box .icon {
-	font-size: 35px;
-	padding-top: 6px;
-	display: block;
-}
-
-.feature-box .description {
-	padding: 20px 15px 10px;
-}
-
-.feature-box .description p {
-	font-size: 14px;
-}
-
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-	.feature-box-container{
-		margin: 0;
-	}
 }
 
 .collapsible .collapsible-header {
   height: inherit;
 }
 
-a.waves-effect.waves-light.btn {
-  margin: 10px;
+div.take-space {
+  margin: 20px;
 }
 
+div.get-faded:hover {
+  opacity: 0.6;
+}
 
-body {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-  }
+.fb-blue {
+	background-color: #009ee1 !important;
+}
 
-main {
-    flex: 1 0 auto;
-  }
-
-.fb-blue{
-	background-color: #009ee1 !important; }
+.fb-blue-faded {
+    background-color: rgba(0, 158, 225, .3);
+}
 
 footer.page-footer {
   background-color: #009ee1 }
