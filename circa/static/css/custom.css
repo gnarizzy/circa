@@ -74,6 +74,11 @@ nav ul a {
     color: #fff;
 }
 
+.brand-logo.cat-style {
+    font-size: 14px;
+    padding: 0 2rem;
+}
+
 .bg {
   background: url('/static/other/atlanta_skyline.jpg') no-repeat center center;
   position: fixed;
