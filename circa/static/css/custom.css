@@ -105,6 +105,11 @@ nav ul a {
       color: black;
       background: #e0e0e0;
     }
+
+    .about-card {
+        height: 360px;
+    }
+
 }
 
 /* Medium devices (desktops, 992px and up) */
@@ -123,6 +128,10 @@ nav ul a {
         margin-bottom: -64px;
         padding-bottom: 69px;
     }
+
+    .about-card {
+        height: 260px;
+    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
@@ -140,6 +149,11 @@ nav ul a {
         margin-top: -15px;
         margin-bottom: -64px;
         padding-bottom: 69px;
+    }
+
+
+    .about-card {
+        height: 240px;
     }
 }
 
