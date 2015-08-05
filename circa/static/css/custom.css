@@ -18,6 +18,9 @@ a.waves-effect.waves-light.btn.buy-button {
     box-shadow: 0 0px 0px rgba(0,0,0,.0);
     border: 0px solid #fff;
     background: inherit;
+}
+
+img.set-height {
     min-height: 250px;
 }
 
