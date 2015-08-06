@@ -4,52 +4,42 @@ Edit {{item.title}}
 {% endblock %}
 {% block body_block %}
 <div class = "container">
-    <h1>Edit Listing</h1>
+    <div class="row">
+        <div class="card col s10 offset-s1 m8 offset-m2 l6 offset-l3">
+            <div class="card-content center ">
+                <span class="card-title black-text" style="font-size: 30px;">Edit Listing</span>
+                <form id ="edit_form" method="post" action="/edit/{{listing.id }}/">
+                    {% csrf_token %}
+                        {{ form.title.errors }}
+                    <p>
+                        <label for="{{ form.title.id_for_label }}">Title</label>
+                        {{ form.title }}
+                    </p>
+                    {{ form.description.errors }}
+                    <p>
+                        <label for="{{ form.description.id_for_label }}">Description</label>
+                        {{ form.description }}
+                    </p>
+                    {{ form.category.errors }}
+                    {{ form.category }}
 
-    <form id ="edit_form" method="post" action="/edit/{{listing.id }}/">
-        {% csrf_token %}
-        <div class="row">
-            {{ form.title.errors }}
-            <p class="input-field col s12 m9 l6">
-                <label for="{{ form.title.id_for_label }}">Title</label>
-                {{ form.title }}
-            </p>
-        </div>
+                    {{ form.price.errors }}
+                    <p>
+                        <label for="{{ form.price.id_for_label }}">Price</label>
+                        {{ form.price }}
+                    </p>
+                    {{ form.zipcode.errors }}
+                    <p>
+                        <label for="{{ form.zipcode.id_for_label }}">Shipping Zip Code</label>
+                        {{ form.zipcode }}
+                    </p>
 
-        <div class="row">
-            {{ form.description.errors }}
-            <p class="input-field col s12 m8">
-                <label for="{{ form.description.id_for_label }}">Description</label>
-                {{ form.description }}
-            </p>
-        </div>
-
-        <div class="row">
-            {{ form.category.errors }}
-            <div class="col s12 m4">
-            {{ form.category }}
+                    <button id="update-listing" class="btn-large waves-effect waves-light teal accent-4" type="submit"
+                            name="action">Update Listing<i class="mdi-content-send right"></i>
+                    </button>
+                </form>
             </div>
         </div>
-
-        <div class="row">
-            {{ form.price.errors }}
-            <p class="input-field col s12 m6 l4">
-                <label for="{{ form.price.id_for_label }}">Price</label>
-                {{ form.price }}
-            </p>
-        </div>
-
-        <div class="row">
-            {{ form.zipcode.errors }}
-            <p class="input-field col s12 m5 l4">
-                <label for="{{ form.zipcode.id_for_label }}">Shipping Zip Code</label>
-                {{ form.zipcode }}
-            </p>
-        </div>
-
-        <button id="update-listing" class="btn-large waves-effect waves-light teal accent-4" type="submit"
-                name="action">Update Listing<i class="mdi-content-send right"></i>
-        </button>
-    </form>
+    </div>
 </div>
 {% endblock %}
