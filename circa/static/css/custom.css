@@ -117,7 +117,7 @@ div.take-space-2 {
   background: url('/static/other/atlanta_skyline.jpg') no-repeat center center;
   position: fixed;
   width: 100%;
-  height: 550px; /*same height as jumbotron */
+  height: 500px; /*same height as jumbotron */
   top:0;
   left:0;
   z-index: -1;
@@ -132,7 +132,7 @@ div.take-space-2 {
 }
 
 .jumbotron {
-  height: 500px;
+  height: 450px;
   color: black;
   background: #e0e0e0;
 }
@@ -216,7 +216,7 @@ div.take-space-2 {
     }
 }
 
-/* This corrects the container to Bootstrap's instead of materializes */
+/* This corrects the container to Bootstrap's instead of Materialize's */
 .container {
   padding-right: 15px;
   padding-left: 15px;
