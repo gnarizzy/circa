@@ -216,7 +216,7 @@ div.take-space-2 {
     }
 }
 
-/* This corrects the container to Bootstrap's instead of materializes */
+/* This corrects the container to Bootstrap's instead of Materialize's */
 .container {
   padding-right: 15px;
   padding-left: 15px;
