@@ -26,8 +26,7 @@
 
 {% endblock %}
 {% block body_block %}
-{% if not user.id and not category%}
-<div class="container">
+{% if not user.id %}
     <div class="take-space"></div>
     <div class="bg hidden-xs hidden-sm"></div>
     <div class="jumbotron">
@@ -41,14 +40,12 @@
             more</a>
         </p>
     </div>
-</div>
 {% else %}
 <div class="take-space-2"></div>
 {% endif %}
-<div id="listing-nav-separator" class="above-categories"></div>
-<div id="listing-nav" class="navbar">
-    <nav>
-        <div class="nav-wrapper fb-blue">
+<div id="listing-nav" class="navbar {% if user.id %}categories-nav-login{% else %}categories-nav{% endif %}">
+    <nav class="cancel-ugly-red">
+        <div class="nav-wrapper">
             <div class="col s12">
                 <a class="brand-logo center dropdown-button btn cat-style" href="#!" data-beloworigin="true" data-activates="categories-drop"
                         style="margin-top: 12px;">Categories <span class="mdi-navigation-expand-more right"></span></a>
@@ -71,7 +68,6 @@
     </nav>
 </div>
 
-<div class="take-space"></div>
 <div class="container">
     <div class="row">
         {% if items %}

@@ -52,6 +52,10 @@ span.thumb-content {
     border: 1px solid #eaeaea;
 }
 
+nav.cancel-ugly-red {
+    background-color: rgba(0, 0, 0, 0);
+}
+
 h3.listing-title {
     margin-top: 0px;
     border-bottom: 2px solid #4f4f4f;
@@ -119,7 +123,14 @@ div.take-space-2 {
   z-index: -1;
 }
 
-/* Extra small devices (phones, less than 768px) */
+.categories-nav {
+    background-color: #009ee1;
+}
+
+.categories-nav-login {
+    background-color: #009ee1;
+}
+
 .jumbotron {
   height: 450px;
   color: black;
@@ -160,6 +171,16 @@ div.take-space-2 {
     .about-card {
         height: 260px;
     }
+
+    .categories-nav {
+        background-color: rgba(0, 0, 0, .3);
+        bottom: 60px;
+        margin: -20px;
+    }
+
+    .categories-nav-login {
+        background-color: #009ee1;
+    }
 }
 
 /* Large devices (large desktops, 1200px and up) */
@@ -183,9 +204,19 @@ div.take-space-2 {
     .about-card {
         height: 240px;
     }
+
+    .categories-nav {
+        background-color: rgba(0, 0, 0, .3);
+        bottom: 60px;
+        margin: -20px;
+    }
+
+    .categories-nav-login {
+        background-color: #009ee1;
+    }
 }
 
-/* This corrects the container to Bootstrap's instead of materializes */
+/* This corrects the container to Bootstrap's instead of Materialize's */
 .container {
   padding-right: 15px;
   padding-left: 15px;
