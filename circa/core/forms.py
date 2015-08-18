@@ -10,7 +10,8 @@ class ItemListingForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea validate'}),
                                   label="Description")
     category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Item.CATEGORY_CHOICES)
-    price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
+    price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate', 'onchange': 'change()'}),
+                               label='Buy now price')
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
 
     # Make sure starting offer is at least $5.00

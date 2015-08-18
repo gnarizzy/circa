@@ -7,7 +7,7 @@ from core.email import listing_bought_seller_notification, admin_notification_of
 from core.models import Item, Listing, UserProfile, PromoCode
 from core.forms import ItemListingForm, EditListingForm, PromoForm, AddressForm
 from core.keys import *
-from core.payout import calc_payout
+from core.payout import calc_payout, COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_MAX, COMMISSION_PERCENT
 from core.zipcode import zipcodes
 from decimal import *
 from django.contrib.auth.decorators import login_required
@@ -61,7 +61,10 @@ def sell(request):
             return HttpResponseRedirect('/listing/' + str(item.listing.id))
     else:
         form = ItemListingForm(seller=request.user)
-    return render(request, 'sell.html', {'form': form})
+
+    context = {'form': form, 'commission_percent': COMMISSION_PERCENT, 'commission_breakeven': COMMISSION_BREAKEVEN,
+               'commission_flat': COMMISSION_FLAT, 'commission_max': COMMISSION_MAX}
+    return render(request, 'sell.html', context)
 
 
 @login_required
