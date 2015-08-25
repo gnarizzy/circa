@@ -220,6 +220,14 @@ div.take-space-2 {
     .categories-nav-login {
         background-color: #009ee1;
     }
+
+    #jumbotron-text {
+        text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    }
+
+    #jumbotron-text2 {
+        text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    }
 }
 
 /* This corrects the container to Bootstrap's instead of Materialize's */
@@ -230,13 +238,6 @@ div.take-space-2 {
   margin-left: auto;
 }
 
-#jumbotron-text {
-    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
-}
-
-#jumbotron-text2 {
-    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
-}
 
 @media (min-width: 768px) {
   .container {
