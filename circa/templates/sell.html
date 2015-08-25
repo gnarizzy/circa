@@ -32,6 +32,33 @@
         display: none;
     }
 </style>
+<script type="text/javascript">
+function change() {
+    price = document.getElementById("id_price").value;
+    price = parseInt(price);
+
+    if (isNaN(price) || price < 5) {
+        document.getElementById("seller-earnings").innerHTML = 'Invalid Price';
+    } else {
+        document.getElementById("seller-earnings").innerHTML = '$' + Math.round(calcEarnings(price) * 100) / 100;
+    }
+}
+
+function calcEarnings(price) {
+    COMMISSION_PERCENT = {{ commission_percent }};
+    COMMISSION_FLAT = {{ commission_flat }};
+    COMMISSION_BREAKEVEN = {{ commission_breakeven }};
+    COMMISSION_MAX = {{ commission_max }};
+
+    if (price < COMMISSION_BREAKEVEN) {
+        return price - COMMISSION_FLAT;
+    } else if (price >= COMMISSION_BREAKEVEN & price * COMMISSION_PERCENT < COMMISSION_MAX) {
+        return price * (1 - COMMISSION_PERCENT)
+    } else {
+        return price - COMMISSION_MAX;
+    }
+}
+</script>
 {% endblock %}
 {% block body_block %}
 <div class="container">
@@ -76,12 +103,16 @@
                         {{ form.crop_width }}
                         <br><br>
                         {{ form.price.errors }}
-                        <p class="input-field col s12 m6" data-position="right" data-delay="50" data-tooltip="I am tooltip">
+                        <p class="input-field col s12 m6">
                             <label for="{{ form.price.id_for_label }}">Price</label>
                             {{ form.price }}
                         </p>
+                        <div class="input-field col s12 m6 center-block">
+                            <p class="center">You earn: <span id="seller-earnings">Input a Price</span></p>
+                            <br>
+                        </div>
                         {{ form.zipcode.errors }}
-                        <p class="input-field col s12 m6">
+                        <p class="input-field col s12">
                             <label for="{{ form.zipcode.id_for_label }}">Shipping Zip Code</label>
                             {{ form.zipcode }}
                         </p>
