@@ -152,6 +152,16 @@ div.take-space-2 {
 
 }
 
+ body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
 /* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 992px) {
      .jumbotron {
