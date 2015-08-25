@@ -53,7 +53,11 @@ class ItemListingTest(TestCase):
                 'description': 'All your PS3 are belong to us.',
                 'category': '1',
                 'price': 300,
-                'zipcode': 30313
+                'zipcode': 30313,
+                'crop_x': 0,
+                'crop_y': 0,
+                'crop_width': 450,
+                'crop_height': 450
             }, {'photo': SimpleUploadedFile(fp.name, fp.read())}, seller=user)
             # self.assertTrue(form.is_valid())
             self.assertTrue(form.is_valid())
@@ -74,6 +78,10 @@ class ItemListingTest(TestCase):
             'category': ['This field is required.'],
             'price': ['This field is required.'],
             'zipcode': ['This field is required.'],
+            'crop_x': ['This field is required.'],
+            'crop_y': ['This field is required.'],
+            'crop_width': ['This field is required.'],
+            'crop_height': ['This field is required.'],
             'photo': ['This field is required.']
         })
 
@@ -90,6 +98,10 @@ class ItemListingTest(TestCase):
             'category': ['You must choose a category for your item.'],
             'price': ['This field is required.'],
             'zipcode': ['This field is required.'],
+            'crop_x': ['This field is required.'],
+            'crop_y': ['This field is required.'],
+            'crop_width': ['This field is required.'],
+            'crop_height': ['This field is required.'],
             'photo': ['This field is required.']
         })
 
@@ -106,6 +118,10 @@ class ItemListingTest(TestCase):
             'category': ['This field is required.'],
             'price': ['This field is required.'],
             'zipcode': ['Unfortunately, Circa is not yet available in that zip code.'],
+            'crop_x': ['This field is required.'],
+            'crop_y': ['This field is required.'],
+            'crop_width': ['This field is required.'],
+            'crop_height': ['This field is required.'],
             'photo': ['This field is required.']
         })
 
@@ -122,6 +138,10 @@ class ItemListingTest(TestCase):
             'category': ['This field is required.'],
             'price': ['The minimum price is $5.00.'],
             'zipcode': ['This field is required.'],
+            'crop_x': ['This field is required.'],
+            'crop_y': ['This field is required.'],
+            'crop_width': ['This field is required.'],
+            'crop_height': ['This field is required.'],
             'photo': ['This field is required.']
         })
 

@@ -2,11 +2,41 @@
 {% load static %}
 {% block head_block %}
 {{ form.media }}
+<script src="{% static 'js/cropper.min.js' %}"></script>
+<link href="{% static 'css/cropper.min.css' %}" rel="stylesheet">
+<style type="text/css">
+    .cropper-example-1 {
+        height:300px;
+        width:auto;
+    }
+
+    .fileUpload {
+        position: relative;
+        overflow: hidden;
+        margin: 10px;
+    }
+
+    .fileUpload input.upload {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+    }
+
+    .crop-params {
+        display: none;
+    }
+</style>
 {% endblock %}
 {% block body_block %}
 <div class="container">
     <div class="row">
-        <div class="card col s10 offset-s1 m8 offset-m2 l6 offset-l3">
+        <div class="card col s12 m8 offset-m2 l6 offset-l3">
             <div class="card-content center ">
                 <span class="card-title black-text" style="font-size: 30px;">List an item for sale</span>
                 <form id="item_form" method="post" action="/sell/" enctype="multipart/form-data">
@@ -25,18 +55,24 @@
                         </p>
                         {{ form.category.errors }}
                         {{ form.category }}
+                        <br>
                         <p>
                             {{ form.photo.errors }}
-
-                        <div class="file-field input-field">
-                            <input class="file-path validate" type="text"/>
-
-                            <div class="btn blue" style="padding-right: 20px; padding-left: 20px;">
-                                <span>Photo</span>
-                                {{ form.photo }}
+                            {{ form.crop_width.errors }}
+                            <div class="fileUpload btn btn-primary">
+                                <span>Upload Photo</span>
+                                <input id="id_photo" type="file" class="upload" name="photo" />
                             </div>
-                        </div>
+                            <div class="cropper-example-1">
+                                <img id="crop-window" src="{% static 'other/test_image.jpg' %}" alt="your image" />
+                                <p class="image-params right"></p>
+                            </div>
                         </p>
+                        {{ form.crop_x }}
+                        {{ form.crop_y }}
+                        {{ form.crop_height }}
+                        {{ form.crop_width }}
+                        <br><br>
                         {{ form.price.errors }}
                         <p class="input-field col s12 m6" data-position="right" data-delay="50" data-tooltip="I am tooltip">
                             <label for="{{ form.price.id_for_label }}">Price</label>
@@ -64,4 +100,49 @@
     </div>
     <br>
 </div>
+<script>
+    image_cropper = $('.cropper-example-1 > img').cropper({
+        aspectRatio: 1,
+        autoCropArea: 0,
+        strict: true,
+        guides: false,
+        highlight: false,
+        dragCrop: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        movable:false,
+        crop: function(e) {
+            $("#id_crop_x").val(Math.round(e.x));
+            $("#id_crop_y").val(Math.round(e.y));
+            $("#id_crop_height").val(Math.round(e.height));
+            $("#id_crop_width").val(Math.round(e.width));
+            $(".image-params").text(Math.round(e.width) + ' x ' + Math.round(e.height));
+            if(Math.round(e.width) < 450) {
+                $(".image-params").css('color', 'red');
+            } else {
+                $(".image-params").css('color', 'black');
+            }
+        }
+    }).on({
+        'cropmove.cropper': function (e) {
+            console.log(e.type, e.action);
+        },
+    });
+
+    $("#id_photo").change(function () {
+        readURL(this);
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                image_cropper.cropper('replace', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+</script>
 {% endblock %}

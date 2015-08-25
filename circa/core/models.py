@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
-from image_cropping import ImageCropField, ImageRatioField
 from django.utils.text import slugify
 # Create your models here.
 
@@ -22,8 +21,7 @@ class Listing(models.Model):
 class Item(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(default='')
-    photo = ImageCropField(upload_to='uploaded_images')
-    cropping = ImageRatioField('photo', '225x225')
+    photo = models.ImageField(upload_to='uploaded_images')
     listing = models.OneToOneField(Listing, null=True)
     seller = models.ForeignKey(User, related_name='seller_profile', null=True)  # Many items per one seller
     buyer = models.ForeignKey(User, related_name='buyer_profile', null=True, blank=True)

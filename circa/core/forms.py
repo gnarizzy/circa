@@ -3,6 +3,11 @@ from core.zipcode import zipcodes
 from datetime import datetime, timedelta
 from decimal import *
 from django import forms
+from django.core.files.base import ContentFile
+from django.core.files.images import get_image_dimensions
+
+from io import BytesIO
+from PIL import Image
 
 
 class ItemListingForm(forms.ModelForm):
@@ -12,6 +17,12 @@ class ItemListingForm(forms.ModelForm):
     category = forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-control'}), choices=Item.CATEGORY_CHOICES)
     price = forms.DecimalField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Buy now price')
     zipcode = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'validate'}), label='Pickup zipcode')
+
+    # For image cropping purposes
+    crop_x = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'crop-params'}))
+    crop_y = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'crop-params'}))
+    crop_height = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'crop-params'}))
+    crop_width = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'crop-params'}))
 
     # Make sure starting offer is at least $5.00
     def clean_price(self):
@@ -34,12 +45,21 @@ class ItemListingForm(forms.ModelForm):
             raise forms.ValidationError("Unfortunately, Circa is not yet available in that zip code.")
         return zip_code
 
+    def clean_crop_width(self):
+        width = int(self.cleaned_data['crop_width'])
+        height = int(self.cleaned_data['crop_height'])
+
+        if width < 450 or height < 450:
+            raise forms.ValidationError("Your cropped image must be at least 450 by 450.")
+        return width
+
     def __init__(self, *args, **kwargs):
         self.seller = kwargs.pop('seller')
         super().__init__(*args, **kwargs)
 
     def save(self, commit=True):
         item = super().save(commit=False)
+        self.process_image(item)
         listing = Listing.objects.create(
             price=self.cleaned_data['price'],
             zipcode=self.cleaned_data['zipcode']
@@ -49,9 +69,30 @@ class ItemListingForm(forms.ModelForm):
         item.save()
         return item
 
+    def process_image(self, item):
+        image = Image.open(item.photo)
+
+        left = int(self.cleaned_data['crop_x'])
+        top = int(self.cleaned_data['crop_y'])
+        width = int(self.cleaned_data['crop_width'])
+        height = int(self.cleaned_data['crop_height'])
+
+        box = (left, top, left+width, top+height)
+        image = image.crop(box)
+        f = BytesIO()
+        try:
+            image.save(f, format='jpeg')
+            s = f.getvalue()
+            item.photo.save(item.photo.name, ContentFile(s))
+
+        finally:
+            f.close()
+
     class Meta:
         model = Item
         fields = {'title', 'description', 'category', 'photo'}
+
+
 
 
 class PromoForm(forms.Form):
