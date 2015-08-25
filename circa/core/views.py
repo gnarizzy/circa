@@ -111,11 +111,14 @@ def listing_detail_no_slug(request, listing_id):
 # Displays the requested listing along with info about listing item, or 404 page
 def listing_detail(request, listing_id, listing_slug):
     listing = get_object_or_404(Listing, pk=listing_id)
+
+    item_sold = 0
+
     if request.user.is_authenticated:
         form = PromoForm(user=request.user, listing=listing)
 
     if listing.item.buyer:
-        return render(request, 'expired.html')
+        item_sold = 1
 
     if listing_slug != listing.item.slug:
         return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
@@ -144,7 +147,7 @@ def listing_detail(request, listing_id, listing_slug):
     amount = int(listing.price * 100)
     stripe_amount = json.dumps(amount)
     context = {'listing': listing, 'item': item, 'amount': stripe_amount, 'stripe_key': public_key(),
-               'form': form}
+               'form': form, 'item_sold': item_sold}
 
     break_even = .5
     if request.user.is_authenticated and listing.promocode_set.all().count() > 0:
