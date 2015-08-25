@@ -39,8 +39,10 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Jeremy now sees the form by which he can create an account.  Being savvy to the world,
         # he opts to create an account with email instead of using Facebook
-        header_text = self.browser.find_element_by_tag_name('h1').text
+        header_text = self.browser.find_element_by_id('sign-up-header').text
         self.assertIn('Sign up for Circa', header_text)
+
+        self.browser.find_element_by_id("show-sign-up").click()
 
         # Jeremy puts in his information and submits so that he may begin his wonderful journey on Circa
         username_field = self.browser.find_element_by_id('id_username')
@@ -65,7 +67,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Now that he has an account, Jeremy wanted to post something and see if he could make a quick buck
         sell_button = self.browser.find_element_by_id('sell-large')
         sell_button.click()
-        sell_header_text = self.browser.find_element_by_tag_name('h1').text
+        sell_header_text = self.browser.find_element_by_id('sell-page-header').text
         self.assertIn('List an item for sale', sell_header_text)
 
         # After searching through his old knick-knacks, Jeremy finds the perfect item to sell
@@ -78,6 +80,17 @@ class NewVisitorTest(LiveServerTestCase):
         category_field.select_by_value('5')
         photo_field = self.browser.find_element_by_id('id_photo')
         photo_field.send_keys(os.getcwd() + '\\functional_tests\\func_test_image.jpg')
+
+        # Because of his 1337 haxor skillz, Jeremy inputs his desired cropping manually
+        self.browser.execute_script("document.getElementById('id_crop_x').style.display = 'inline';")
+        self.browser.execute_script("document.getElementById('id_crop_y').style.display = 'inline';")
+        self.browser.execute_script("document.getElementById('id_crop_width').style.display = 'inline';")
+        self.browser.execute_script("document.getElementById('id_crop_height').style.display = 'inline';")
+        self.browser.find_element_by_id('id_crop_x').send_keys(0)
+        self.browser.find_element_by_id('id_crop_y').send_keys(0)
+        self.browser.find_element_by_id('id_crop_width').send_keys(450)
+        self.browser.find_element_by_id('id_crop_height').send_keys(450)
+
         price_field = self.browser.find_element_by_id('id_price')
         price_field.send_keys('50')
         zip_field = self.browser.find_element_by_id('id_zipcode')
@@ -85,7 +98,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.find_element_by_id('list-item-button').click()
 
         # Alas, all his hard work paid off and Jeremy beheld his post in all its glory
-        listing_title_text = self.browser.find_element_by_id('title-large').text
+        listing_title_text = self.browser.find_element_by_id('listing-title').text
         self.assertIn('Dragon Slaying Sword', listing_title_text)
 
         # Having had adequate time to behold his handy work, Jeremy heads back to the home page
@@ -123,7 +136,7 @@ class NewVisitorTest(LiveServerTestCase):
         listing_card = self.browser.find_element_by_id('1')
         listing_card.click()
 
-        edit_button = self.browser.find_element_by_id('edit-large')
+        edit_button = self.browser.find_element_by_id('edit')
         edit_button.click()
 
         edit_description = self.browser.find_element_by_id('id_description')
@@ -151,8 +164,10 @@ class NewVisitorTest(LiveServerTestCase):
         sign_up_button = self.browser.find_element_by_id("sign-up-large")
         sign_up_button.click()
 
-        header_text = self.browser.find_element_by_tag_name('h1').text
+        header_text = self.browser.find_element_by_id('sign-up-header').text
         self.assertIn('Sign up for Circa', header_text)
+
+        self.browser.find_element_by_id("show-sign-up").click()
 
         # She inputs her information and then proceeds to login
         username_field = self.browser.find_element_by_id('id_username')

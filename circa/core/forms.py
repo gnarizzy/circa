@@ -51,6 +51,10 @@ class ItemListingForm(forms.ModelForm):
 
         if width < 450 or height < 450:
             raise forms.ValidationError("Your cropped image must be at least 450 by 450.")
+
+        if width != height:
+            raise forms.ValidationError("Width and height must match.")
+
         return width
 
     def __init__(self, *args, **kwargs):

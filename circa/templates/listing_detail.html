@@ -61,11 +61,11 @@
             <div class="thumbnail cust">
                 <div class="listing-panel">
                     {% if user.id and user.id == item.seller.id %}
-                    <a id="edit-small" href="/edit/{{listing.id}}"><span class="btn blue white-text right
+                    <a id="edit" href="/edit/{{listing.id}}"><span class="btn blue white-text right
                         waves-effect waves-light">
                         Edit</span></a>
                     {% endif %}
-                    <h3 class="listing-title">{{ item.title }}</h3>
+                    <h3 id="listing-title" class="listing-title">{{ item.title }}</h3>
                     <img class="img-thumbnail center-block" src="{{ item.photo.url }}" style="max-height:450px;">
                     <p>{{ item.description|linebreaks }}</p>
                 </div>

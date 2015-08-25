@@ -72,12 +72,11 @@
 <div class="container">
     <div class="row">
         {% if items %}
-        {% load cropping %}
         {% for item in items %}
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
             <div class="thumbnail cust center-block">
                 <a href="/listing/{{ item.listing.id }}">
-                    <img class="set-height" height="250" src="{{ item.photo.url }}"/>
+                    <img id="{{ item.id }}" class="set-height" height="250" src="{{ item.photo.url }}"/>
                 </a>
                 <div class="caption cust center-block">
                     <h4 class="thumb-title">{{ item.title }}</h4>
