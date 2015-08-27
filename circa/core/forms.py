@@ -222,4 +222,4 @@ class EditListingForm(forms.Form):
 
 # This is a special form used to get a user's email if they did not provide one via Facebook
 class EmailRequestForm(forms.Form):
-    email = forms.CharField(max_length=75)
+    email = forms.EmailField()
