@@ -137,7 +137,7 @@ def listing_detail(request, listing_id, listing_slug):
         elif "free" in request.POST:
             update_listing(listing, request, promo_code=None)
 
-            if hasattr(request.user, 'userprofile'):
+            if request.user.userprofile.address:
                 return HttpResponseRedirect('/confirm/' + str(listing.id))
 
             else:
@@ -205,7 +205,7 @@ def handle_stripe(request, listing, token):
         )
         update_listing(listing, request, promo_code)
 
-        if hasattr(request.user, 'userprofile'):
+        if request.user.userprofile.address:
             return HttpResponseRedirect('/confirm/' + str(listing.id))
 
         else:
@@ -235,7 +235,7 @@ def update_listing(listing, request, promo_code):
 # Shows all outstanding, unpaid listings for user
 @login_required
 def pending(request):
-    if not hasattr(request.user, 'userprofile'):
+    if not request.user.userprofile.address:
         return HttpResponseRedirect('/address/?next=/pending/')
 
     # find listings where user is the highest offer user, payment has not been received, and have already ended
@@ -347,24 +347,24 @@ def pending(request):
 
 # Allows users to connect their Stripe accounts to Circa
 # To prevent CSRF, add state token and validate for that
-@login_required
-def connect(request):
-    is_connected = False
-    current_user = request.user
-    if hasattr(current_user, 'UserProfile'):
-        if UserProfile.alt_id:  # already connected to Stripe
-            is_connected = True
-    else:
-        is_connected = False
-    if not is_connected:
-        profile = UserProfile(user=current_user)
-        stripe.api_key = secret_key()
-        account = stripe.Account.create(country='US', managed=True)
-        profile.alt_id = account['id']
-        # profile.save()
-        is_connected = True
-    context = {'connected': is_connected}
-    return render(request, 'connect.html', context)
+# @login_required
+# def connect(request):
+#     is_connected = False
+#     current_user = request.user
+#     if hasattr(current_user, 'UserProfile'):
+#         if UserProfile.alt_id:  # already connected to Stripe
+#             is_connected = True
+#     else:
+#         is_connected = False
+#     if not is_connected:
+#         profile = UserProfile(user=current_user)
+#         stripe.api_key = secret_key()
+#         account = stripe.Account.create(country='US', managed=True)
+#         profile.alt_id = account['id']
+#         # profile.save()
+#         is_connected = True
+#     context = {'connected': is_connected}
+#     return render(request, 'connect.html', context)
 
 
 def terms(request):
@@ -402,7 +402,7 @@ def confirm(request, listing_id):
 
             return HttpResponseRedirect('/success/')
 
-    if hasattr(request.user, 'userprofile'):
+    if request.user.userprofile.address:
         context = {'address': request.user.userprofile.address}
         return render(request, 'confirm.html', context)
 
@@ -511,7 +511,7 @@ def address(request):
             form.save()
             return HttpResponseRedirect(request.POST.get('next', '/'))
     else:
-        if hasattr(request.user, 'userprofile'):
+        if request.user.userprofile.address:
             addr = request.user.userprofile.address
             form = AddressForm(initial={
                 'address_line_1': addr.address_line_1,
