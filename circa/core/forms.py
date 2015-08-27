@@ -219,3 +219,7 @@ class EditListingForm(forms.Form):
 
         self.listing.item.save()
         self.listing.save()
+
+# This is a special form used to get a user's email if they did not provide one via Facebook
+class EmailRequestForm(forms.Form):
+    email = forms.CharField(max_length=75)

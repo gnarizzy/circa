@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from core.email import listing_bought_seller_notification, admin_notification_of_sale, \
     listing_bought_buyer_notification
 from core.models import Item, Listing, UserProfile, PromoCode
-from core.forms import ItemListingForm, EditListingForm, PromoForm, AddressForm
+from core.forms import ItemListingForm, EditListingForm, PromoForm, AddressForm, EmailRequestForm
 from core.keys import *
 from core.payout import calc_payout, COMMISSION_BREAKEVEN, COMMISSION_FLAT, COMMISSION_MAX, COMMISSION_PERCENT
 from core.zipcode import zipcodes
@@ -104,12 +105,10 @@ def edit_listing(request, listing_id):
     context = {'item': item, 'listing': listing, 'form': form}
     return render(request, 'edit_listing.html', context)
 
-
 # URL with no slug, redirect to url with slug
 def listing_detail_no_slug(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
-
 
 # Displays the requested listing along with info about listing item, or 404 page
 def listing_detail(request, listing_id, listing_slug):
@@ -168,6 +167,17 @@ def listing_detail(request, listing_id, listing_slug):
 
 
     return render(request, 'listing_detail.html', context)
+
+def request_email(request):
+    if request.method == 'POST':
+        form = EmailRequestForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect(reverse('social:complete', args=("facebook",)) +
+                                        '?email=' + form.cleaned_data['email'])
+    else:
+        form = EmailRequestForm()
+    return render(request, 'request_email.html', {'form': form})
+
 
 def handle_stripe(request, listing, token):
     stripe.api_key = secret_key()

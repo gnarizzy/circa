@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_block %}
+<div class="container">
+    <div class="take-space"></div>
+    <div class="row">
+        <div class="col s12 m8 offset-m2">
+            <div class="card">
+                <div class="card-content center">
+                    <span id="confirm-address" class="card-title black-text">Confirm your email</span>
+
+                    <p>
+                        Hey!  We need an email address so that we can contact you!  Please provide one below and
+                        we'll finish making your account!
+                    </p>
+                    <br><br>
+                    <form id="item_form" method="post" action="/request_email" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.email.errors }}
+                        <p class="input-field col s12 m8 offset-m2">
+                            <label for="{{ form.title.id_for_label }}">Email</label>
+                            {{ form.email }}
+                        </p>
+                        <button id="list-item-button" class="btn-large waves-effect waves-light teal accent-4" type="submit"
+                            name="action">Confirm<i class="mdi-content-send right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

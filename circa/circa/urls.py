@@ -35,10 +35,11 @@ urlpatterns = patterns('',
     url(r'^offers', 'core.views.offers', name='offers'),  # consolidate these into dashboard
     url(r'^earnings', 'core.views.earnings', name='earnings'),
     url(r'^items', 'core.views.active_items', name='active_items'),
+    url(r'^address', 'core.views.address', name='address'),
+    url(r'^request_email', 'core.views.request_email', name='request_email'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^manage/', include(admin.site.urls)),
     url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
-    url(r'^address/', 'core.views.address', name='address'),
     (r'^accounts/', include('registration.backends.simple.urls')),
     url('', include('social.apps.django_app.urls', namespace='social')),
 )
