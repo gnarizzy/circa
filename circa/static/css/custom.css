@@ -185,7 +185,7 @@ div.take-space-2 {
     .categories-nav {
         background-color: rgba(0, 0, 0, .3);
         bottom: 60px;
-        margin: -20px;
+        margin: -20px 0px -20px -20px;
     }
 
     .categories-nav-login {
@@ -218,7 +218,7 @@ div.take-space-2 {
     .categories-nav {
         background-color: rgba(0, 0, 0, .3);
         bottom: 60px;
-        margin: -20px;
+        margin: -20px 0px -20px -20px;
     }
 
     .categories-nav-login {
