@@ -105,15 +105,18 @@ def edit_listing(request, listing_id):
     context = {'item': item, 'listing': listing, 'form': form}
     return render(request, 'edit_listing.html', context)
 
+
 # URL with no slug, redirect to url with slug
 def listing_detail_no_slug(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     return HttpResponseRedirect('/listing/' + str(listing.id) + '/' + listing.item.slug)
 
+
 # Displays the requested listing along with info about listing item, or 404 page
 def listing_detail(request, listing_id, listing_slug):
     listing = get_object_or_404(Listing, pk=listing_id)
 
+    form = None
     item_sold = 0
 
     if request.user.is_authenticated:
@@ -165,8 +168,8 @@ def listing_detail(request, listing_id, listing_slug):
 
                 break
 
-
     return render(request, 'listing_detail.html', context)
+
 
 def request_email(request):
     if request.method == 'POST':
@@ -194,7 +197,7 @@ def handle_stripe(request, listing, token):
         amount_in_cents = int(listing.price * 100)
 
     try:
-        charge = stripe.Charge.create(
+        stripe.Charge.create(
             amount=amount_in_cents,
             currency="usd",
             source=token,
@@ -214,6 +217,7 @@ def handle_stripe(request, listing, token):
                                 'so and try again.  If the problem persists, please contact us at '
                                 'support@usecirca.com so we can help sort out the issue.')
         return HttpResponseRedirect(request.path)
+
 
 # Helper method for listing_detail
 def update_listing(listing, request, promo_code):
