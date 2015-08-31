@@ -11,7 +11,7 @@ def setup_user_account(strategy, backend, request, details, *args, **kwargs):
 
     # New user supplied email and is new
     if kwargs['is_new'] and details['email']:
-        UserProfile.objects.create(user=user)
+        UserProfile.user_creation(user)
         welcome_new_user_fb_notification(details['username'], details['email'])
 
     elif not details['email']:
@@ -21,7 +21,7 @@ def setup_user_account(strategy, backend, request, details, *args, **kwargs):
         elif user.email is '' and request.get('email', None):
             user.email = request['email']
             user.save()
-            UserProfile.objects.create(user=user)
+            UserProfile.user_creation(user)
             welcome_new_user_fb_notification(details['username'], request['email'])
             return {'email': request['email']}
 

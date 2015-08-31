@@ -7,5 +7,5 @@ from registration.signals import user_registered
 @receiver(user_registered)
 def send_welcome_email(sender, **kwargs):
     user = kwargs['user']
-    UserProfile.objects.create(user=user)
+    UserProfile.user_creation(user)
     welcome_new_user_notification(user)

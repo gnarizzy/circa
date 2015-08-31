@@ -2,7 +2,10 @@ from django.db import models
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-# Create your models here.
+
+from core.keys import secret_key
+
+import stripe
 
 
 class Listing(models.Model):
@@ -75,9 +78,35 @@ class Address(models.Model):
         return str(self.address_line_1)
 
 
+class StripeAccount(models.Model):
+    user_id = models.CharField(max_length=30)
+    secret_key = models.CharField(max_length=35)
+    publishable_key = models.CharField(max_length=35)
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
+    # Start with this
+    stripe_account = models.OneToOneField(StripeAccount, null=True, blank=True)
+    # Change to this after populating all managed stripe accounts
+    # stripe_account = models.OneToOneField(StripeAccount)
     address = models.OneToOneField(Address, null=True, blank=True)
+
+    @staticmethod
+    def user_creation(user):
+        stripe.api_key = secret_key()
+        response = stripe.Account.create(
+            country='US',
+            managed=True
+        )
+
+        stripe_account = StripeAccount.objects.create(
+            id=response['id'],
+            secret_key=response['keys']['secret'],
+            publishable_key=response['keys']['publishable']
+        )
+
+        UserProfile.objects.create(user=user, stripe_account=stripe_account)
 
     def __str__(self):
         return self.user.username
