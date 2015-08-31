@@ -86,10 +86,7 @@ class StripeAccount(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    # Start with this
-    stripe_account = models.OneToOneField(StripeAccount, null=True, blank=True)
-    # Change to this after populating all managed stripe accounts
-    # stripe_account = models.OneToOneField(StripeAccount)
+    stripe_account = models.OneToOneField(StripeAccount)
     address = models.OneToOneField(Address, null=True, blank=True)
 
     @staticmethod
@@ -101,7 +98,7 @@ class UserProfile(models.Model):
         )
 
         stripe_account = StripeAccount.objects.create(
-            id=response['id'],
+            user_id=response['id'],
             secret_key=response['keys']['secret'],
             publishable_key=response['keys']['publishable']
         )
