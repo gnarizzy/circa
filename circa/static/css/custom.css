@@ -32,6 +32,7 @@ a.waves-effect.waves-light.btn.buy-button {
 
 img.set-height {
     min-height: 250px;
+    max-height: 250px;
 }
 
 h4.thumb-title {
@@ -138,6 +139,7 @@ div.take-space-2 {
 }
 
 .categories-nav-login {
+    bottom: 10px;
     background-color: #009ee1;
 }
 
