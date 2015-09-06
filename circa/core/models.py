@@ -78,32 +78,13 @@ class Address(models.Model):
         return str(self.address_line_1)
 
 
-class StripeAccount(models.Model):
-    user_id = models.CharField(max_length=30)
-    secret_key = models.CharField(max_length=35)
-    publishable_key = models.CharField(max_length=35)
-
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    stripe_account = models.OneToOneField(StripeAccount)
     address = models.OneToOneField(Address, null=True, blank=True)
 
     @staticmethod
     def user_creation(user):
-        stripe.api_key = secret_key()
-        response = stripe.Account.create(
-            country='US',
-            managed=True
-        )
-
-        stripe_account = StripeAccount.objects.create(
-            user_id=response['id'],
-            secret_key=response['keys']['secret'],
-            publishable_key=response['keys']['publishable']
-        )
-
-        UserProfile.objects.create(user=user, stripe_account=stripe_account)
+        UserProfile.objects.create(user=user)
 
     def __str__(self):
         return self.user.username
