@@ -105,6 +105,26 @@ def edit_listing(request, listing_id):
     context = {'item': item, 'listing': listing, 'form': form}
     return render(request, 'edit_listing.html', context)
 
+@login_required()
+def delete_listing(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+    item = listing.item
+
+    if request.method == 'POST': #clicked delete button
+
+        #Some bro wants to delete a listing that is not his!
+        if item.seller.id is not request.user.id:
+            raise PermissionDenied
+
+        item.delete()
+        listing.delete() #This should delete the item, but it's probably better to explicitly delete the item
+        return HttpResponseRedirect('/items/') #redirects to user's currently listed items
+
+    else:
+        context = {'item': item, 'listing': listing}
+        return render(request, 'delete_listing.html')
+
+
 
 # URL with no slug, redirect to url with slug
 def listing_detail_no_slug(request, listing_id):
