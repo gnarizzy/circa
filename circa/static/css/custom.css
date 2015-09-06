@@ -132,6 +132,7 @@ div.take-space-2 {
   top:0;
   left:0;
   z-index: -1;
+
 }
 
 .categories-nav {
@@ -162,6 +163,16 @@ div.take-space-2 {
     }
 
 }
+
+ body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
 
 /* Medium devices (desktops, 992px and up) */
 @media screen and (min-width: 992px) {
@@ -226,6 +237,14 @@ div.take-space-2 {
     .categories-nav-login {
         background-color: #009ee1;
     }
+
+    #jumbotron-text {
+        text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    }
+
+    #jumbotron-text2 {
+        text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+    }
 }
 
 /* This corrects the container to Bootstrap's instead of Materialize's */
@@ -235,6 +254,7 @@ div.take-space-2 {
   margin-right: auto;
   margin-left: auto;
 }
+
 
 @media (min-width: 768px) {
   .container {
