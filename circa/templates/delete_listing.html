@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title_block %}
+Delete {item.title}}
+{% endblock %}
+{% load static %}
+{% block head_block %}
+<style type="text/css">
+    .card .card-action {
+    border-top: 0px solid rgba(160, 160, 160, 0.2);
+    padding: 20px;
+    }
+</style>
+{% endblock %}
+{% block body_block %}
+<div class="container">
+    <div class="take-space"></div>
+    <div class="row">
+        <div class="col s12 m8 offset-m2">
+            <div class="card">
+                <div class="card-content center">
+                    <span id="confirm-delete" class="card-title black-text">Confirm Deletion</span>
+
+                    <p style="font-weight: bold;">
+                       Are you sure you want to delete {{item.title}}? Once deleted, it's gone forever!
+                    </p>
+                </div>
+                <div class="card-action">
+                    <div class="hide-on-small-only">
+                        <form style="float: left;" action="{{ request.path }}" method="POST">
+                            {% csrf_token %}
+                            <button name="change" class="waves-effect waves-light btn red lighten-2 white-text" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                    <div class="row hide-on-med-and-up center">
+                        <form class="col s12" action="{{ request.path }}" method="POST">
+                            {% csrf_token %}
+                            <button name="change" class="waves-effect waves-light btn red lighten-2 white-text" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                    <br>
+                    </div>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
