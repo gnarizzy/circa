@@ -122,8 +122,7 @@ def delete_listing(request, listing_id):
 
     else:
         context = {'item': item, 'listing': listing}
-        return render(request, 'delete_listing.html')
-
+        return render(request, 'delete_listing.html', context)
 
 
 # URL with no slug, redirect to url with slug
