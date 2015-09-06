@@ -110,11 +110,11 @@ def delete_listing(request, listing_id):
     listing = get_object_or_404(Listing, pk=listing_id)
     item = listing.item
 
-    if request.method == 'POST': #clicked delete button
+    #Some bro wants to delete a listing that is not his!
+    if item.seller.id is not request.user.id:
+        raise PermissionDenied
 
-        #Some bro wants to delete a listing that is not his!
-        if item.seller.id is not request.user.id:
-            raise PermissionDenied
+    if request.method == 'POST': #clicked delete button
 
         item.delete()
         listing.delete() #This should delete the item, but it's probably better to explicitly delete the item
