@@ -225,6 +225,14 @@ class EditListingTest(TestCase):
             'zipcode': ['Unfortunately, Circa is not yet available in that zip code.']
         })
 
+    def test_delete_listing(self):
+        listing = self.create_item_and_listing(self)
+        item_id = listing.item.id
+        listing_id = listing.id
+        listing.delete()
+        self.assertFalse(Listing.objects.filter(pk=listing_id).exists())
+        self.assertFalse(Item.objects.filter(pk=item_id).exists())
+
 
 class PromoTest(TestCase):
 
