@@ -25,8 +25,8 @@ Delete {item.title}}
                     </p>
                 </div>
                 <div class="card-action">
-                    <div class="hide-on-small-only">
-                        <form style="float: left;" action="{{ request.path }}" method="POST">
+                    <div class="hide-on-small-only center">
+                        <form action="{{ request.path }}" method="POST">
                             {% csrf_token %}
                             <button name="change" class="waves-effect waves-light btn red lighten-2 white-text" type="submit">
                                 Delete
@@ -41,9 +41,8 @@ Delete {item.title}}
                             </button>
                         </form>
                     </div>
-                    <br>
                     </div>
-                    <br><br>
+                    <br>
                 </div>
             </div>
         </div>
