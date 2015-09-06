@@ -2,7 +2,10 @@ from django.db import models
 from django.db.utils import IntegrityError
 from django.contrib.auth.models import User
 from django.utils.text import slugify
-# Create your models here.
+
+from core.keys import secret_key
+
+import stripe
 
 
 class Listing(models.Model):
@@ -78,6 +81,10 @@ class Address(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     address = models.OneToOneField(Address, null=True, blank=True)
+
+    @staticmethod
+    def user_creation(user):
+        UserProfile.objects.create(user=user)
 
     def __str__(self):
         return self.user.username

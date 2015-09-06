@@ -63,12 +63,12 @@ def listing_bought_buyer_notification(listing):
 
     addr_str = addr.address_line_1
 
-    if addr.address_line_2 is not None:
+    if addr.address_line_2 is not '':
         addr_str += "\n" + addr.address_line_2
 
     addr_str += "\n" + addr.city + ", " + addr.state + " " + addr.zipcode
 
-    if addr.special_instructions is not None:
+    if addr.special_instructions is not '':
         addr_str += "\nSpecial Instructions: " + addr.special_instructions
 
     content = LISTING_BOUGHT_BUYER.format(listing.item.title, listing.price, addr_str)
