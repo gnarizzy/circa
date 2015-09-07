@@ -93,6 +93,14 @@ nav ul a {
     padding: 0 15px;
 }
 
+a.delete-link:hover {
+    text-decoration:none
+}
+
+delete-link:active {
+    text-decoration:none
+}
+
 .thumb-content a {
     color: #fff;
 }
