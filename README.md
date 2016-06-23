@@ -17,7 +17,7 @@ To run your own instance of Circa, do the following:
 ##Notes##
 
 1. When `debug=true` in settings.py, the site goes into test mode and the test Stripe API keys are automatically used instead of the live ones. Look at the Stripe documentation for test mode to see how to simulate credit card transactions. 
-2. If you plan on doing real credit card transactions, **make sure you have SSL (HTTPS) enabled on your site!** Not doing so means your users credit card information will be sent unencrypted over the interwebz.
+2. If you plan on doing real credit card transactions, **make sure you have SSL (HTTPS) enabled on your site!** Not doing so means your users' credit card information will be sent unencrypted over the interwebz.
 3. This repo will no longer be updated, since it is being superceded by Circa 2.0, which will be in a separate repo. 
 4. This code is licensed under the MIT license. If you do something cool with it, I'd love to hear about it! 
 5. The `EMAIL_BACKEND` and `DEFAULT_FROM_EMAIL` will have to be updated accordingly. Also, Mandrill doesn't really work the way it did when we were using it for Circa, so keep that in mind. 
