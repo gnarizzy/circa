@@ -3,7 +3,7 @@
 
 Circa is a platform for local buying and selling. It creates a hassle-free experience by handling payments, delivery, and returns. Cheaper than Amazon, safer than Craigslist!
 
-Circa was originally created by [Gautam Narula](https://github.com/gnarizzy) and [Andrew Schuster](https://github.com/aschuster3), co-founders (and Chief Donut Procurer and Chief Delivery Boy, respectively) of Centaurii, Inc. Now that Centaurii is defunct, Gautam (me) has open-sourced the code and am the sole maintainer. I am currently working on [Circa 2.0](http://www.usecirca.com/circa2/), a ground-up rewriting of the codebase that will turn Circa into an automated, self-service platform. Until it is launched, Circa will remain in [test mode](http://www.usecirca.com/test/) at www.usecirca.com.
+Circa was originally created by [Gautam Narula](https://github.com/gnarizzy) and [Andrew Schuster](https://github.com/aschuster3), co-founders (and Chief Donut Procurer and Chief Delivery Boy, respectively) of Centaurii, Inc. Now that Centaurii is defunct, Gautam (me) has open-sourced the code. Circa will remain in [test mode](http://www.usecirca.com/test/) at www.usecirca.com.
 
 To run your own instance of Circa, do the following:
 
