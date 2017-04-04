@@ -14,7 +14,7 @@ To run your own instance of Circa, do the following:
 5. You will need to create a database and migrations. Navigating to the directory with manage.py and running `python manage.py migrate` should take care of that. If you'd like to use a database other than the default sqlite3, you'll have to do additional configuration. 
 6. Run 'python manage.py runserver' to run a local instance of Circa. That's it! Please note that Circa is not compatible with Python 2.x. 
 
-##Notes##
+### Notes
 
 1. When `debug=true` in settings.py, the site goes into test mode and the test Stripe API keys are automatically used instead of the live ones. Look at the Stripe documentation for test mode to see how to simulate credit card transactions. 
 2. If you plan on doing real credit card transactions, **make sure you have SSL (HTTPS) enabled on your site!** Not doing so means your users' credit card information will be sent unencrypted over the interwebz.
