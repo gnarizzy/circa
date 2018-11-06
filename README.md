@@ -9,8 +9,8 @@ To run your own instance of Circa, do the following:
 
 1. Clone this repo and install [Pip](https://pypi.python.org/pypi/pip) if you don't already have it. 
 2. Use your terminal to navigate to the directory with requirements.txt and run `pip install -r requirements.txt`. This will install all the necessary packages to run Circa. 
-3. You will need to create a Django settings file with all the appropriate packages included in `INSTALLED_APPS`. Copy this ['settings.py' file](https://gist.github.com/gnarizzy/961a63063f16b3b9c9f5dacc8c8e42df) into the circa subdirectory (the one containing urls.py), and generate your own secret key. You will also have to change `ALLOWED_HOSTS` and `SITE_DOMAIN` to the appropriate values if you plan on running this in production. 
-4. You will need fill in your API keys in `core/keys.py`, which requires your Stripe API keys to process real or test payments and keys for other services (social auth, transactional email, etc.).  You can get these API keys by creating a [Stripe](www.stripe.com) account and following their instructions.
+3. You will need to generate your own secret key in the Django settings file at `circa/circa/settings.py`. You will also have to change `ALLOWED_HOSTS` and `SITE_DOMAIN` to the appropriate values if you plan on running this in production. Do not keep the settings file under version control. 
+4. You will need fill in your API keys in `core/keys.py`, which requires your Stripe API keys to process real or test payments and keys for other services (social auth, transactional email, etc.).  You can get these API keys by creating a [Stripe](www.stripe.com) account and following their instructions. Do not keep the keys file under version control. 
 5. You will need to create a database and migrations. Navigating to the directory with manage.py and running `python manage.py migrate` should take care of that. If you'd like to use a database other than the default sqlite3, you'll have to do additional configuration. 
 6. Run 'python manage.py runserver' to run a local instance of Circa. That's it! Please note that Circa is **not compatible with Python 2.x**. 
 
