@@ -1,6 +1,6 @@
 da-vinci==0.2.1
 defusedxml==0.4.1
-Django==1.8.2
+Django==1.11.28
 django-appconf==1.0.1
 django-background-tasks==1.0.2
 django-compat==1.0.6
