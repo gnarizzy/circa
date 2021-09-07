@@ -9,7 +9,7 @@ django-registration-redux==1.2
 djrill==1.4.0
 easy-thumbnails==2.2
 oauthlib==0.7.2
-Pillow==7.1.0
+Pillow==8.3.2
 PyJWT==1.3.0
 python-social-auth==0.2.10
 python3-openid==3.0.5
